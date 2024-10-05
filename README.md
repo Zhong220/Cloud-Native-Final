@@ -4,7 +4,7 @@
 > When to **Meeting**: 20:00 per Sat.<br>
 > Meeting **Record**: [Notion](https://www.notion.so/Final-Project-11531c02fb3f80cd8e37c8d0b8f6802e?pvs=4)<br>
 > Meeting **URL**: [Google Meet](https://meet.google.com/vwa-iikc-fku) <br>
-> Planning **URL**:bulb:: [Planning](./planning/readme.md)<br>
+> Planning **URL**:bulb:: [Planning](./docs/planning/readme.md)<br>
 
 <details><summary><b>Team</b></summary>
 
@@ -28,7 +28,7 @@
 
 ## Collaboration Specfications
 ### Branching Model - Git Flow
-![Git Flow](./docs/assets/Git%20Flow.png)
+![Git Flow](./docs/Images/Git%20Flow.png)
 > ref: [Git Flow 整體概念](https://alincode.github.io/git-workshop/git-flow/)
 
 
