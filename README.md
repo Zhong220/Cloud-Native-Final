@@ -3,7 +3,8 @@
 > Project management: [Trello](https://trello.com/invite/b/670150e8404f03b92ab3844e/ATTId872c43e67d96215e967c78251330e95E940803F/cnsdm-final-project-management)<br>
 > When to **Meeting**: 20:00 per Sat.<br>
 > Meeting **Record**: [Notion](https://www.notion.so/Final-Project-11531c02fb3f80cd8e37c8d0b8f6802e?pvs=4)<br>
-> Meeting **URL**: [Google Meet](https://meet.google.com/vwa-iikc-fku)
+> Meeting **URL**: [Google Meet](https://meet.google.com/vwa-iikc-fku) <br>
+> Planning **URL**:bulb:: [Planning](./planning/readme.md)<br>
 
 <details><summary><b>Team</b></summary>
 
@@ -27,7 +28,7 @@
 
 ## Collaboration Specfications
 ### Branching Model - Git Flow
-![Git Flow](./Assets/Images/Git%20Flow.png)
+![Git Flow](./docs/assets/Git%20Flow.png)
 > ref: [Git Flow 整體概念](https://alincode.github.io/git-workshop/git-flow/)
 
 
