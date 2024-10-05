@@ -1,6 +1,6 @@
-# Final Project
+# Final Project - 成團 APP
 ## Project Information
-> Project management: [Trello]()<br>
+> Project management: [Trello](https://trello.com/invite/b/670150e8404f03b92ab3844e/ATTId872c43e67d96215e967c78251330e95E940803F/cnsdm-final-project-management)<br>
 > When to **Meeting**: 20:00 per Sat.<br>
 > Meeting **Record**: [Notion](https://www.notion.so/Final-Project-11531c02fb3f80cd8e37c8d0b8f6802e?pvs=4)<br>
 > Meeting **URL**: [Google Meet](https://meet.google.com/vwa-iikc-fku)
@@ -13,15 +13,23 @@
 - 資科三 [__黃蓉容__](https://github.com/Zhong220)
 </details>
 
-## Collaboration Specfications
+<details><summary><b>Specification</b></summary>
 
-### *Branching Model
-- Git flow?
-  > ref: [Git Flow 是什麼？為什麼需要這種東西？](https://gitbook.tw/chapters/gitflow/why-need-git-flow#google_vignette)
-- Github flow?
-  > ref: [讓我們來了解 GitHub Flow 吧！](https://medium.com/@trylovetom/%E8%AE%93%E6%88%91%E5%80%91%E4%BE%86%E4%BA%86%E8%A7%A3-github-flow-%E5%90%A7-4144caf1f1bf)
-- Trunk-based Development?
-  > ref: [Trunk-based Development - 簡介](https://hackmd.io/@ganhuaking/By6EPv0vq)
+- **Frontend**: `React Native` in `TypeScript`
+- **Backend**: `Golang` in `Go`
+- **Database**: `SQL Lite`
+  
+> Reference:<br>
+> [`React Native`](https://reactnative.dev/)<br>
+> [`Golang`](https://go.dev/doc/)
+
+</details>
+
+## Collaboration Specfications
+### Branching Model - Git Flow
+![Git Flow](./Assets/Images/Git%20Flow.png)
+> ref: [Git Flow 整體概念](https://alincode.github.io/git-workshop/git-flow/)
+
 
 ### Commit syntax
 - `feat`: introduce a new feature
@@ -48,7 +56,15 @@ $ git commit -m "feat(login): wireframe"
 $ git push
 ```
 
-### *merge or rebase
+### `merge` / `merge --squash` 使用時機:
+- 在 __上層__ : `merge` 下層
+- 在 __下層__ : `merge --squash` 上層
+- eg.
+    ```bash
+    # on dev
+    $ git merge feat/login
+
+    # on feat/login
+    $ git merge --squash main
+    ```
 > ref: [Git | 我以為的 Git Rebase 與和 Git Merge 做合併分支的差異](https://medium.com/starbugs/git-%E6%88%91%E4%BB%A5%E7%82%BA%E7%9A%84-git-rebase-%E8%88%87%E5%92%8C-git-merge-%E5%81%9A%E5%90%88%E4%BD%B5%E5%88%86%E6%94%AF%E7%9A%84%E5%B7%AE%E7%95%B0-cacd3f45294d)
-- `git merge`?
-- `git rebase`?
