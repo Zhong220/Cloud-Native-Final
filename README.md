@@ -14,17 +14,7 @@
 - 資科三 [__黃蓉容__](https://github.com/Zhong220)
 </details>
 
-<details><summary><b>Specification</b></summary>
-
-- **Frontend**: `React Native` in `TypeScript`
-- **Backend**: `Golang` in `Go`
-- **Database**: `SQL Lite`
-  
-> Reference:<br>
-> [`React Native`](https://reactnative.dev/)<br>
-> [`Golang`](https://go.dev/doc/)
-
-</details>
+[__Specification__](./CONTRIBUTING.md)
 
 ## Collaboration Specfications
 ### Branching Model - Git Flow
@@ -45,13 +35,18 @@
 - `test`: add/remove/update tests
 - `revert`: reverts one or many previous commits
   
-__Usage__: `feat(scope): commit message`
+__Usage__: 
+* Nomal case: `feat(scope): commit message`
+* Significant changes: `feat(scope)!: commit message`
 ```bash
 # stage changes
 $ git add .
 
 # use syntax to write commit message
+# Normal case
 $ git commit -m "feat(login): wireframe"
+# Significant changes
+$ git commit -m "feat(api)!: changes"
 
 # push to remote
 $ git push
