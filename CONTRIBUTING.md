@@ -75,5 +75,7 @@ $ git push
 - [Go语言的七大适用场景](https://juejin.cn/post/7213576339328434233)
 ### Backend Struc.
 - [菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧](https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/)
+- [三層式架構](https://sunnyday0932.github.io/2020/%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B/)
+- [IT 幫幫忙 : Day 06 - MVC 與三層架構](https://ithelp.ithome.com.tw/m/articles/10268951)
 ### Deno
 - [Deno Docs](https://docs.deno.com/)
