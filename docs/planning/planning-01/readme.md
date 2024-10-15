@@ -34,10 +34,10 @@ Date: October 5, 2024 20:00 (GMT+8)
 
 ## 2.規格
 
-- 手機app ( Andriod, iOS )
+- 手機 app ( Andriod, iOS )
 - 前端: **React native** / vue／Flutter
-- 後端: flask / **golang** / express.JS
-- DB: **SQL Lite**
+- 後端: flask / golang / **Express**
+- DB: **SQLite**
 - Branching model: **Git flow**
 
 ## 3. branch model
@@ -103,7 +103,7 @@ gitGraph
     - 0.5 Ryan
 - 後端 (資料庫) :
     - Ryan coding
-    - Neo 資料庫建置、container分配
+    - Neo 資料庫建置、container分配、coding
     - 子宏 coding
     - 0.5 Rong 努力學習
 
@@ -122,7 +122,7 @@ gitGraph
 後端
 
 - 學 SQL
-- 學 Golang
+- 學 Express
 
 下周議程
 
@@ -133,7 +133,7 @@ gitGraph
 
 ### 其他主題 (archieve)
 
-neo:即時聊天系統
+neo: 即時聊天系統
 
 - FE: React Native
 - BE: 後端（三層式架構)
