@@ -1,4 +1,4 @@
-# 10/05會議紀錄
+# 10/05 & 10/12 會議紀錄整理
 
 議前事項: 各位事先準備一個或多個專題提目
 Date: October 5, 2024 20:00 (GMT+8)
@@ -6,14 +6,14 @@ Date: October 5, 2024 20:00 (GMT+8)
 → 規格討論 (前後端語言/架構、DB 工具、branching model、merge or rebase) 
 → 成員內容分配
 
-## 1.主題
+## 1.主題選擇
 
 難易度：API<DC<即時聊天<白板約等於成團
 
 定案 → Rong：成團App 
 
 ### 成團app - GroupUp?
-
+#### 想要的功能     
 - 日期 顯示天氣狀態且內建個人行事曆 作為參團的考量
 - 社群登入以同步帳號資訊
 可選取對哪團活動有興趣 點擊關注
@@ -32,6 +32,13 @@ Date: October 5, 2024 20:00 (GMT+8)
 - 有個人日記可以記錄活動心情
 - 取代 google 表單 能做意見統整
 
+#### 架構圖     
+##### 核心基礎的功能框架       
+![_](assets/images/frame.png)    
+
+#### App 畫面框線圖
+![_](assets/images/image2.png)
+
 ## 2.規格
 
 - 手機app ( Andriod, iOS )
@@ -39,9 +46,10 @@ Date: October 5, 2024 20:00 (GMT+8)
 - 後端: flask / **golang** / express.JS
 - DB: **SQL Lite**
 - Branching model: **Git flow**
+- **規格詳情**：[CONTRIBUTING.md](../../../CONTRIBUTING.md)
 
-## 3. branch model
-
+## 3. branch model：
+### 3.0 Git flow & Github:fork  
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'showBranches': true}} }%%
 gitGraph
@@ -87,7 +95,7 @@ gitGraph
 
 ```
 
-## 4. merge/rebase
+###     3.1 merge/rebase    
 
 ![assets/images/image.png](assets/images/image.png)
 
@@ -122,7 +130,7 @@ gitGraph
 後端
 
 - 學 SQL
-- 學 Golang
+- 學 expess.js on deno  
 
 下周議程
 
@@ -161,8 +169,8 @@ hong:
 
 利用某個具有API的某個功能，做出更近一步的應用，方向待確定
 
-例子：[https://github.com/exilence-ce/exilence-ce](https://github.com/exilence-ce/exilence-ce)
-[https://wealthyexile.com/](https://wealthyexile.com/).  
+例子：[https://github.com/exilence-ce/exilence-ce](https://github.com/exilence-ce/exilence-ce)  
+[https://wealthyexile.com/](https://wealthyexile.com/)  
 
 投票結果
 
