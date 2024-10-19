@@ -1,55 +1,44 @@
 # Backend
-## Go Installation Instructions
-1. Download according to terminal, [here](https://go.dev/dl/) 
-* Ubuntu
-  
-  1. move downloaded file into `/usr/local/`
-        ```bash
-        $ mv /YOUR/DOWNLOAD/PATH/go1.23.2.linux-amd64.tar.gz /usr/local/
-        ```
-  2. go `/usr/local/` and extract
-        ```bash
-        $ cd /usr/local/
-        $ rm -rf /usr/local/go && tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz
-        $ export PATH=$PATH:/usr/local/go/bin
 
-        # version check
-        $ go version
-        ```
-  3. write path into `~/.bashrc`
-        ```bash
-        $ echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
-        ```
-  4. `exit` your terminal and open new to check
-        ```bash
-        # exit
-        $ exit
+## Installation & Run & Usage
 
-        # open new one
-        $ go version
-        ```
-  5. test
-        ```bash
-        $ touch test.go
+### Installation and Configuration
 
-        # put following code into ./test.go
-        ````
-        ```go
-        package main
+- Use Ubuntu or powerShell
+  1. Install Deno on Ubuntu and powershell if use Ubuntu
+     ```bash
+     # Ubuntu
+     $ curl -fsSL https://deno.land/install.sh | sh
+     $ deno -v
 
-        import "fmt"
+     # If use powerShell, only this step to install
+     # powerShell
+     $ winget install DenoLand.Deno
+     $ deno -v
+     ```
+  2. Open VSCode and use shortcut [CTRL + SHIFT + p] and input
+     `deno: Initialize Workspace Configuration`
+  3. Put following content into `.vscode/setting.json`
+     ```bash
+      {
+            "deno.enable": true,
+            "deno.lint": true,
+            "deno.unstable": true,
+            "deno.enablePaths": [
+                  "./Cloud-Native-Final/src/Backend"
+            ],
+            "editor.formatOnSave": true,
+            "deno.config": "./Cloud-Native-Final/src/Backend/deno.jsonc",
+      }
 
-        func main() {
-            fmt.Println("Hello, World!")
-        }
-        ```
-        ```bash
-        # test
-        $ go run test.go
+     ```
+- Use mac
+  - by yourselves - Neo
 
-        # should show
-        Hello, World!
-        ```
-* windows
-    
-    2. Welcome replenish
+### Run
+
+### Usage
+
+### Reference
+
+- [Deno Docs](https://docs.deno.com/)
