@@ -33,7 +33,12 @@
 
      ```
 - Use mac
-  - by yourselves - Neo
+   ```bash
+     # MacOS
+     $ curl -fsSL https://deno.land/install.sh | sh
+     $ deno -v
+   ```
+   
 
 ### Run
 
