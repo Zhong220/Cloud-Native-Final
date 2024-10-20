@@ -1,6 +1,7 @@
 # Function List## Table
 
-### Login
+## Login 
+- [Readme](../src/backend/router/auth/Readme.md)
 
 | Function         | Input                    | Output    | Description                                | Note                           |
 | ---------------- | ------------------------ | --------- | ------------------------------------------ | ------------------------------ |
@@ -8,7 +9,8 @@
 | `register`       | account, password, email | http code | 201: registration successful, 400: failure | Check if email is duplicated   |
 | `forgetPassword` | email                    | http code | 200: success, 400: failure                 | Sends password reset email     |
 
-### Homepage
+## Homepage
+- [Readme](../src/backend/router/homepage/Readme.md)
 
 | Function         | Input               | Output    | Description                      | Note                                       |
 | ---------------- | ------------------- | --------- | -------------------------------- | ------------------------------------------ |
@@ -17,13 +19,15 @@
 | `groupSearch`    | keyword             | groupList | 200: group list returned         | Supports keyword search                    |
 | `recommendation` | userID              | groupList | 200: recommended group list      | Recommend groups based on user preferences |
 
-### User
+## User
+- [Readme](../src/backend/router/user/Readme.md)
 
 | Function  | Input            | Output    | Description                          | Note                 |
 | --------- | ---------------- | --------- | ------------------------------------ | -------------------- |
 | `setting` | userID, settings | http code | 200: update successful, 400: failure | Update user settings |
 
-### Group
+## Group
+- [Readme](../src/backend/router/group/Readme.md)
 
 | Function         | Input                 | Output    | Description                          | Note                           |
 | ---------------- | --------------------- | --------- | ------------------------------------ | ------------------------------ |
@@ -36,7 +40,8 @@
 | `invite`         | groupID, userID       | http code | 200: invite sent, 400: failure       | Invite user to group           |
 | `leave`          | groupID, userID       | http code | 200: leave successful, 400: failure  | User leaves group              |
 
-### Channel
+## Channel
+- [Readme](../src/backend/router/channel/Readme.md)
 
 | Function        | Input              | Output    | Description                     | Note                             |
 | --------------- | ------------------ | --------- | ------------------------------- | -------------------------------- |
@@ -44,7 +49,8 @@
 | `exportText`    | channelID          | file      | 200: text exported              | Export channel messages          |
 | `moduleFeature` | channelID, module  | http code | 200: success, 400: failure      | Enable or manage channel modules |
 
-### Module Feature
+## Module Feature
+- [Readme](../src/backend/router/modulefeature/Readme.md)
 
 | Function                    | Input                               | Output    | Description                          | Note                                                                                      |
 | --------------------------- | ----------------------------------- | --------- | ------------------------------------ | ----------------------------------------------------------------------------------------- |
