@@ -1,65 +1,56 @@
-# Function List## Table
+# Function List
 
-## Login 
-- [Readme](../src/backend/router/auth/Readme.md)
+## Login
 
-| Function         | Input                    | Output    | Description                                | Note                           |
-| ---------------- | ------------------------ | --------- | ------------------------------------------ | ------------------------------ |
-| `login`          | account, password        | http code | 200: success, 400: failure                 | Locked after 3 failed attempts |
-| `register`       | account, password, email | http code | 201: registration successful, 400: failure | Check if email is duplicated   |
-| `forgetPassword` | email                    | http code | 200: success, 400: failure                 | Sends password reset email     |
+| Function         | Input           | Output                            | Description                                | Note                           |
+| ---------------- | --------------- | --------------------------------- | ------------------------------------------ | ------------------------------ |
+| `login`          | email, password | httpCode, JWTtoken, UID, userName | 200: success, 400: failure                 | Locked after 3 failed attempts |
+| `register`       | email, password | httpCode                          | 201: registration successful, 400: failure | Check if email is duplicated   |
+| `forgetPassword` | email           | httpCode                          | 200: success, 400: failure                 | Sends password reset email     |
 
-## Homepage
-- [Readme](../src/backend/router/homepage/Readme.md)
+## Homepage 
 
-| Function         | Input               | Output    | Description                      | Note                                       |
-| ---------------- | ------------------- | --------- | -------------------------------- | ------------------------------------------ |
-| `createGroup`    | groupName, userID   | http code | 201: group created, 400: failure | Create a new group                         |
-| `importTemplate` | templateID, groupID | http code | 200: success, 400: failure       | Import group settings template             |
-| `groupSearch`    | keyword             | groupList | 200: group list returned         | Supports keyword search                    |
-| `recommendation` | userID              | groupList | 200: recommended group list      | Recommend groups based on user preferences |
+| Function          | Input                                | Output    | Description                      | Note                                       |
+| ----------------- | ------------------------------------ | --------- | -------------------------------- | ------------------------------------------ |
+| `createGroup`     | groupName, [UID], endTime?, ispublic | httpCode  | 200: group created, 400: failure | Create a new group                         |
+| `*groupSearch`    | tag?, groupName?                     | groupList | 200: group list returned         | Supports keyword search                    |
+| `*recommendation` | userID                               | groupList | 200: recommended group list      | Recommend groups based on user preferences |
 
-## User
-- [Readme](../src/backend/router/user/Readme.md)
+## User 
 
-| Function  | Input            | Output    | Description                          | Note                 |
-| --------- | ---------------- | --------- | ------------------------------------ | -------------------- |
-| `setting` | userID, settings | http code | 200: update successful, 400: failure | Update user settings |
+| Function  | Input          | Output                   | Description                          | Note                 |
+| --------- | -------------- | ------------------------ | ------------------------------------ | -------------------- |
+| `setting` | UID, password, | httpCode, setting config | 200: update successful, 400: failure | Update user settings |
+| `profile` | UID, userName, | httpCode, profile config | 200: update successful, 400: failure | Update user settings |
 
-## Group
-- [Readme](../src/backend/router/group/Readme.md)
+## Group 
 
-| Function         | Input                 | Output    | Description                          | Note                           |
-| ---------------- | --------------------- | --------- | ------------------------------------ | ------------------------------ |
-| `role`           | groupID, userID, role | http code | 200: success, 400: failure           | Assign roles to group members  |
-| `notice`         | groupID, message      | http code | 200: message sent, 400: failure      | Publish group notice           |
-| `settings`       | groupID, settings     | http code | 200: update successful, 400: failure | Update group settings          |
-| `endTime`        | groupID, endTime      | http code | 200: update successful, 400: failure | Set group end time             |
-| `importTemplate` | groupID, templateID   | http code | 200: success, 400: failure           | Import group settings template |
-| `exportTemplate` | groupID               | file      | 200: template exported               | Export group settings template |
-| `invite`         | groupID, userID       | http code | 200: invite sent, 400: failure       | Invite user to group           |
-| `leave`          | groupID, userID       | http code | 200: leave successful, 400: failure  | User leaves group              |
+| Function         | Input                                      | Output                 | Description                          | Note                           |
+| ---------------- | ------------------------------------------ | ---------------------- | ------------------------------------ | ------------------------------ |
+| `role`           | groupID, [ UserId ], roleName              | httpCode               | 200: success, 400: failure           | Assign roles to group members  |
+| `notice` 前端    | inSource (enum), outSource (enum), message | httpCode               | 200: message sent, 400: failure      | Publish group notice           |
+| `notice` 後端    | inSource (enum), outSource (enum), message | httpCode               | 200: message sent, 400: failure      | Publish group notice           |
+| `*settings`      | groupID, [ settings ]                      | httpCode               | 200: update successful, 400: failure | Update group settings          |
+| `endTime`        | groupID, endTime                           | httpCode               | 200: update successful, 400: failure | Set group end time             |
+| `importTemplate` | groupID, templateObject                    | httpCode               | 200: success, 400: failure           | Import group settings template |
+| `exportTemplate` | groupID                                    | httpcode, templateFile | 200: template exported               | Export group settings template |
+| `invite` v       | groupID, userID                            | httpCode               | 200: invite sent, 400: failure       | Invite user to group           |
+| `leave`          | groupID, userID                            | httpCode               | 200: leave successful, 400: failure  | User leaves group              |
 
-## Channel
-- [Readme](../src/backend/router/channel/Readme.md)
+## Channel 
 
-| Function        | Input              | Output    | Description                     | Note                             |
-| --------------- | ------------------ | --------- | ------------------------------- | -------------------------------- |
-| `textMessaging` | channelID, message | http code | 200: message sent, 400: failure | Send message to channel          |
-| `exportText`    | channelID          | file      | 200: text exported              | Export channel messages          |
-| `moduleFeature` | channelID, module  | http code | 200: success, 400: failure      | Enable or manage channel modules |
+| Function          | Input                               | Output                     | Description                     | Note                    |
+| ----------------- | ----------------------------------- | -------------------------- | ------------------------------- | ----------------------- |
+| `textMessaging`   | channelID (包含group 資訊), message | display message on channel | 200: message sent, 400: failure | Send message to channel |
+| `exportText` 前端 | channelID                           | markdown file              | 200: text exported              | Export channel messages |
 
-## Module Feature
-- [Readme](../src/backend/router/modulefeature/Readme.md)
+## Module Feature 
 
-| Function                    | Input                               | Output    | Description                          | Note                                                                                      |
-| --------------------------- | ----------------------------------- | --------- | ------------------------------------ | ----------------------------------------------------------------------------------------- |
-| `moduleFeature`             | channelID, moduleType, action, data | http code | 200: success, 400: failure           | Handles various module features (e.g., Activity, Accounting, BillSplit, Vote, RandomPick) |
-| `Activity.createActivity`   | channelID, activityName, details    | http code | 200: success, 400: failure           | Create a new activity module                                                              |
-| `Activity.activitySetting`  | activityID, settings                | http code | 200: update successful, 400: failure | Update activity module settings                                                           |
-| `Accounting.addTransaction` | transaction details                 | http code | 200: success, 400: failure           | Add transaction in the accounting module                                                  |
-| `BillSplit.splitBill`       | bill details                        | http code | 200: success, 400: failure           | Split bill in the BillSplit module                                                        |
-| `Vote.createVote`           | options, settings                   | http code | 200: success, 400: failure           | Create a voting activity                                                                  |
-| `RandomPick.randomPick`     | list of items                       | selected  | 200: success, 400: failure           | Randomly pick an item from the list                                                       |
-
--
+| Function                   | Input                                       | Output        | Description                          | Note                                     |
+| -------------------------- | ------------------------------------------- | ------------- | ------------------------------------ | ---------------------------------------- |
+| `Activity.createActivity`  | channelID, activityName, description, time  | httpCode      | 200: success, 400: failure           | Create a new activity module             |
+| `Activity.activitySetting` | activityID, activityName, time, description | httpCode      | 200: update successful, 400: failure | Update activity module settings          |
+| `Vote.createVote`          | [ option ]                                  | selected item | 200: success, 400: failure           | Create a voting activity                 |
+| `RandomPick`               | [ items ]                                   | selected item | 200: success, 400: failure           | Randomly pick an item from the list      |
+| `Accounting` 記帳          |                                             | httpCode      | 200: success, 400: failure           | Add transaction in the accounting module |
+| `BillSplit`                |                                             | httpCode      | 200: success, 400: failure           | Split bill in the BillSplit module       |
