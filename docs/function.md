@@ -1,6 +1,7 @@
 # Function List
 
 ## Login
+- [Readme](../src/backend/router/auth/Readme.md)
 
 | Function         | Input           | Output                            | Description                                | Note                           |
 | ---------------- | --------------- | --------------------------------- | ------------------------------------------ | ------------------------------ |
@@ -9,6 +10,7 @@
 | `forgetPassword` | email           | httpCode                          | 200: success, 400: failure                 | Sends password reset email     |
 
 ## Homepage 
+- [Readme](../src/backend/router/homepage/Readme.md)
 
 | Function          | Input                                | Output    | Description                      | Note                                       |
 | ----------------- | ------------------------------------ | --------- | -------------------------------- | ------------------------------------------ |
@@ -17,6 +19,7 @@
 | `*recommendation` | userID                               | groupList | 200: recommended group list      | Recommend groups based on user preferences |
 
 ## User 
+- [Readme](../src/backend/router/user/Readme.md)
 
 | Function  | Input          | Output                   | Description                          | Note                 |
 | --------- | -------------- | ------------------------ | ------------------------------------ | -------------------- |
@@ -24,6 +27,8 @@
 | `profile` | UID, userName, | httpCode, profile config | 200: update successful, 400: failure | Update user settings |
 
 ## Group 
+- [Readme](../src/backend/router/group/Readme.md)
+
 
 | Function         | Input                                      | Output                 | Description                          | Note                           |
 | ---------------- | ------------------------------------------ | ---------------------- | ------------------------------------ | ------------------------------ |
@@ -38,6 +43,8 @@
 | `leave`          | groupID, userID                            | httpCode               | 200: leave successful, 400: failure  | User leaves group              |
 
 ## Channel 
+- [Readme](../src/backend/router/channel/Readme.md)
+
 
 | Function          | Input                               | Output                     | Description                     | Note                    |
 | ----------------- | ----------------------------------- | -------------------------- | ------------------------------- | ----------------------- |
@@ -45,6 +52,8 @@
 | `exportText` 前端 | channelID                           | markdown file              | 200: text exported              | Export channel messages |
 
 ## Module Feature 
+- [Readme](../src/backend/router/modulefeatures/Readme.md)
+
 
 | Function                   | Input                                       | Output        | Description                          | Note                                     |
 | -------------------------- | ------------------------------------------- | ------------- | ------------------------------------ | ---------------------------------------- |
