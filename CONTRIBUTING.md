@@ -70,6 +70,7 @@ $ git push
 - [React Native Tutorial for Beginners - Build a React Native App](https://www.youtube.com/watch?v=0-S5a0eXPoc&list=PLTjRvDozrdlxzQet01qZBt-sRG8bbDggv&index=1)
 ### Git
 - [【狀況題】怎麼跟上當初 fork 專案的進度？](https://gitbook.tw/chapters/github/syncing-a-fork)
+- [Notes: Fork All Branches](docs/note.md) 
 ### Golang
 - [Golang](https://go.dev/doc/)
 - [Go语言的七大适用场景](https://juejin.cn/post/7213576339328434233)
