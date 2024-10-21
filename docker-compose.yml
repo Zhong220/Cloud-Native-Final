@@ -1,0 +1,16 @@
+version: 2.29.6
+services:
+  backend:
+    build: ./src/backend
+    ports:
+      - 8000:8000
+    environment:
+  SQLite: 
+    build: ./src/backend/DB
+    ports:
+      - 
+    volumes:
+      - DB: 
+
+volumes:
+  DB: 

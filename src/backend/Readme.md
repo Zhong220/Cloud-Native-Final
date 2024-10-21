@@ -1,6 +1,28 @@
 # Backend
 
-## Installation & Run & Usage
+## Run Backend 
+### Run
+```bash
+# start
+$ docker compose up -d
+# or 
+$ docker-compose up -d
+
+# stop 
+$ docker compose down
+```
+### Into container shell
+```bash
+# into 
+$ docker exec -it [container_name] sh
+# into by root
+$ docker exec -u root -it [container_name] sh
+
+# out
+$ exit
+```
+
+## Installation & Run & Usage of Deno
 
 ### Installation and Configuration
 
