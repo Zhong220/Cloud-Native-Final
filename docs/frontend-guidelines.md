@@ -7,15 +7,17 @@
    - 當相同的邏輯或功能出現三次以上時，才應考慮將其提取為可重用函數（util functions）。
    - 避免過早地將邏輯抽象化，導致不必要的複雜度。
    - (這邊指的 util funcitons 是放在 utils 檔案下的 function，非頁面內使用的 function )
+  
 2. 可讀性優先:
-   - 代碼應該易於理解，命名規範清晰。
+   - 程式碼應該易於理解，命名規範清晰。
    - 簡單而直觀的程式碼不僅有助於團隊協作，也能提高未來維護和擴展的效率。
-3. 文檔和註釋
-  撰寫清晰的文檔與註釋，特別是在複雜的邏輯或決策上。
+  
+3. 說明文件和註釋
+  撰寫清晰的說明文件與註釋，特別是在複雜的邏輯或函式上。
+  
 4. NeverNesting
-5. 
    - 避免過多的巢狀條件判斷
-   - 過多的 if-else 或 switch-case 嵌套會使代碼變得難以理解。
+   - 過多的 if-else 或 switch-case 嵌套會使程式碼變得難以理解。
    - 應該使用早 Early Return (提前返回) 或合適的邏輯分支來減少巢狀層數。
    - Function 可使用 return 減少巢狀層數，Forloop 可以用 continue 或 break 減少巢狀層數
    - Function 的範例:
@@ -46,9 +48,9 @@
       }
     }
     ```
-6. 單一職責原則（Single Responsibility Principle）
+5. 單一職責原則（Single Responsibility Principle）
    - 每個函數、元件或模組應該只負責一項功能或邏輯。過多的功能混合會導致程式碼的複雜性和難以維護。
-7. 錯誤處理
+6. 錯誤處理
    - 使用 try-catch 處理異常，並合理回報錯誤。
    - 在 API 請求中，保證對錯誤進行適當的處理和回應。
   ```typescript
