@@ -14,3 +14,4 @@
 
 ## [__Planning__](./docs/planning/readme.md)
 ## [__CONTRIBUTING__](./CONTRIBUTING.md)
+## [__FRONTEND_GUIDELINES__](./docs/frontend-guidelines.md)
