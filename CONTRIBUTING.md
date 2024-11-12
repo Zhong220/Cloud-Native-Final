@@ -68,6 +68,8 @@ $ git push
 ### React Native
 - [React Native official](https://reactnative.dev/)
 - [React Native Tutorial for Beginners - Build a React Native App](https://www.youtube.com/watch?v=0-S5a0eXPoc&list=PLTjRvDozrdlxzQet01qZBt-sRG8bbDggv&index=1)
+### React Native MQTT
+- [How to Use MQTT in The React Native Project](https://www.emqx.com/en/blog/how-to-use-mqtt-in-react-native)
 ### Git
 - [【狀況題】怎麼跟上當初 fork 專案的進度？](https://gitbook.tw/chapters/github/syncing-a-fork)
 - [Notes: Fork All Branches](docs/note.md) 
@@ -84,3 +86,19 @@ $ git push
 - [Docker Docs](https://docs.docker.com/)
 - [Docker Tutorial for Beginners](https://www.youtube.com/watch?v=pTFZFxd4hOI)
 - [Docker Compose Tutorial](https://www.youtube.com/watch?v=HG6yIjZapSA)
+- [eclipse-mosquitto - Official Image](https://hub.docker.com/_/eclipse-mosquitto)
+- [[ECS] Amazon Elastic Container Service](https://aws.amazon.com/tw/ecs/)
+### Chatroom
+- [聊天室系統設計](https://medium.com/@eason91367/%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88-c5551932a0af)
+- [Chat App System Design — 聊天系統設計](https://medium.com/@a86gj3sp4/chat-app-system-design-%E8%81%8A%E5%A4%A9%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88-e518ebb6ec84)
+- [[SQS] Amazon Simple Queue Service](https://aws.amazon.com/tw/sqs/)
+- [[SNS] Amazon Simple Notification Service](https://aws.amazon.com/tw/sns/)
+- [SQS 跟 SNS 的差別在哪?](https://andy51002000.blogspot.com/2018/09/aws-sqs-vs-sns.html)
+- [[MQTT] Mosquitto Docker 架設與設定詳細過程](https://weirenxue.github.io/2021/07/01/mqtt_mosquitto_docker/)
+- [什麼是 MQTT？](https://aws.amazon.com/tw/what-is/mqtt/)
+### ORM
+- [[week 17] 後端中階 - 淺談 Sequelize：使用 ORM 框架串接資料庫](https://hackmd.io/@Heidi-Liu/note-be201-sequelize)
+### DataBase
+- [Amazon Relational Database Service](https://aws.amazon.com/tw/rds/)
+### Docs
+- [What is User Story Template?](https://www.agilealliance.org/glossary/user-story-template/)
