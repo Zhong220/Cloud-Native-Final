@@ -3,16 +3,16 @@
 ## Login
 - [Readme](../src/backend/router/auth/Readme.md)
 
-| Function         | Input           | Output                            | Description                                | Note                           |
-| ---------------- | --------------- | --------------------------------- | ------------------------------------------ | ------------------------------ |
-| `login`          | email, password | httpCode, JWTtoken, UID, userName | 200: success, 400: failure                 | Locked after 3 failed attempts |
-| `register`       | email, password | httpCode                          | 201: registration successful, 400: failure | Check if email is duplicated   |
-| `forgetPassword` | email           | httpCode                          | 200: success, 400: failure                 | Sends password reset email     |
+| Function         | Input                     | Output                            | Description                | Note                           |
+| ---------------- | ------------------------- | --------------------------------- | -------------------------- | ------------------------------ |
+| `login`          | email, password           | httpCode, JWTtoken, UID, userName | 200: success, 400: failure | Locked after 3 failed attempts |
+| `register`       | email, password, userName | httpCode                          | 200: success, 400: failure | Check if email is duplicated   |
+| `forgetPassword` | email                     | httpCode                          | 200: success, 400: failure | Sends password reset email     |
 
 ## Homepage 
 - [Readme](../src/backend/router/homepage/Readme.md)
 
-| Function          | Input                                | Output    | Description                      | Note                                       |
+| Function          | Input                                | Output    | Description                      | Note                                       | 
 | ----------------- | ------------------------------------ | --------- | -------------------------------- | ------------------------------------------ |
 | `createGroup`     | groupName, [UID], endTime?, ispublic | httpCode  | 200: group created, 400: failure | Create a new group                         |
 | `*groupSearch`    | tag?, groupName?                     | groupList | 200: group list returned         | Supports keyword search                    |
