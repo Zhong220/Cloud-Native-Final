@@ -5,12 +5,12 @@ services:
     ports:
       - 8000:8000
     environment:
-  SQLite: 
+  SQLite:
     build: ./src/backend/DB
     ports:
-      - 
+      -
     volumes:
-      - DB: 
+      - DB:
 
 volumes:
-  DB: 
+  DB:
