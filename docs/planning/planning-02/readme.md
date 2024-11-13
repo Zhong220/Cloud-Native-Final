@@ -1,3 +1,3 @@
 # README
-- [api](../../function.md)
+- [api](../../api.md)
 - [DB Schema](../../er_graph/)
