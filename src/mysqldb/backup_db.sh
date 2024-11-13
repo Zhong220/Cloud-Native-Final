@@ -4,4 +4,4 @@ if [ -f .env ]; then
 else
     echo ".env file not found"
 fi
-sudo docker exec ${DB_CONTAINER} mysqldump -u ${DB_USER} -p${DB_PASSWORD} ${DB_NAME} > ${BACKUP_PATH}/creat.sql
+sudo docker exec ${DB_CONTAINER} mysqldump -u ${DB_USER} -p${DB_PASSWORD} ${DB_NAME} > ${BACKUP_PATH}/backup.sql

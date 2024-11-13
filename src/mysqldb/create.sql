@@ -1,0 +1,562 @@
+-- create.sql
+-- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
+DROP TABLE IF EXISTS `chat_in`;
+
+DROP TABLE IF EXISTS `group_label`;
+
+DROP TABLE IF EXISTS `assign_id`;
+
+DROP TABLE IF EXISTS `accounting_hosted`;
+
+DROP TABLE IF EXISTS `plan_hosted`;
+
+DROP TABLE IF EXISTS `activity_hosted`;
+
+DROP TABLE IF EXISTS `group_channel`;
+
+DROP TABLE IF EXISTS `group_member`;
+
+DROP TABLE IF EXISTS `feat_accounting`;
+
+DROP TABLE IF EXISTS `feat_activity`;
+
+DROP TABLE IF EXISTS `feat_plan`;
+
+DROP TABLE IF EXISTS `identity`;
+
+DROP TABLE IF EXISTS `tag`;
+
+DROP TABLE IF EXISTS `channel`;
+
+DROP TABLE IF EXISTS `group`;
+
+DROP TABLE IF EXISTS `user`;
+
+-- Create 'user' table
+CREATE TABLE
+    `user` (
+        `uid` VARCHAR(10) NOT NULL COMMENT 'User ID',
+        `username` VARCHAR(255) NOT NULL UNIQUE,
+        `email` VARCHAR(255) NOT NULL,
+        `password` VARCHAR(64) NOT NULL,
+        `phone` VARCHAR(10) NOT NULL,
+        `description` TEXT NOT NULL,
+        `icon` BLOB DEFAULT NULL,
+        `birthday` DATE DEFAULT NULL,
+        `gender` ENUM ('0', '1', '2') DEFAULT '2' COMMENT 'female: 0, male: 1, other: 2',
+        `attend_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'group' table
+CREATE TABLE
+    `group` (
+        `gid` VARCHAR(10) NOT NULL COMMENT 'Group ID',
+        `group_name` VARCHAR(255) NOT NULL,
+        `is_private` BOOLEAN DEFAULT FALSE,
+        `icon` BLOB DEFAULT NULL,
+        `description` TEXT DEFAULT NULL,
+        `end_time` TIMESTAMP NULL DEFAULT NULL,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `created_by` VARCHAR(10) NOT NULL,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        `updated_by` VARCHAR(10) DEFAULT NULL,
+        PRIMARY KEY (`gid`),
+        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
+        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'channel' table
+CREATE TABLE
+    `channel` (
+        `cid` VARCHAR(10) NOT NULL COMMENT 'Channel ID',
+        `channel_name` VARCHAR(255) NOT NULL,
+        `super_gid` VARCHAR(10) NOT NULL,
+        `icon` BLOB DEFAULT NULL,
+        `description` TEXT DEFAULT NULL,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `created_by` VARCHAR(10) NOT NULL,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        `updated_by` VARCHAR(10) DEFAULT NULL,
+        PRIMARY KEY (`cid`),
+        FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
+        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
+        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'tag' table
+CREATE TABLE
+    `tag` (
+        `tid` VARCHAR(10) NOT NULL COMMENT 'Tag ID',
+        `tag_name` VARCHAR(255) NOT NULL,
+        `super_gid` VARCHAR(10) NOT NULL `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`tid`) FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'identity' table
+CREATE TABLE
+    `identity` (
+        `rid` VARCHAR(10) NOT NULL COMMENT 'Role ID',
+        `role_name` VARCHAR(255) NOT NULL,
+        `super_gid` VARCHAR(10) NOT NULL,
+        `icon` BLOB NOT NULL,
+        `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
+        `description` TEXT DEFAULT NULL,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_by` VARCHAR(10) DEFAULT NULL,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`rid`),
+        FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
+        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'feat_plan' table
+CREATE TABLE
+    `feat_plan` (
+        `pid` VARCHAR(10) NOT NULL COMMENT 'Plan ID',
+        `plan_name` VARCHAR(255) NOT NULL,
+        `super_cid` VARCHAR(10) NOT NULL,
+        `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
+        `icon` BLOB NOT NULL,
+        `description` TEXT DEFAULT NULL,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `created_by` VARCHAR(10) NOT NULL,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        `updated_by` VARCHAR(10) DEFAULT NULL,
+        PRIMARY KEY (`pid`),
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
+        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'feat_activity' table
+CREATE TABLE
+    `feat_activity` (
+        `actid` VARCHAR(10) NOT NULL COMMENT 'Activity ID',
+        `activity_name` VARCHAR(255) NOT NULL,
+        `super_cid` VARCHAR(10) NOT NULL,
+        `start_time` TIMESTAMP NOT NULL,
+        `end_time` TIMESTAMP DEFAULT NULL,
+        `description` TEXT DEFAULT NULL,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `created_by` VARCHAR(10) NOT NULL,
+        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+        `updated_by` VARCHAR(10) DEFAULT NULL,
+        PRIMARY KEY (`actid`),
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
+        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'feat_accounting' table
+CREATE TABLE
+    `feat_accounting` (
+        `accid` VARCHAR(10) NOT NULL COMMENT 'Accounting ID',
+        `super_cid` VARCHAR(10) NOT NULL,
+        `payer` VARCHAR(10) NOT NULL,
+        `amount` DECIMAL(10, 2) NOT NULL,
+        `unit` VARCHAR(3) DEFAULT 'NTD',
+        `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
+        `description` TEXT DEFAULT NULL COMMENT '[title];[description]',
+        `event_time` DATE NOT NULL,
+        `is_split` BOOLEAN DEFAULT FALSE,
+        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `created_by` VARCHAR(10) NOT NULL,
+        PRIMARY KEY (`accid`),
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+        FOREIGN KEY (`payer`) REFERENCES `user` (`uid`),
+        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create 'group_member' table (Users join Groups)
+CREATE TABLE
+    `group_member` (
+        `gid` VARCHAR(10) NOT NULL,
+        `uid` VARCHAR(10) NOT NULL,
+        PRIMARY KEY (`gid`, `uid`),
+        FOREIGN KEY (`gid`) REFERENCES `group` (`gid`) ON DELETE CASCADE,
+        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users join Groups';
+
+-- Create 'assign_id' table (Groups assign Identities to Users)
+CREATE TABLE
+    `assign_id` (
+        `uid` VARCHAR(10) NOT NULL,
+        `rid` VARCHAR(10) NOT NULL,
+        PRIMARY KEY (`uid`, `rid`),
+        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
+        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Groups assign Identities to Users';
+
+-- Create 'chat_in' table (Users chat in Channels)
+CREATE TABLE
+    `chat_in` (
+        `uid` VARCHAR(10) NOT NULL,
+        `rid` VARCHAR(10) NOT NULL,
+        `cid` VARCHAR(10) NOT NULL,
+        `message` TEXT NOT NULL,
+        `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`uid`, `rid`, `cid`, `timestamp`),
+        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
+        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE,
+        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
+
+-- Insert data into 'user' table
+INSERT INTO
+    `user`
+VALUES
+    (
+        'U001',
+        'user1',
+        'user1@example.com',
+        'c2b7e8d7a4c236b06b9ab7d1ad2d2f0c16e0590da4d6e5fb10f194b48e59bf4a',
+        '1234567890',
+        'User 1 description',
+        NULL,
+        '1990-01-01',
+        '0',
+        NOW (),
+        NULL
+    ),
+    (
+        'U002',
+        'user2',
+        'user2@example.com',
+        '6b3a55e0261b0304143a9a035ad9286e45f864c6fa56f09459048caa8b196f31',
+        '1234567891',
+        'User 2 description',
+        NULL,
+        '1991-02-02',
+        '1',
+        NOW (),
+        NULL
+    ),
+    (
+        'U003',
+        'user3',
+        'user3@example.com',
+        'af7c3f4f72524e1dc1262f69835f0a580f832e0916c70131acbafaa78a81a9a1',
+        '1234567892',
+        'User 3 description',
+        NULL,
+        '1992-03-03',
+        '2',
+        NOW (),
+        NULL
+    ),
+    (
+        'U004',
+        'user4',
+        'user4@example.com',
+        '3d6f46dc79fa5f9aa990c00fbf84dc607efac741e6206162a8f55122fa5301b0',
+        '1234567893',
+        'User 4 description',
+        NULL,
+        '1993-04-04',
+        '0',
+        NOW (),
+        NULL
+    ),
+    (
+        'U005',
+        'user5',
+        'user5@example.com',
+        '31e16fa6eb186b2a0e3c0ba75d28e9b5c5b16e72985eea0a04911a02dc532538',
+        '1234567894',
+        'User 5 description',
+        NULL,
+        '1994-05-05',
+        '1',
+        NOW (),
+        NULL
+    ),
+    (
+        'U006',
+        'user6',
+        'user6@example.com',
+        '371c7e4d61941e0b69ca92051e0f72e4e8309f2fa323383d5c6e35516b8a5662',
+        '1234567895',
+        'User 6 description',
+        NULL,
+        '1995-06-06',
+        '2',
+        NOW (),
+        NULL
+    ),
+    (
+        'U007',
+        'user7',
+        'user7@example.com',
+        'ecb47222e7f7d6f3882d77f43aa58207d164b8da234ed4ae0cf9d7a61f8a6342',
+        '1234567896',
+        'User 7 description',
+        NULL,
+        '1996-07-07',
+        '0',
+        NOW (),
+        NULL
+    ),
+    (
+        'U008',
+        'user8',
+        'user8@example.com',
+        '2af6a6edaf0ddba8e1dfe55d3d8110f163d9a3e99964f0afc3fb969f0b3d9f4d',
+        '1234567897',
+        'User 8 description',
+        NULL,
+        '1997-08-08',
+        '1',
+        NOW (),
+        NULL
+    ),
+    (
+        'U009',
+        'user9',
+        'user9@example.com',
+        '979026f4dc45d8a77eb6920fbab4bf5068e1481041b4eb95a48f8e446e7d50b0',
+        '1234567898',
+        'User 9 description',
+        NULL,
+        '1998-09-09',
+        '2',
+        NOW (),
+        NULL
+    ),
+    (
+        'U010',
+        'user10',
+        'user10@example.com',
+        '669168ce8ff9a1e6e11cc24c4054f6b86e4e3d8d4ec03c9e64a2635fa17bf5b1',
+        '1234567899',
+        'User 10 description',
+        NULL,
+        '1999-10-10',
+        '0',
+        NOW (),
+        NULL
+    );
+
+-- Insert data into 'group' table
+INSERT INTO `group` VALUES
+('G001', 'Group Alpha', FALSE, NULL, 'This is Group Alpha.', NULL, NOW(), 'U001', NULL, NULL),
+('G002', 'Group Beta', TRUE, NULL, 'This is Group Beta.', NULL, NOW(), 'U002', NULL, NULL),
+('G003', 'Group Gamma', FALSE, NULL, 'This is Group Gamma.', NULL, NOW(), 'U003', NULL, NULL);
+
+-- Insert data into 'channel' table
+INSERT INTO `channel` VALUES
+('C001', 'Alpha General', 'G001', NULL, 'General discussion for Group Alpha.', NOW(), 'U001', NULL, NULL),
+('C002', 'Alpha Projects', 'G001', NULL, 'Project discussions for Group Alpha.', NOW(), 'U002', NULL, NULL),
+('C003', 'Alpha Events', 'G001', NULL, 'Event planning for Group Alpha.', NOW(), 'U003', NULL, NULL),
+('C004', 'Alpha Random', 'G001', NULL, 'Random talks for Group Alpha.', NOW(), 'U004', NULL, NULL)
+('C005', 'Beta General', 'G002', NULL, 'General discussion for Group Beta.', NOW(), 'U002', NULL, NULL),
+('C006', 'Beta Projects', 'G002', NULL, 'Project discussions for Group Beta.', NOW(), 'U005', NULL, NULL),
+('C007', 'Beta Events', 'G002', NULL, 'Event planning for Group Beta.', NOW(), 'U006', NULL, NULL),
+('C008', 'Beta Random', 'G002', NULL, 'Random talks for Group Beta.', NOW(), 'U003', NULL, NULL),
+('C009', 'Gamma General', 'G003', NULL, 'General discussion for Group Gamma.', NOW(), 'U003', NULL, NULL),
+('C010', 'Gamma Projects', 'G003', NULL, 'Project discussions for Group Gamma.', NOW(), 'U007', NULL, NULL),
+('C011', 'Gamma Events', 'G003', NULL, 'Event planning for Group Gamma.', NOW(), 'U008', NULL, NULL),
+('C012', 'Gamma Random', 'G003', NULL, 'Random talks for Group Gamma.', NOW(), 'U009', NULL, NULL);
+
+
+-- Insert data into 'tag' table
+INSERT INTO `tag` VALUES
+('T001', 'Urgent', 'G001', NOW()),
+('T002', 'Important', 'G001', NOW()),
+('T003', 'Review', 'G001', NOW()),
+('T004', 'Bug', 'G002', NOW()),
+('T005', 'Feature', 'G002', NOW()),
+('T006', 'Discussion', 'G002', NOW()),
+('T007', 'Meeting', 'G003', NOW()),
+('T008', 'Announcement', 'G003', NOW()),
+('T009', 'Feedback', 'G003', NOW());
+
+
+-- Insert data into 'identity' table
+INSERT INTO `identity` VALUES
+('R001', 'Alpha Admin', 'G001', NULL, '#FF5733', 'Admin role for Group Alpha.', NOW(), NULL, NULL),
+('R002', 'Alpha Member', 'G001', NULL, '#33FF57', 'Member role for Group Alpha.', NOW(), NULL, NULL),
+('R003', 'Alpha Guest', 'G001', NULL, '#3357FF', 'Guest role for Group Alpha.', NOW(), NULL, NULL),
+('R004', 'Beta Admin', 'G002', NULL, '#FF33A6', 'Admin role for Group Beta.', NOW(), NULL, NULL),
+('R005', 'Beta Member', 'G002', NULL, '#A6FF33', 'Member role for Group Beta.', NOW(), NULL, NULL),
+('R006', 'Beta Guest', 'G002', NULL, '#33A6FF', 'Guest role for Group Beta.', NOW(), NULL, NULL),
+('R007', 'Gamma Admin', 'G003', NULL, '#FF8633', 'Admin role for Group Gamma.', NOW(), NULL, NULL),
+('R008', 'Gamma Member', 'G003', NULL, '#86FF33', 'Member role for Group Gamma.', NOW(), NULL, NULL),
+('R009', 'Gamma Guest', 'G003', NULL, '#3386FF', 'Guest role for Group Gamma.', NOW(), NULL, NULL);
+
+
+-- Insert data into 'group_member' table
+INSERT INTO `group_member` VALUES
+('G001', 'U001'),
+('G001', 'U002'),
+('G001', 'U003'),
+('G001', 'U004'),
+('G001', 'U005'),
+('G002', 'U003'),
+('G002', 'U004'),
+('G002', 'U005'),
+('G002', 'U006'),
+('G002', 'U007'),
+('G003', 'U006'),
+('G003', 'U007'),
+('G003', 'U008'),
+('G003', 'U009'),
+('G003', 'U010');
+
+
+-- Insert data into 'assign_id' table
+INSERT INTO `assign_id` VALUES
+('U001', 'R001'), -- U001 is Alpha Admin
+('U002', 'R002'), -- U002 is Alpha Member
+('U003', 'R002'), -- U003 is Alpha Member
+('U004', 'R003'), -- U004 is Alpha Guest
+('U005', 'R002'), -- U005 is Alpha Member
+('U003', 'R004'), -- U003 is Beta Admin
+('U004', 'R005'), -- U004 is Beta Member
+('U005', 'R005'), -- U005 is Beta Member
+('U006', 'R006'), -- U006 is Beta Guest
+('U006', 'R007'), -- U006 is Gamma Admin
+('U007', 'R008'), -- U007 is Gamma Member
+('U008', 'R008'), -- U008 is Gamma Member
+('U009', 'R009'), -- U009 is Gamma Guest
+('U010', 'R008'); -- U010 is Gamma Member
+
+
+-- Insert data into 'feat_plan' table
+INSERT INTO `feat_plan` VALUES
+('P001', 'Alpha Plan 1', 'C001', '#FF0000', NULL, 'Plan description 1', NOW(), 'U001', NULL, NULL),
+('P002', 'Alpha Plan 2', 'C001', '#00FF00', NULL, 'Plan description 2', NOW(), 'U002', NULL, NULL),
+('P003', 'Alpha Plan 3', 'C002', '#0000FF', NULL, 'Plan description 3', NOW(), 'U003', NULL, NULL),
+('P004', 'Alpha Plan 4', 'C004', '#FFFF00', NULL, 'Plan description 4', NOW(), 'U004', NULL, NULL),
+('P005', 'Beta Plan 1', 'C005', '#FF00FF', NULL, 'Plan description 5', NOW(), 'U003', NULL, NULL),
+('P006', 'Beta Plan 2', 'C006', '#00FFFF', NULL, 'Plan description 6', NOW(), 'U005', NULL, NULL),
+('P007', 'Beta Plan 3', 'C006', '#C0C0C0', NULL, 'Plan description 7', NOW(), 'U006', NULL, NULL),
+('P008', 'Beta Plan 4', 'C008', '#800080', NULL, 'Plan description 8', NOW(), 'U007', NULL, NULL),
+('P009', 'Gamma Plan 1', 'C010', '#808000', NULL, 'Plan description 9', NOW(), 'U006', NULL, NULL),
+('P010', 'Gamma Plan 2', 'C010', '#008080', NULL, 'Plan description 10', NOW(), 'U008', NULL, NULL),
+('P011', 'Gamma Plan 3', 'C011', '#800000', NULL, 'Plan description 11', NOW(), 'U009', NULL, NULL);
+
+
+-- Insert data into 'feat_activity' table
+INSERT INTO `feat_activity` VALUES
+('A001', 'Alpha Activity 1', 'C001', NOW(), NULL, 'Activity 1 in Alpha General channel.', NOW(), 'U001', NULL, NULL),
+('A002', 'Alpha Activity 2', 'C001', NOW(), NULL, 'Activity 2 in Alpha General channel.', NOW(), 'U002', NULL, NULL),
+('A003', 'Alpha Activity 3', 'C001', NOW(), NULL, 'Activity 3 in Alpha General channel.', NOW(), 'U003', NULL, NULL),
+('A004', 'Alpha Activity 4', 'C002', NOW(), NULL, 'Activity 4 in Alpha Projects channel.', NOW(), 'U002', NULL, NULL),
+('A005', 'Alpha Activity 5', 'C002', NOW(), NULL, 'Activity 5 in Alpha Projects channel.', NOW(), 'U003', NULL, NULL),
+('A006', 'Alpha Activity 6', 'C002', NOW(), NULL, 'Activity 6 in Alpha Projects channel.', NOW(), 'U004', NULL, NULL),
+('A007', 'Alpha Activity 7', 'C003', NOW(), NULL, 'Activity 7 in Alpha Events channel.', NOW(), 'U003', NULL, NULL),
+('A008', 'Alpha Activity 8', 'C003', NOW(), NULL, 'Activity 8 in Alpha Events channel.', NOW(), 'U004', NULL, NULL),
+('A009', 'Alpha Activity 9', 'C003', NOW(), NULL, 'Activity 9 in Alpha Events channel.', NOW(), 'U005', NULL, NULL),
+('A010', 'Alpha Activity 10', 'C004', NOW(), NULL, 'Activity 10 in Alpha Random channel.', NOW(), 'U005', NULL, NULL),
+('A011', 'Alpha Activity 11', 'C004', NOW(), NULL, 'Activity 11 in Alpha Random channel.', NOW(), 'U001', NULL, NULL),
+('A012', 'Alpha Activity 12', 'C004', NOW(), NULL, 'Activity 12 in Alpha Random channel.', NOW(), 'U002', NULL, NULL),
+('A013', 'Beta Activity 1', 'C005', NOW(), NULL, 'Activity 1 in Beta General channel.', NOW(), 'U003', NULL, NULL),
+('A014', 'Beta Activity 2', 'C005', NOW(), NULL, 'Activity 2 in Beta General channel.', NOW(), 'U004', NULL, NULL),
+('A015', 'Beta Activity 3', 'C005', NOW(), NULL, 'Activity 3 in Beta General channel.', NOW(), 'U005', NULL, NULL),
+('A016', 'Beta Activity 4', 'C006', NOW(), NULL, 'Activity 4 in Beta Projects channel.', NOW(), 'U005', NULL, NULL),
+('A017', 'Beta Activity 5', 'C006', NOW(), NULL, 'Activity 5 in Beta Projects channel.', NOW(), 'U006', NULL, NULL),
+('A018', 'Beta Activity 6', 'C006', NOW(), NULL, 'Activity 6 in Beta Projects channel.', NOW(), 'U007', NULL, NULL),
+('A019', 'Beta Activity 7', 'C007', NOW(), NULL, 'Activity 7 in Beta Events channel.', NOW(), 'U006', NULL, NULL),
+('A020', 'Beta Activity 8', 'C007', NOW(), NULL, 'Activity 8 in Beta Events channel.', NOW(), 'U007', NULL, NULL),
+('A021', 'Beta Activity 9', 'C007', NOW(), NULL, 'Activity 9 in Beta Events channel.', NOW(), 'U003', NULL, NULL),
+('A022', 'Beta Activity 10', 'C008', NOW(), NULL, 'Activity 10 in Beta Random channel.', NOW(), 'U004', NULL, NULL),
+('A023', 'Beta Activity 11', 'C008', NOW(), NULL, 'Activity 11 in Beta Random channel.', NOW(), 'U005', NULL, NULL),
+('A024', 'Beta Activity 12', 'C008', NOW(), NULL, 'Activity 12 in Beta Random channel.', NOW(), 'U006', NULL, NULL),
+('A025', 'Gamma Activity 1', 'C009', NOW(), NULL, 'Activity 1 in Gamma General channel.', NOW(), 'U006', NULL, NULL),
+('A026', 'Gamma Activity 2', 'C009', NOW(), NULL, 'Activity 2 in Gamma General channel.', NOW(), 'U007', NULL, NULL),
+('A027', 'Gamma Activity 3', 'C009', NOW(), NULL, 'Activity 3 in Gamma General channel.', NOW(), 'U008', NULL, NULL),
+('A028', 'Gamma Activity 4', 'C010', NOW(), NULL, 'Activity 4 in Gamma Projects channel.', NOW(), 'U008', NULL, NULL),
+('A029', 'Gamma Activity 5', 'C010', NOW(), NULL, 'Activity 5 in Gamma Projects channel.', NOW(), 'U009', NULL, NULL),
+('A030', 'Gamma Activity 6', 'C010', NOW(), NULL, 'Activity 6 in Gamma Projects channel.', NOW(), 'U010', NULL, NULL),
+('A031', 'Gamma Activity 7', 'C011', NOW(), NULL, 'Activity 7 in Gamma Events channel.', NOW(), 'U009', NULL, NULL),
+('A032', 'Gamma Activity 8', 'C011', NOW(), NULL, 'Activity 8 in Gamma Events channel.', NOW(), 'U010', NULL, NULL),
+('A033', 'Gamma Activity 9', 'C011', NOW(), NULL, 'Activity 9 in Gamma Events channel.', NOW(), 'U006', NULL, NULL),
+('A034', 'Gamma Activity 10', 'C012', NOW(), NULL, 'Activity 10 in Gamma Random channel.', NOW(), 'U007', NULL, NULL),
+('A035', 'Gamma Activity 11', 'C012', NOW(), NULL, 'Activity 11 in Gamma Random channel.', NOW(), 'U008', NULL, NULL),
+('A036', 'Gamma Activity 12', 'C012', NOW(), NULL, 'Activity 12 in Gamma Random channel.', NOW(), 'U009', NULL, NULL);
+
+
+-- Insert data into 'feat_accounting' table
+
+INSERT INTO `feat_accounting` VALUES
+('AC001', 'C001', 'U001', 100.00, 'USD', 'U001,U002', 'Lunch;Team lunch at cafe', '2023-01-01', TRUE, NOW(), 'U001'),
+('AC002', 'C001', 'U002', 150.00, 'USD', 'U001,U002,U003', 'Office Supplies;Purchased office supplies', '2023-01-02', FALSE, NOW(), 'U002'),
+('AC003', 'C001', 'U003', 200.00, 'USD', 'U002,U003', 'Project Materials;Materials for project', '2023-01-03', TRUE, NOW(), 'U003'),
+('AC004', 'C001', 'U004', 50.00, 'USD', 'U001,U004', 'Coffee;Coffee for meeting', '2023-01-04', TRUE, NOW(), 'U004'),
+('AC005', 'C001', 'U005', 75.00, 'USD', 'U005', 'Snacks;Snacks for team', '2023-01-05', FALSE, NOW(), 'U005'),
+('AC006', 'C001', 'U001', 120.00, 'USD', 'U001,U003,U005', 'Dinner;Team dinner', '2023-01-06', TRUE, NOW(), 'U001'),
+('AC007', 'C001', 'U002', 90.00, 'USD', 'U002,U004', 'Transportation;Taxi fares', '2023-01-07', TRUE, NOW(), 'U002'),
+('AC008', 'C001', 'U003', 60.00, 'USD', 'U001,U002,U003', 'Books;Reference books', '2023-01-08', FALSE, NOW(), 'U003'),
+('AC009', 'C001', 'U004', 110.00, 'USD', 'U003,U004,U005', 'Tickets;Event tickets', '2023-01-09', TRUE, NOW(), 'U004'),
+('AC010', 'C001', 'U005', 80.00, 'USD', 'U001,U005', 'Gifts;Gifts for clients', '2023-01-10', FALSE, NOW(), 'U005'),
+('AC011', 'C002', 'U002', 130.00, 'USD', 'U002,U003', 'Software Subscription;Monthly subscription', '2023-01-11', TRUE, NOW(), 'U002'),
+('AC012', 'C002', 'U003', 220.00, 'USD', 'U001,U003,U004', 'Equipment;New equipment', '2023-01-12', FALSE, NOW(), 'U003'),
+('AC021', 'C005', 'U003', 150.00, 'USD', 'U003,U004', 'Team Building;Event expenses', '2023-01-13', TRUE, NOW(), 'U003'),
+('AC022', 'C005', 'U004', 85.00, 'USD', 'U004,U005', 'Lunch;Group lunch', '2023-01-14', FALSE, NOW(), 'U004'),
+('AC031', 'C009', 'U006', 95.00, 'USD', 'U006,U007', 'Workshop Fees;Fees for workshop', '2023-01-15', TRUE, NOW(), 'U006'),
+('AC032', 'C009', 'U007', 60.00, 'USD', 'U007,U008', 'Refreshments;Drinks and snacks', '2023-01-16', FALSE, NOW(), 'U007');
+
+
+-- Insert data into 'chat_in' table
+
+INSERT INTO `chat_in` VALUES
+('U001', 'R001', 'C001', 'Welcome to Alpha General channel!', NOW()),
+('U002', 'R002', 'C001', 'Thank you, happy to be here.', NOW()),
+('U003', 'R002', 'C001', 'Looking forward to working with everyone.', NOW()),
+('U004', 'R003', 'C001', 'Hello all!', NOW()),
+('U005', 'R002', 'C001', 'Hi team!', NOW()),
+('U002', 'R002', 'C002', 'Project meeting at 2 PM.', NOW()),
+('U003', 'R002', 'C002', 'Got it, I will be there.', NOW()),
+('U004', 'R003', 'C002', 'I might be a bit late.', NOW()),
+('U005', 'R002', 'C002', 'No worries.', NOW()),
+('U001', 'R001', 'C002', 'See you all there.', NOW()),
+('U003', 'R002', 'C003', 'Event planning is underway.', NOW()),
+('U004', 'R003', 'C003', 'Do you need any help?', NOW()),
+('U005', 'R002', 'C003', 'I can assist.', NOW()),
+('U001', 'R001', 'C003', 'Let me know if resources are needed.', NOW()),
+('U002', 'R002', 'C003', 'Thanks everyone.', NOW()),
+('U005', 'R002', 'C004', 'Random thought: We should have a team outing.', NOW()),
+('U001', 'R001', 'C004', 'That sounds great!', NOW()),
+('U002', 'R002', 'C004', 'I agree!', NOW()),
+('U003', 'R002', 'C004', 'Count me in.', NOW()),
+('U004', 'R003', 'C004', 'Me too.', NOW()),
+('U003', 'R004', 'C005', 'Welcome to Beta General channel!', NOW()),
+('U004', 'R005', 'C005', 'Happy to join.', NOW()),
+('U005', 'R005', 'C005', 'Hello everyone!', NOW()),
+('U006', 'R006', 'C005', 'Greetings!', NOW()),
+('U007', 'R005', 'C005', 'Hi all!', NOW()),
+('U003', 'R004', 'C005', 'Switching between channels.', NOW()),
+('U003', 'R002', 'C001', 'Back in Alpha General.', NOW()),
+('U004', 'R005', 'C005', 'Participating in Beta projects.', NOW()),
+('U004', 'R003', 'C002', 'Also working on Alpha projects.', NOW()),
+('U005', 'R005', 'C005', 'Multitasking between groups.', NOW()),
+('U005', 'R002', 'C003', 'Event planning is fun.', NOW()),
+('U006', 'R007', 'C009', 'Welcome to Gamma General channel!', NOW()),
+('U007', 'R008', 'C009', 'Glad to be here.', NOW()),
+('U008', 'R008', 'C009', 'Hello everyone.', NOW()),
+('U009', 'R009', 'C009', 'Hi!', NOW()),
+('U010', 'R008', 'C009', 'Greetings!', NOW()),
+('U006', 'R007', 'C005', 'Visiting Beta General channel.', NOW()),
+('U007', 'R008', 'C001', 'Hello Alpha Group!', NOW()),
+('U008', 'R008', 'C009', 'Active in Gamma Group.', NOW()),
+('U009', 'R009', 'C012', 'Random chat in Gamma Random channel.', NOW()),
+('U010', 'R008', 'C010', 'Working on Gamma Projects.', NOW());
+
+
+
+
+-- fake data rule:
+-- 1. 3 different groups
+-- 2. 4 channels, 3 Identities and 3 Tags in each group
+-- 3. every channel has 3 Activities, 10 Accounting records and 0 ~ 2 Plans
+-- 4. 10 users can simultaneously join 3 different groups, and each user can be assigned multiple different Identities within each group.
+-- 5. Each user within the group can access any Channels.
+-- 6. Each user within the channel can send messages to other users within the channel
+-- 7. Users can chat in multiple Channels simultaneously.
+-- 8. Each user within the channel can create or update Plans and Activities
+-- 9. Each user within the channel can create Accounting records
+-- 10. Each user within the channel can be the payer in any Accounting records within the channel
+-- 11. attendees_ids is formed as "U001,U002,U003....."
+-- 12. Each user within the channel can be the attendee in any Accounting records within the channel
