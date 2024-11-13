@@ -12,6 +12,9 @@
 - 資科四 [__鄭睿宏__](https://github.com/RyanCheng98153)
 - 資科三 [__黃蓉容__](https://github.com/Zhong220)
 
-## [__Planning__](./docs/planning/readme.md)
+## Planning
+- 請先切換到 branch `class/planning` 再點擊以下連結前往 Planning
+- [Link](./docs/planning/readme.md)
+
 ## [__CONTRIBUTING__](./CONTRIBUTING.md)
 ## [__FRONTEND_GUIDELINES__](./docs/frontend-guidelines.md)
