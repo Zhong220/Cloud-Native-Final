@@ -44,15 +44,9 @@ CREATE TABLE
         PRIMARY KEY (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-<<<<<<< HEAD
 -- Create 'groups' table
 CREATE TABLE
     `groups` (
-=======
--- Create 'group' table
-CREATE TABLE
-    `group` (
->>>>>>> 67f4359 (Squashed commit of the following:)
         `gid` VARCHAR(10) NOT NULL COMMENT 'Group ID',
         `group_name` VARCHAR(255) NOT NULL,
         `is_private` BOOLEAN DEFAULT FALSE,
@@ -74,9 +68,13 @@ CREATE TABLE
         `cid` VARCHAR(10) NOT NULL COMMENT 'Channel ID',
         `channel_name` VARCHAR(255) NOT NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
         `super_gid` VARCHAR(10) NOT NULL,
 =======
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        `super_gid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `icon` BLOB DEFAULT NULL,
         `description` TEXT DEFAULT NULL,
         `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -86,12 +84,16 @@ CREATE TABLE
         PRIMARY KEY (`cid`),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         FOREIGN KEY (`super_gid`) REFERENCES `groups` (`gid`),
 =======
         FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
 >>>>>>> b1cc8d9 (Squashed commit of the following:)
 =======
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
         FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -101,6 +103,7 @@ CREATE TABLE
     `tag` (
         `tid` VARCHAR(10) NOT NULL COMMENT 'Tag ID',
         `tag_name` VARCHAR(255) NOT NULL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         `super_gid` VARCHAR(10) NOT NULL,
@@ -115,6 +118,10 @@ CREATE TABLE
         `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (`tid`)
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        `super_gid` VARCHAR(10) NOT NULL `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`tid`) FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`)
+>>>>>>> b5cd74d (Squashed commit of the following:)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create 'identity' table
@@ -123,10 +130,14 @@ CREATE TABLE
         `rid` VARCHAR(10) NOT NULL COMMENT 'Role ID',
         `role_name` VARCHAR(255) NOT NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
         `super_gid` VARCHAR(10) NOT NULL,
 <<<<<<< HEAD
         `icon` BLOB DEFAULT NULL,
 =======
+=======
+        `super_gid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `icon` BLOB NOT NULL,
 >>>>>>> b1cc8d9 (Squashed commit of the following:)
 =======
@@ -140,12 +151,16 @@ CREATE TABLE
         PRIMARY KEY (`rid`),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         FOREIGN KEY (`super_gid`) REFERENCES `groups` (`gid`),
 =======
         FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
 >>>>>>> b1cc8d9 (Squashed commit of the following:)
 =======
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        FOREIGN KEY (`super_gid`) REFERENCES `group` (`gid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
@@ -155,10 +170,14 @@ CREATE TABLE
         `pid` VARCHAR(10) NOT NULL COMMENT 'Plan ID',
         `plan_name` VARCHAR(255) NOT NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
         `super_cid` VARCHAR(10) NOT NULL,
         `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
         `icon` BLOB DEFAULT NULL,
 =======
+=======
+        `super_cid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
         `icon` BLOB NOT NULL,
 >>>>>>> 67f4359 (Squashed commit of the following:)
@@ -169,9 +188,13 @@ CREATE TABLE
         `updated_by` VARCHAR(10) DEFAULT NULL,
         PRIMARY KEY (`pid`),
 <<<<<<< HEAD
+<<<<<<< HEAD
         FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
 =======
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
         FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -180,6 +203,7 @@ CREATE TABLE
 CREATE TABLE
     `feat_activity` (
 <<<<<<< HEAD
+<<<<<<< HEAD
         `actid` VARCHAR(10) NOT NULL COMMENT 'Activity ID',
         `activity_name` VARCHAR(255) NOT NULL,
         `super_cid` VARCHAR(10) NOT NULL,
@@ -187,6 +211,11 @@ CREATE TABLE
         `aid` VARCHAR(10) NOT NULL COMMENT 'Activity ID',
         `activity_name` VARCHAR(255) NOT NULL,
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        `actid` VARCHAR(10) NOT NULL COMMENT 'Activity ID',
+        `activity_name` VARCHAR(255) NOT NULL,
+        `super_cid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `start_time` TIMESTAMP NOT NULL,
         `end_time` TIMESTAMP DEFAULT NULL,
         `description` TEXT DEFAULT NULL,
@@ -195,11 +224,16 @@ CREATE TABLE
         `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
         `updated_by` VARCHAR(10) DEFAULT NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
         PRIMARY KEY (`actid`),
         FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
 =======
         PRIMARY KEY (`aid`),
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        PRIMARY KEY (`actid`),
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
         FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -207,6 +241,7 @@ CREATE TABLE
 -- Create 'feat_accounting' table
 CREATE TABLE
     `feat_accounting` (
+<<<<<<< HEAD
 <<<<<<< HEAD
         `accid` VARCHAR(10) NOT NULL COMMENT 'Accounting ID',
         `super_cid` VARCHAR(10) NOT NULL,
@@ -217,23 +252,36 @@ CREATE TABLE
         `description` TEXT DEFAULT NULL COMMENT '[title];[description];[event_time]',
 =======
         `acid` VARCHAR(10) NOT NULL COMMENT 'Accounting ID',
+=======
+        `accid` VARCHAR(10) NOT NULL COMMENT 'Accounting ID',
+        `super_cid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `payer` VARCHAR(10) NOT NULL,
-        `title` VARCHAR(255) NOT NULL,
         `amount` DECIMAL(10, 2) NOT NULL,
         `unit` VARCHAR(3) DEFAULT 'NTD',
+<<<<<<< HEAD
         `attendees_ids` TEXT NOT NULL COMMENT 'Comma-separated attendee IDs',
         `description` TEXT DEFAULT NULL,
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
+        `description` TEXT DEFAULT NULL COMMENT '[title];[description];[event_time]',
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `event_time` DATE NOT NULL,
         `is_split` BOOLEAN DEFAULT FALSE,
         `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `created_by` VARCHAR(10) NOT NULL,
+<<<<<<< HEAD
 <<<<<<< HEAD
         PRIMARY KEY (`accid`),
         FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
 =======
         PRIMARY KEY (`acid`),
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        PRIMARY KEY (`accid`),
+        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`payer`) REFERENCES `user` (`uid`),
         FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -260,59 +308,23 @@ CREATE TABLE
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users join Groups';
 
--- Create 'group_channel' table (Groups have Channels)
-CREATE TABLE
-    `group_channel` (
-        `gid` VARCHAR(10) NOT NULL,
-        `cid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`gid`, `cid`),
-        FOREIGN KEY (`gid`) REFERENCES `group` (`gid`) ON DELETE CASCADE,
-        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Groups have Channels';
-
--- Create 'activity_hosted' table (Activities hosted in Channels)
-CREATE TABLE
-    `activity_hosted` (
-        `cid` VARCHAR(10) NOT NULL,
-        `aid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`cid`, `aid`),
-        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE,
-        FOREIGN KEY (`aid`) REFERENCES `feat_activity` (`aid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Activities hosted in Channels';
-
--- Create 'plan_hosted' table (Plans hosted in Channels)
-CREATE TABLE
-    `plan_hosted` (
-        `pid` VARCHAR(10) NOT NULL,
-        `cid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`pid`, `cid`),
-        FOREIGN KEY (`pid`) REFERENCES `feat_plan` (`pid`) ON DELETE CASCADE,
-        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Plans hosted in Channels';
-
--- Create 'accounting_hosted' table (Accounting entries hosted in Channels)
-CREATE TABLE
-    `accounting_hosted` (
-        `acid` VARCHAR(10) NOT NULL,
-        `cid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`acid`, `cid`),
-        FOREIGN KEY (`acid`) REFERENCES `feat_accounting` (`acid`) ON DELETE CASCADE,
-        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Accounting entries hosted in Channels';
-
 -- Create 'assign_id' table (Groups assign Identities to Users)
 CREATE TABLE
     `assign_id` (
-        `gid` VARCHAR(10) NOT NULL,
         `uid` VARCHAR(10) NOT NULL,
         `rid` VARCHAR(10) NOT NULL,
+<<<<<<< HEAD
         PRIMARY KEY (`gid`, `uid`, `rid`),
         FOREIGN KEY (`gid`) REFERENCES `group` (`gid`) ON DELETE CASCADE,
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+        PRIMARY KEY (`uid`, `rid`),
+>>>>>>> b5cd74d (Squashed commit of the following:)
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
         FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Groups assign Identities to Users';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 -- Create 'group_label' table (Associates Tags with Groups)
@@ -326,10 +338,13 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Associates Tags with Groups';
 
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+>>>>>>> b5cd74d (Squashed commit of the following:)
 -- Create 'chat_in' table (Users chat in Channels)
 CREATE TABLE
     `chat_in` (
         `uid` VARCHAR(10) NOT NULL,
+<<<<<<< HEAD
 <<<<<<< HEAD
         `rid` VARCHAR(10) NOT NULL,
         `cid` VARCHAR(10) NOT NULL,
@@ -391,11 +406,15 @@ INSERT INTO `channel` VALUES
 ('C012', 'Gamma Random', 'G003', NULL, 'Random talks for Group Gamma.', NOW(), 'U009', NULL, NULL);
 
 =======
+=======
+        `rid` VARCHAR(10) NOT NULL,
+>>>>>>> b5cd74d (Squashed commit of the following:)
         `cid` VARCHAR(10) NOT NULL,
         `message` TEXT NOT NULL,
         `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`uid`, `cid`, `timestamp`),
+        PRIMARY KEY (`uid`, `rid`, `cid`, `timestamp`),
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
+        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE,
         FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
 
@@ -534,6 +553,7 @@ VALUES
         NULL
     );
 
+<<<<<<< HEAD
 -- Insert data into 'group' table
 INSERT INTO
     `group`
@@ -755,6 +775,8 @@ INSERT INTO `chat_in` VALUES
 
 
 =======
+=======
+>>>>>>> b5cd74d (Squashed commit of the following:)
 -- fake data rule:
 -- 1. 3 different groups
 -- 2. 4 channels, 3 Identities and 3 Tags in each group
@@ -767,6 +789,7 @@ INSERT INTO `chat_in` VALUES
 -- 9. Each user within the channel can create Accounting records
 -- 10. Each user within the channel can be the payer in any Accounting records within the channel
 -- 11. attendees_ids is formed as "U001,U002,U003....."
+<<<<<<< HEAD
 -- 12. Each user within the channel can be the attendee in any Accounting records within the channel
 >>>>>>> b1cc8d9 (Squashed commit of the following:)
 =======
@@ -828,3 +851,6 @@ VALUES
         NOW ()
     );
 >>>>>>> 67f4359 (Squashed commit of the following:)
+=======
+-- 12. Each user within the channel can be the attendee in any Accounting records within the channel
+>>>>>>> b5cd74d (Squashed commit of the following:)
