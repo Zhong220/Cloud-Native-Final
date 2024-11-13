@@ -18,8 +18,8 @@ services:
   db:
     container_name: mysqldb
     build:
-      context: ./src/DB
-      dockerfile: Dockerfile
+      context: ./src/mysqldb
+      dockerfile: dockerfile
     platform: linux/amd64
     stdin_open: true
     tty: true
