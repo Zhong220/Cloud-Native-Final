@@ -1,18 +1,18 @@
 services:
-  backend:
-    container_name: backend
-    build:
-      context: ./src/backend
-      dockerfile: dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./src/backend/.env
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - cns_network
+  # backend:
+  #   container_name: backend
+  #   build:
+  #     context: ./src/backend
+  #     dockerfile: dockerfile
+  #   ports:
+  #     - "8000:8000"
+  #   env_file:
+  #     - ./src/backend/.env
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   networks:
+  #     - cns_network
 
   db:
     container_name: mysqldb

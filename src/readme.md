@@ -19,3 +19,8 @@ $ docker compose up -d --build
 # or
 $ docker-compose up -d --build
 ```
+
+# Enter DB conatiner
+```bash
+$ docker exec -it mysqldb mysql -uroot -p
+```

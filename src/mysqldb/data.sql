@@ -1,210 +1,19 @@
--- create.sql
--- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
-DROP TABLE IF EXISTS `chat_in`;
+-- fake data rule:
+-- 1. 3 different groups
+-- 2. 4 channels, 3 Identities and 3 Tags in each group
+-- 3. every channel has 3 Activities, 10 Accounting records and 0 ~ 2 Plans
+-- 4. 10 users can simultaneously join 3 different groups, and each user can be assigned multiple different Identities within each group.
+-- 5. Each user within the group can access any Channels.
+-- 6. Each user within the channel can send messages to other users within the channel
+-- 7. Users can chat in multiple Channels simultaneously.
+-- 8. Each user within the channel can create or update Plans and Activities
+-- 9. Each user within the channel can create Accounting records
+-- 10. Each user within the channel can be the payer in any Accounting records within the channel
+-- 11. attendees_ids is formed as "U001,U002,U003....."
+-- 12. Each user within the channel can be the attendee in any Accounting records within the channel
 
-DROP TABLE IF EXISTS `group_label`;
 
-DROP TABLE IF EXISTS `assign_id`;
-
-DROP TABLE IF EXISTS `accounting_hosted`;
-
-DROP TABLE IF EXISTS `plan_hosted`;
-
-DROP TABLE IF EXISTS `activity_hosted`;
-
-DROP TABLE IF EXISTS `group_channel`;
-
-DROP TABLE IF EXISTS `group_member`;
-
-DROP TABLE IF EXISTS `feat_accounting`;
-
-DROP TABLE IF EXISTS `feat_activity`;
-
-DROP TABLE IF EXISTS `feat_plan`;
-
-DROP TABLE IF EXISTS `identity`;
-
-DROP TABLE IF EXISTS `tag`;
-
-DROP TABLE IF EXISTS `channel`;
-
-DROP TABLE IF EXISTS `groups`;
-
-DROP TABLE IF EXISTS `user`;
-
--- Create 'user' table
-CREATE TABLE
-    `user` (
-        `uid` VARCHAR(10) NOT NULL COMMENT 'User ID',
-        `username` VARCHAR(255) NOT NULL UNIQUE,
-        `email` VARCHAR(255) NOT NULL,
-        `password` VARCHAR(64) NOT NULL,
-        `phone` VARCHAR(10) NOT NULL,
-        `description` TEXT NOT NULL,
-        `icon` BLOB DEFAULT NULL,
-        `birthday` DATE DEFAULT NULL,
-        `gender` ENUM ('0', '1', '2') DEFAULT '2' COMMENT 'female: 0, male: 1, other: 2',
-        `attend_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'groups' table
-CREATE TABLE
-    `groups` (
-        `gid` VARCHAR(10) NOT NULL COMMENT 'Group ID',
-        `group_name` VARCHAR(255) NOT NULL,
-        `is_private` BOOLEAN DEFAULT FALSE,
-        `icon` BLOB DEFAULT NULL,
-        `description` TEXT DEFAULT NULL,
-        `end_time` TIMESTAMP NULL DEFAULT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `created_by` VARCHAR(10) NOT NULL,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        `updated_by` VARCHAR(10) DEFAULT NULL,
-        PRIMARY KEY (`gid`),
-        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
-        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'channel' table
-CREATE TABLE
-    `channel` (
-        `cid` VARCHAR(10) NOT NULL COMMENT 'Channel ID',
-        `channel_name` VARCHAR(255) NOT NULL,
-        `super_gid` VARCHAR(10) NOT NULL,
-        `icon` BLOB DEFAULT NULL,
-        `description` TEXT DEFAULT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `created_by` VARCHAR(10) NOT NULL,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        `updated_by` VARCHAR(10) DEFAULT NULL,
-        PRIMARY KEY (`cid`),
-        FOREIGN KEY (`super_gid`) REFERENCES `groups` (`gid`),
-        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
-        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'tag' table
-CREATE TABLE
-    `tag` (
-        `tid` VARCHAR(10) NOT NULL COMMENT 'Tag ID',
-        `tag_name` VARCHAR(255) NOT NULL,
-        `super_gid` VARCHAR(10) NOT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`tid`),
-        FOREIGN KEY (`super_gid`) REFERENCES `groups` (`gid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'identity' table
-CREATE TABLE
-    `identity` (
-        `rid` VARCHAR(10) NOT NULL COMMENT 'Role ID',
-        `role_name` VARCHAR(255) NOT NULL,
-        `super_gid` VARCHAR(10) NOT NULL,
-        `icon` BLOB DEFAULT NULL,
-        `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
-        `description` TEXT DEFAULT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_by` VARCHAR(10) DEFAULT NULL,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`rid`),
-        FOREIGN KEY (`super_gid`) REFERENCES `groups` (`gid`),
-        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'feat_plan' table
-CREATE TABLE
-    `feat_plan` (
-        `pid` VARCHAR(10) NOT NULL COMMENT 'Plan ID',
-        `plan_name` VARCHAR(255) NOT NULL,
-        `super_cid` VARCHAR(10) NOT NULL,
-        `color` CHAR(7) DEFAULT NULL COMMENT '#HEX',
-        `icon` BLOB DEFAULT NULL,
-        `description` TEXT DEFAULT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `created_by` VARCHAR(10) NOT NULL,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        `updated_by` VARCHAR(10) DEFAULT NULL,
-        PRIMARY KEY (`pid`),
-        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
-        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
-        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'feat_activity' table
-CREATE TABLE
-    `feat_activity` (
-        `actid` VARCHAR(10) NOT NULL COMMENT 'Activity ID',
-        `activity_name` VARCHAR(255) NOT NULL,
-        `super_cid` VARCHAR(10) NOT NULL,
-        `start_time` TIMESTAMP NOT NULL,
-        `end_time` TIMESTAMP DEFAULT NULL,
-        `description` TEXT DEFAULT NULL,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `created_by` VARCHAR(10) NOT NULL,
-        `update_time` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-        `updated_by` VARCHAR(10) DEFAULT NULL,
-        PRIMARY KEY (`actid`),
-        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
-        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`),
-        FOREIGN KEY (`updated_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'feat_accounting' table
-CREATE TABLE
-    `feat_accounting` (
-        `accid` VARCHAR(10) NOT NULL COMMENT 'Accounting ID',
-        `super_cid` VARCHAR(10) NOT NULL,
-        `payer` VARCHAR(10) NOT NULL,
-        `amount` DECIMAL(10, 2) NOT NULL,
-        `unit` VARCHAR(3) DEFAULT 'NTD',
-        `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
-        `description` TEXT DEFAULT NULL COMMENT '[title];[description]',
-        `event_time` DATE NOT NULL,
-        `is_split` BOOLEAN DEFAULT FALSE,
-        `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `created_by` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`accid`),
-        FOREIGN KEY (`super_cid`) REFERENCES `channel` (`cid`),
-        FOREIGN KEY (`payer`) REFERENCES `user` (`uid`),
-        FOREIGN KEY (`created_by`) REFERENCES `user` (`uid`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
--- Create 'group_member' table (Users join Groups)
-CREATE TABLE
-    `group_member` (
-        `gid` VARCHAR(10) NOT NULL,
-        `uid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`gid`, `uid`),
-        FOREIGN KEY (`gid`) REFERENCES `groups` (`gid`) ON DELETE CASCADE,
-        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users join Groups';
-
--- Create 'assign_id' table (Groups assign Identities to Users)
-CREATE TABLE
-    `assign_id` (
-        `uid` VARCHAR(10) NOT NULL,
-        `rid` VARCHAR(10) NOT NULL,
-        PRIMARY KEY (`uid`, `rid`),
-        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
-        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Groups assign Identities to Users';
-
--- Create 'chat_in' table (Users chat in Channels)
-CREATE TABLE
-    `chat_in` (
-        `uid` VARCHAR(10) NOT NULL,
-        `rid` VARCHAR(10) NOT NULL,
-        `cid` VARCHAR(10) NOT NULL,
-        `message` TEXT NOT NULL,
-        `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`uid`, `rid`, `cid`, `timestamp`),
-        FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
-        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE,
-        FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
-
+USE `user`;
 -- Insert data into 'user' table
 INSERT INTO
     `user`
@@ -340,8 +149,9 @@ VALUES
         NULL
     );
 
--- Insert data into 'groups' table
-INSERT INTO `groups` VALUES
+USE `group`
+-- Insert data into 'group' table
+INSERT INTO `group` VALUES
 ('G001', 'Group Alpha', FALSE, NULL, 'This is Group Alpha.', NULL, NOW(), 'U001', NULL, NULL),
 ('G002', 'Group Beta', TRUE, NULL, 'This is Group Beta.', NULL, NOW(), 'U002', NULL, NULL),
 ('G003', 'Group Gamma', FALSE, NULL, 'This is Group Gamma.', NULL, NOW(), 'U003', NULL, NULL);
@@ -351,7 +161,7 @@ INSERT INTO `channel` VALUES
 ('C001', 'Alpha General', 'G001', NULL, 'General discussion for Group Alpha.', NOW(), 'U001', NULL, NULL),
 ('C002', 'Alpha Projects', 'G001', NULL, 'Project discussions for Group Alpha.', NOW(), 'U002', NULL, NULL),
 ('C003', 'Alpha Events', 'G001', NULL, 'Event planning for Group Alpha.', NOW(), 'U003', NULL, NULL),
-('C004', 'Alpha Random', 'G001', NULL, 'Random talks for Group Alpha.', NOW(), 'U004', NULL, NULL),
+('C004', 'Alpha Random', 'G001', NULL, 'Random talks for Group Alpha.', NOW(), 'U004', NULL, NULL)
 ('C005', 'Beta General', 'G002', NULL, 'General discussion for Group Beta.', NOW(), 'U002', NULL, NULL),
 ('C006', 'Beta Projects', 'G002', NULL, 'Project discussions for Group Beta.', NOW(), 'U005', NULL, NULL),
 ('C007', 'Beta Events', 'G002', NULL, 'Event planning for Group Beta.', NOW(), 'U006', NULL, NULL),
@@ -545,20 +355,3 @@ INSERT INTO `chat_in` VALUES
 ('U008', 'R008', 'C009', 'Active in Gamma Group.', NOW()),
 ('U009', 'R009', 'C012', 'Random chat in Gamma Random channel.', NOW()),
 ('U010', 'R008', 'C010', 'Working on Gamma Projects.', NOW());
-
-
-
-
--- fake data rule:
--- 1. 3 different groups
--- 2. 4 channels, 3 Identities and 3 Tags in each groups
--- 3. every channel has 3 Activities, 10 Accounting records and 0 ~ 2 Plans
--- 4. 10 users can simultaneously join 3 different groups, and each user can be assigned multiple different Identities within each groups.
--- 5. Each user within the groups can access any Channels.
--- 6. Each user within the channel can send messages to other users within the channel
--- 7. Users can chat in multiple Channels simultaneously.
--- 8. Each user within the channel can create or update Plans and Activities
--- 9. Each user within the channel can create Accounting records
--- 10. Each user within the channel can be the payer in any Accounting records within the channel
--- 11. attendees_ids is formed as "U001,U002,U003....."
--- 12. Each user within the channel can be the attendee in any Accounting records within the channel
