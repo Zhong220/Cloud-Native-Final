@@ -19,6 +19,12 @@ $ docker compose up -d --build
 # or
 $ docker-compose up -d --build
 ```
+- stop containers 
+```bash
+# (optional) -v : remove volumes defined in docker-compose.yml
+# (optional) --rmi all : remove images
+$ docker compose down -v --rmi all
+```
 
 # Enter DB conatiner
 ```bash

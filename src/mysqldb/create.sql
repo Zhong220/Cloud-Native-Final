@@ -1,18 +1,13 @@
+-- checka database exit and use it
+CREATE DATABASE IF NOT EXISTS `CNS_DB`;
+
+USE `CNS_DB`;
+
 -- create.sql
 -- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
 DROP TABLE IF EXISTS `chat_in`;
 
-DROP TABLE IF EXISTS `group_label`;
-
 DROP TABLE IF EXISTS `assign_id`;
-
-DROP TABLE IF EXISTS `accounting_hosted`;
-
-DROP TABLE IF EXISTS `plan_hosted`;
-
-DROP TABLE IF EXISTS `activity_hosted`;
-
-DROP TABLE IF EXISTS `group_channel`;
 
 DROP TABLE IF EXISTS `group_member`;
 
@@ -195,150 +190,40 @@ CREATE TABLE
 CREATE TABLE
     `chat_in` (
         `uid` VARCHAR(10) NOT NULL,
-        `rid` VARCHAR(10) NOT NULL,
         `cid` VARCHAR(10) NOT NULL,
         `message` TEXT NOT NULL,
         `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`uid`, `rid`, `cid`, `timestamp`),
+        PRIMARY KEY (`uid`, `cid`, `timestamp`),
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
-        FOREIGN KEY (`rid`) REFERENCES `identity` (`rid`) ON DELETE CASCADE,
         FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
 
+-- fake data rule:
+-- 1. 3 different groups
+-- 2. 4 channels, 3 Identities and 3 Tags in each groups
+-- 3. every channel has 3 Activities, 10 Accounting records and 0 ~ 2 Plans
+-- 4. 10 users can simultaneously join 3 different groups, and each user can be assigned multiple different Identities within each groups.
+-- 5. Each user within the groups can access any Channels.
+-- 6. Each user within the channel can send messages to other users within the channel
+-- 7. Users can chat in multiple Channels simultaneously.
+-- 8. Each user within the channel can create or update Plans and Activities
+-- 9. Each user within the channel can create Accounting records
+-- 10. Each user within the channel can be the payer in any Accounting records within the channel
+-- 11. attendees_ids is formed as "U001,U002,U003....."
+-- 12. Each user within the channel can be the attendee in any Accounting records within the channel
+
 -- Insert data into 'user' table
-INSERT INTO
-    `user`
-VALUES
-    (
-        'U001',
-        'user1',
-        'user1@example.com',
-        'c2b7e8d7a4c236b06b9ab7d1ad2d2f0c16e0590da4d6e5fb10f194b48e59bf4a',
-        '1234567890',
-        'User 1 description',
-        NULL,
-        '1990-01-01',
-        '0',
-        NOW (),
-        NULL
-    ),
-    (
-        'U002',
-        'user2',
-        'user2@example.com',
-        '6b3a55e0261b0304143a9a035ad9286e45f864c6fa56f09459048caa8b196f31',
-        '1234567891',
-        'User 2 description',
-        NULL,
-        '1991-02-02',
-        '1',
-        NOW (),
-        NULL
-    ),
-    (
-        'U003',
-        'user3',
-        'user3@example.com',
-        'af7c3f4f72524e1dc1262f69835f0a580f832e0916c70131acbafaa78a81a9a1',
-        '1234567892',
-        'User 3 description',
-        NULL,
-        '1992-03-03',
-        '2',
-        NOW (),
-        NULL
-    ),
-    (
-        'U004',
-        'user4',
-        'user4@example.com',
-        '3d6f46dc79fa5f9aa990c00fbf84dc607efac741e6206162a8f55122fa5301b0',
-        '1234567893',
-        'User 4 description',
-        NULL,
-        '1993-04-04',
-        '0',
-        NOW (),
-        NULL
-    ),
-    (
-        'U005',
-        'user5',
-        'user5@example.com',
-        '31e16fa6eb186b2a0e3c0ba75d28e9b5c5b16e72985eea0a04911a02dc532538',
-        '1234567894',
-        'User 5 description',
-        NULL,
-        '1994-05-05',
-        '1',
-        NOW (),
-        NULL
-    ),
-    (
-        'U006',
-        'user6',
-        'user6@example.com',
-        '371c7e4d61941e0b69ca92051e0f72e4e8309f2fa323383d5c6e35516b8a5662',
-        '1234567895',
-        'User 6 description',
-        NULL,
-        '1995-06-06',
-        '2',
-        NOW (),
-        NULL
-    ),
-    (
-        'U007',
-        'user7',
-        'user7@example.com',
-        'ecb47222e7f7d6f3882d77f43aa58207d164b8da234ed4ae0cf9d7a61f8a6342',
-        '1234567896',
-        'User 7 description',
-        NULL,
-        '1996-07-07',
-        '0',
-        NOW (),
-        NULL
-    ),
-    (
-        'U008',
-        'user8',
-        'user8@example.com',
-        '2af6a6edaf0ddba8e1dfe55d3d8110f163d9a3e99964f0afc3fb969f0b3d9f4d',
-        '1234567897',
-        'User 8 description',
-        NULL,
-        '1997-08-08',
-        '1',
-        NOW (),
-        NULL
-    ),
-    (
-        'U009',
-        'user9',
-        'user9@example.com',
-        '979026f4dc45d8a77eb6920fbab4bf5068e1481041b4eb95a48f8e446e7d50b0',
-        '1234567898',
-        'User 9 description',
-        NULL,
-        '1998-09-09',
-        '2',
-        NOW (),
-        NULL
-    ),
-    (
-        'U010',
-        'user10',
-        'user10@example.com',
-        '669168ce8ff9a1e6e11cc24c4054f6b86e4e3d8d4ec03c9e64a2635fa17bf5b1',
-        '1234567899',
-        'User 10 description',
-        NULL,
-        '1999-10-10',
-        '0',
-        NOW (),
-        NULL
-    );
+INSERT INTO `user` VALUES
+('U001', 'user1', 'user1@example.com', 'c2b7e8d7a4c236b06b9ab7d1ad2d2f0c16e0590da4d6e5fb10f194b48e59bf4a', '1234567890', 'User 1 description', NULL, '1990-01-01', '0', NOW(), NULL),
+('U002', 'user2', 'user2@example.com', '6b3a55e0261b0304143a9a035ad9286e45f864c6fa56f09459048caa8b196f31', '1234567891', 'User 2 description', NULL, '1991-02-02', '1', NOW(), NULL),
+('U003', 'user3', 'user3@example.com', 'af7c3f4f72524e1dc1262f69835f0a580f832e0916c70131acbafaa78a81a9a1', '1234567892', 'User 3 description', NULL, '1992-03-03', '2', NOW(), NULL),
+('U004', 'user4', 'user4@example.com', '3d6f46dc79fa5f9aa990c00fbf84dc607efac741e6206162a8f55122fa5301b0', '1234567893', 'User 4 description', NULL, '1993-04-04', '0', NOW(), NULL),
+('U005', 'user5', 'user5@example.com', '31e16fa6eb186b2a0e3c0ba75d28e9b5c5b16e72985eea0a04911a02dc532538', '1234567894', 'User 5 description', NULL, '1994-05-05', '1', NOW(), NULL),
+('U006', 'user6', 'user6@example.com', '371c7e4d61941e0b69ca92051e0f72e4e8309f2fa323383d5c6e35516b8a5662', '1234567895', 'User 6 description', NULL, '1995-06-06', '2', NOW(), NULL),
+('U007', 'user7', 'user7@example.com', 'ecb47222e7f7d6f3882d77f43aa58207d164b8da234ed4ae0cf9d7a61f8a6342', '1234567896', 'User 7 description', NULL, '1996-07-07', '0', NOW(), NULL),
+('U008', 'user8', 'user8@example.com', '2af6a6edaf0ddba8e1dfe55d3d8110f163d9a3e99964f0afc3fb969f0b3d9f4d', '1234567897', 'User 8 description', NULL, '1997-08-08', '1', NOW(), NULL),
+('U009', 'user9', 'user9@example.com', '979026f4dc45d8a77eb6920fbab4bf5068e1481041b4eb95a48f8e446e7d50b0', '1234567898', 'User 9 description', NULL, '1998-09-09', '2', NOW(), NULL),
+('U010', 'user10', 'user10@example.com', '669168ce8ff9a1e6e11cc24c4054f6b86e4e3d8d4ec03c9e64a2635fa17bf5b1', '1234567899', 'User 10 description', NULL, '1999-10-10', '0', NOW(), NULL);
 
 -- Insert data into 'groups' table
 INSERT INTO `groups` VALUES
@@ -504,61 +389,38 @@ INSERT INTO `feat_accounting` VALUES
 -- Insert data into 'chat_in' table
 
 INSERT INTO `chat_in` VALUES
-('U001', 'R001', 'C001', 'Welcome to Alpha General channel!', NOW()),
-('U002', 'R002', 'C001', 'Thank you, happy to be here.', NOW()),
-('U003', 'R002', 'C001', 'Looking forward to working with everyone.', NOW()),
-('U004', 'R003', 'C001', 'Hello all!', NOW()),
-('U005', 'R002', 'C001', 'Hi team!', NOW()),
-('U002', 'R002', 'C002', 'Project meeting at 2 PM.', NOW()),
-('U003', 'R002', 'C002', 'Got it, I will be there.', NOW()),
-('U004', 'R003', 'C002', 'I might be a bit late.', NOW()),
-('U005', 'R002', 'C002', 'No worries.', NOW()),
-('U001', 'R001', 'C002', 'See you all there.', NOW()),
-('U003', 'R002', 'C003', 'Event planning is underway.', NOW()),
-('U004', 'R003', 'C003', 'Do you need any help?', NOW()),
-('U005', 'R002', 'C003', 'I can assist.', NOW()),
-('U001', 'R001', 'C003', 'Let me know if resources are needed.', NOW()),
-('U002', 'R002', 'C003', 'Thanks everyone.', NOW()),
-('U005', 'R002', 'C004', 'Random thought: We should have a team outing.', NOW()),
-('U001', 'R001', 'C004', 'That sounds great!', NOW()),
-('U002', 'R002', 'C004', 'I agree!', NOW()),
-('U003', 'R002', 'C004', 'Count me in.', NOW()),
-('U004', 'R003', 'C004', 'Me too.', NOW()),
-('U003', 'R004', 'C005', 'Welcome to Beta General channel!', NOW()),
-('U004', 'R005', 'C005', 'Happy to join.', NOW()),
-('U005', 'R005', 'C005', 'Hello everyone!', NOW()),
-('U006', 'R006', 'C005', 'Greetings!', NOW()),
-('U007', 'R005', 'C005', 'Hi all!', NOW()),
-('U003', 'R004', 'C005', 'Switching between channels.', NOW()),
-('U003', 'R002', 'C001', 'Back in Alpha General.', NOW()),
-('U004', 'R005', 'C005', 'Participating in Beta projects.', NOW()),
-('U004', 'R003', 'C002', 'Also working on Alpha projects.', NOW()),
-('U005', 'R005', 'C005', 'Multitasking between groups.', NOW()),
-('U005', 'R002', 'C003', 'Event planning is fun.', NOW()),
-('U006', 'R007', 'C009', 'Welcome to Gamma General channel!', NOW()),
-('U007', 'R008', 'C009', 'Glad to be here.', NOW()),
-('U008', 'R008', 'C009', 'Hello everyone.', NOW()),
-('U009', 'R009', 'C009', 'Hi!', NOW()),
-('U010', 'R008', 'C009', 'Greetings!', NOW()),
-('U006', 'R007', 'C005', 'Visiting Beta General channel.', NOW()),
-('U007', 'R008', 'C001', 'Hello Alpha Group!', NOW()),
-('U008', 'R008', 'C009', 'Active in Gamma Group.', NOW()),
-('U009', 'R009', 'C012', 'Random chat in Gamma Random channel.', NOW()),
-('U010', 'R008', 'C010', 'Working on Gamma Projects.', NOW());
+('U001', 'C001', 'Welcome to Alpha General channel!', NOW()),
+('U002', 'C001', 'Thank you, happy to be here.', NOW()),
+('U003', 'C001', 'Looking forward to working with everyone.', NOW()),
+('U004', 'C001', 'Hello all!', NOW()),
+('U005', 'C001', 'Hi team!', NOW()),
+('U002', 'C002', 'Project meeting at 2 PM.', NOW()),
+('U003', 'C002', 'Got it, I will be there.', NOW()),
+('U004', 'C002', 'I might be a bit late.', NOW()),
+('U005', 'C002', 'No worries.', NOW()),
+('U001', 'C002', 'See you all there.', NOW()),
+('U003', 'C003', 'Event planning is underway.', NOW()),
+('U004', 'C003', 'Do you need any help?', NOW()),
+('U005', 'C003', 'I can assist.', NOW()),
+('U001', 'C003', 'Let me know if resources are needed.', NOW()),
+('U002', 'C003', 'Thanks everyone.', NOW()),
+('U005', 'C004', 'Random thought: We should have a team outing.', NOW()),
+('U001', 'C004', 'That sounds great!', NOW()),
+('U002', 'C004', 'I agree!', NOW()),
+('U003', 'C004', 'Count me in.', NOW()),
+('U004', 'C004', 'Me too.', NOW()),
+('U003', 'C005', 'Welcome to Beta General channel!', NOW()),
+('U004', 'C005', 'Happy to join.', NOW()),
+('U005', 'C005', 'Hello everyone!', NOW()),
+('U006', 'C005', 'Greetings!', NOW()),
+('U007', 'C005', 'Hi all!', NOW()),
+('U006', 'C009', 'Welcome to Gamma General channel!', NOW()),
+('U007', 'C009', 'Glad to be here.', NOW()),
+('U008', 'C009', 'Hello everyone.', NOW()),
+('U009', 'C009', 'Hi!', NOW()),
+('U010', 'C009', 'Greetings!', NOW()),
+('U007', 'C001', 'Hello Alpha Group!', NOW()),
+('U009', 'C012', 'Random chat in Gamma Random channel.', NOW()),
+('U010', 'C010', 'Working on Gamma Projects.', NOW());
 
 
-
-
--- fake data rule:
--- 1. 3 different groups
--- 2. 4 channels, 3 Identities and 3 Tags in each groups
--- 3. every channel has 3 Activities, 10 Accounting records and 0 ~ 2 Plans
--- 4. 10 users can simultaneously join 3 different groups, and each user can be assigned multiple different Identities within each groups.
--- 5. Each user within the groups can access any Channels.
--- 6. Each user within the channel can send messages to other users within the channel
--- 7. Users can chat in multiple Channels simultaneously.
--- 8. Each user within the channel can create or update Plans and Activities
--- 9. Each user within the channel can create Accounting records
--- 10. Each user within the channel can be the payer in any Accounting records within the channel
--- 11. attendees_ids is formed as "U001,U002,U003....."
--- 12. Each user within the channel can be the attendee in any Accounting records within the channel
