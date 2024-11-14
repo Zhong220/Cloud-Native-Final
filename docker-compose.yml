@@ -33,7 +33,7 @@ services:
       #- ./my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: "CNS_DB"
+      MYSQL_DATABASE: CNS_DB
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     healthcheck:
@@ -42,8 +42,10 @@ services:
           "CMD-SHELL",
           "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} && mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'show databases;'",
         ]
-      timeout: 25s
+      interval: 10s
+      timeout: 5s
       retries: 10
+      start_period: 30s
     networks:
       - cns_network
 
