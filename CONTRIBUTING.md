@@ -12,8 +12,8 @@
 - Runtime: `Node.js` or `Deno 2` ?
 - Version: `v20.18.0`
 ### **Database**
-- Management System: `SQLite`
-- Version: 
+- Management System: `MySQL`
+- Version: `8.0`
 
 ## Collaboration
 ### Branching Model - Git Flow
