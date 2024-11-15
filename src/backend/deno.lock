@@ -3,6 +3,7 @@
   "specifiers": {
     "jsr:@std/assert@1": "1.0.6",
     "jsr:@std/internal@^1.0.4": "1.0.4",
+    "npm:express@*": "4.21.1",
     "npm:express@^4.21.1": "4.21.1"
   },
   "jsr": {
@@ -380,7 +381,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@std/assert@1"
+      "jsr:@std/assert@1",
+      "npm:express@*"
     ],
     "packageJson": {
       "dependencies": [

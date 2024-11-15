@@ -42,10 +42,8 @@ services:
           "CMD-SHELL",
           "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} && mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'show databases;'",
         ]
-      interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 30s
     networks:
       - cns_network
 

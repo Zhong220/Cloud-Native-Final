@@ -47,7 +47,7 @@ $ exit
             "deno.lint": true,
             "deno.unstable": true,
             "deno.enablePaths": [
-                  "./Cloud-Native-Final/src/Backend"
+                  "./Cloud-Native-Final/src/backend"
             ],
             "editor.formatOnSave": true,
             "deno.config": "./Cloud-Native-Final/src/Backend/deno.jsonc",
