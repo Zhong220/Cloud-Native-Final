@@ -2,12 +2,12 @@ services:
   backend:
     container_name: backend
     build:
-      context: ./src/backend
+      context: ./src/backend-ts
       dockerfile: dockerfile
     ports:
       - "8000:8000"
     env_file:
-      - ./src/backend/.env
+      - ./src/backend-ts/.env
     depends_on:
       db:
         condition: service_healthy
