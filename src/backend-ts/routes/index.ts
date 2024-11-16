@@ -1,18 +1,16 @@
-import { default as authRouter } from "./auth/controller.ts";
-import { default as groupsRouter } from "./groups/controller.ts";
-import { default as channelRouter } from "./channel/controller.ts";
 import { Router } from "express";
+import { default as authRouter } from "./auth/controller.ts";
+import { default as channelRouter } from "./channel/controller.ts";
 
-type Route = {
-  routeAddress: string;
-  routeProp: Router;
+type RouteProps = {
+  addr: string;
+  router: Router;
 };
 
 // Integration of routers
-const routes: Route[] = [
-  { routeAddress: "/auth", routeProp: authRouter },
-  { routeAddress: "/groups", routeProp: groupsRouter },
-  { routeAddress: "/channel", routeProp: channelRouter },
+const routes: RouteProps[] = [
+  { addr: "/auth", router: authRouter },
+  { addr: "/channel", router: channelRouter },
 ];
 
 export default routes;

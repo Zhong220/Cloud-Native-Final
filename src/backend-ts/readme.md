@@ -20,6 +20,8 @@
 
 ### Run
 ```bash
+$ cd Cloud-Native-Final/src/backend-ts/
+
 # install
 $ deno install
 

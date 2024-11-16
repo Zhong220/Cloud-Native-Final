@@ -10,7 +10,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // assign url
 routes.forEach((e) => {
-  app.use(e.routeAddress, e.routeProp);
+  app.use(e.addr, e.router);
 });
 
 app.listen(port);
