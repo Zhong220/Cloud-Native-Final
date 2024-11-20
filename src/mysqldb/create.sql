@@ -423,4 +423,3 @@ INSERT INTO `chat_in` VALUES
 ('U009', 'C012', 'Random chat in Gamma Random channel.', NOW()),
 ('U010', 'C010', 'Working on Gamma Projects.', NOW());
 
-
