@@ -26,13 +26,20 @@
     function processOrder(order: Order) {
       if (!order.isValid()) {
         console.log('Invalid order');
+        a = 1
         return;
       }
       if (order.items.length === 0) {
         console.log('No items in order');
+        a = 2
         return;
       }
-      // 處理訂單
+      // 三元運算子處理訂單
+      a = order.isValid() ? 2 : 1
+      ? 1
+      : isvalid2()
+        ?  2
+        :  3
     }
 
     // 不建議
@@ -77,14 +84,19 @@
 ```plaintext
 src/
 ├── assets/            # 靜態資源（例如圖片、字體）
-├── src/               # 頁面程式碼
+├── app/               # 頁面程式碼
 ├── services/          # API 和網路請求
 └── App.tsx            # 主程式
 ```
 
 ## 2. Naming Conventions
 
-- 自定義 hook: 使用 use 作為自定義 hook 的前綴(例如: useUser)。
+- 自定義 hook: 使用 use 或 set 作為自定義 hook 的前綴(例如: useUser)。
+  ```js
+  const [time, setTime] = useState<int>(1)
+
+  setTime(2)
+  ```
 - 函數和變數: 使用 **camelCase** 命名函數和變數（例如：handlePress，fetchUserData）。
 - component 元件: 使用 **PascalCase**，(例如： UserProfile)，並記得 `export default` 該元件
   - 附註: component 雖然長得像 function 但請不要使用 camelcase，不然 react 會辨識不到
