@@ -1,19 +1,4 @@
 services:
-  backend:
-    container_name: backend
-    build:
-      context: ./src/backend-ts
-      dockerfile: dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./src/backend-ts/.env
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - cns_network
-
   db:
     container_name: mysqldb
     build:
@@ -47,9 +32,33 @@ services:
       start_period: 30s
     networks:
       - cns_network
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - cns_network
+    volumes:
+      - redis-data:/data
+  backend:
+    container_name: backend
+    build:
+      context: ./src/backend-ts
+      dockerfile: dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./src/backend-ts/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - cns_network
 
 volumes:
   CNS_DB:
+  redis-data:
 
 networks:
   cns_network:
