@@ -27,6 +27,9 @@ $ deno install
 
 # run 
 $ deno run --allow-all index.ts
+
+# redis
+$ redis-cli -p 6380
 ```
 
 ### Reference
