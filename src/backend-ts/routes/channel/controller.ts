@@ -1,9 +1,8 @@
-import express, { Request, Response } from "express";
-import loginService from "./service.ts";
+import express from "express";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (req, res) => {
   res.status(200).send("Channel router is availble");
 });
 

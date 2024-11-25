@@ -219,5 +219,5 @@ CREATE TABLE
         `cpu` FLOAT NOT NULL,
         `ram` FLOAT NOT NULL,
         `disk` FLOAT NOT NULL,
-        `network` TEXT NULL COMMENT 'in:[in], out:[out]' -- Network traffic in MB/s
+        `network` TEXT NULL COMMENT 'in:[in] MB/s, out:[out] MB/s' -- Network traffic in MB/s
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Hardware performance logs';
