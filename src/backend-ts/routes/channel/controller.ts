@@ -1,4 +1,5 @@
 import express from "express";
+import { io } from "../../index.ts";
 
 const router = express.Router();
 

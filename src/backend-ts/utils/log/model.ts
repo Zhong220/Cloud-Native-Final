@@ -2,7 +2,7 @@ export interface EventLogServiceModel {
   uid: string;
   apiUrl: string;
   httpCode: number;
-  description: string;
+  description?: string | undefined;
 }
 
 export interface EventLogRepositoryModel {

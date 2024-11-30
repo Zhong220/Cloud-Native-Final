@@ -19,6 +19,7 @@ export async function eventLogRepository(log: EventLogRepositoryModel) {
     connection.release();
   }
 }
+
 export async function hardwareLogRepository(log: HardwareLogRepositoryModel) {
   const connection = await pool.getConnection();
   try {

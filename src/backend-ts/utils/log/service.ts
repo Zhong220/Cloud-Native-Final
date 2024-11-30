@@ -13,6 +13,7 @@ export function eventLogService(log: EventLogServiceModel) {
     console.error("Error inserting event log:", error);
   }
 }
+
 export async function hardwareLogService() {
   try {
     const cpu = await si.currentLoad();
