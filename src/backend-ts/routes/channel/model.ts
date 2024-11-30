@@ -15,12 +15,19 @@ export interface ViewModel {
 }
 
 // for socket.io
+type roomMessage = {
+  sender: string;
+  message: string;
+  timestamp: string;
+};
+
 export interface ServerToClientEvents {
-  chatMessage: (data: { message: string; sender: string }) => void;
+  currentMessage: (data: roomMessage) => void;
+  historyMessage: (data: roomMessage[]) => void;
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (data: { room: string; username: string }) => void;
+  joinRoom: (data: { room: string; userID: string }) => void;
   chatMessage: (data: { room: string; message: string }) => void;
 }
 
@@ -29,5 +36,5 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  username?: string;
+  userID?: string;
 }
