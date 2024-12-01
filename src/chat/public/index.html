@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatroom</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #chat {
+        width: 300px;
+        margin: 0 auto;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #messages {
+        height: 200px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 5px;
+        margin-bottom: 10px;
+      }
+      #message-form {
+        display: flex;
+      }
+      #message-form input {
+        flex: 1;
+        padding: 5px;
+      }
+      #message-form button {
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat">
+      <h2>Chatroom</h2>
+      <div id="messages"></div>
+      <form id="message-form">
+        <input
+          type="text"
+          id="message-input"
+          placeholder="Type a message..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const messagesDiv = document.getElementById("messages");
+      const messageForm = document.getElementById("message-form");
+      const messageInput = document.getElementById("message-input");
+
+      // Join a room
+      const room = prompt("Enter room name:");
+      const userID = promt("Enter your id:");
+      socket.emit("joinRoom", { room, userID });
+
+      // Listen for messages
+      socket.on("currentMessage", (data) => {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `${data.sender}: ${
+          data.message
+        } (${new Date(data.timestamp).toLocaleTimeString()})`;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Listen for chat history
+      socket.on("historyMessage", (messages) => {
+        messages.forEach((msg) => {
+          const messageElement = document.createElement("div");
+          messageElement.textContent = `${msg.sender}: ${
+            msg.message
+          } (${new Date(msg.timestamp).toLocaleTimeString()})`;
+          messagesDiv.appendChild(messageElement);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Send a message
+      messageForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = messageInput.value;
+        socket.emit("chatMessage", { room, message });
+        messageInput.value = "";
+      });
+    </script>
+  </body>
+</html>

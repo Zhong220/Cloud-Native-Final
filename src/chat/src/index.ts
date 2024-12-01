@@ -1,15 +1,39 @@
-import { io } from "../../index.ts";
-import redis from "../../utils/redis.ts";
+import express from "express";
+import http from "node:http";
+import path from "node:path";
+import Redis from "ioredis";
+import { fileURLToPath } from "node:url";
+import { Server as SocketIOServer } from "socket.io";
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData,
+} from "./types/socketTypes";
+
+const app = express();
+const PORT = 8080;
+const redisClient = new Redis("redis");
+const server = http.createServer(app);
+const io = new SocketIOServer<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>(server);
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join("../public")));
 
 io.on("connection", (socket) => {
   console.log(`A user connected: ${socket.id}`);
 
   // Handle 'joinRoom' event
   socket.on("joinRoom", (data) => {
-    const room = data.room;
+    const { room, userID } = data;
 
     // Check if the room exists in Redis
-    redis.exists(`room:${room}`, (err, exists) => {
+    redisClient.exists(`room:${room}`, (err, exists) => {
       if (err) {
         console.error("Error checking room existence:", err);
         return;
@@ -18,10 +42,10 @@ io.on("connection", (socket) => {
       if (exists === 1) {
         // Room list exists, join the room
         socket.join(room);
-        console.log(`A user joined room: ${room}`);
+        console.log(`A user ${userID} joined room: ${room}`);
 
         // Get all elements in the room list and send back to frontend
-        redis.lrange(`room:${room}`, 0, -1, (err, elements) => {
+        redisClient.lrange(`room:${room}`, 0, -1, (err, elements) => {
           if (err) {
             console.error("Error getting elements from room list:", err);
             return;
@@ -30,7 +54,7 @@ io.on("connection", (socket) => {
         });
       } else {
         // Room list does not exist, create the room list in Redis and join
-        redis.rpush(`room:${room}`, JSON.stringify([]), (err) => {
+        redisClient.rpush(`room:${room}`, JSON.stringify([]), (err) => {
           if (err) {
             console.error("Error creating room list in Redis:", err);
             return;
@@ -54,7 +78,7 @@ io.on("connection", (socket) => {
     });
 
     // Add the message to the room list in Redis
-    redis.lpush(
+    redisClient.lpush(
       `room:${room}`,
       JSON.stringify({ sender, message, curr }),
       (err) => {
@@ -71,4 +95,6 @@ io.on("connection", (socket) => {
   });
 });
 
-export default io;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
