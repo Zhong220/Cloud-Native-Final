@@ -14,5 +14,5 @@ export interface HardwareLogRepositoryModel {
   cpu: number;
   ram: number;
   disk: number;
-  network: string; // network: 'in:[in] MB/s, out:[out] MB/s'
+  // network: string; // network: 'in:[in] MB/s, out:[out] MB/s'
 }

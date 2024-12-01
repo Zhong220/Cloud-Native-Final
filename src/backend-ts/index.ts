@@ -1,7 +1,9 @@
 import express from "express";
 import http from "node:http";
 import routes from "./routes/index.ts";
+import cron from "node-cron";
 import { Server as SocketIOServer } from "socket.io";
+import { hardwareLogService } from "./utils/log/service.ts";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
 routes.forEach((e) => {
   app.use(e.addr, e.router);
 });
+
+cron.schedule("* * * * *", () => hardwareLogService());
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -24,10 +24,10 @@ export async function hardwareLogRepository(log: HardwareLogRepositoryModel) {
   const connection = await pool.getConnection();
   try {
     const query = `
-      INSERT INTO hardware_performance_logs (cpu, ram, disk, network)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO hardware_performance_logs (cpu, ram, disk)
+      VALUES (?, ?, ?)
     `;
-    const values = [log.cpu, log.ram, log.disk, log.network];
+    const values = [log.cpu, log.ram, log.disk];
     await connection.query(query, values);
   } catch (error) {
     console.error("Error inserting hardware log:", error);
