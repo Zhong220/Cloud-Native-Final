@@ -6,13 +6,11 @@ export interface EventLogServiceModel {
 }
 
 export interface EventLogRepositoryModel {
-  timestamp: Date;
   uid: string;
   event: string; // event: 'API:[API], http code:[http code], description:[description]'
 }
 
 export interface HardwareLogRepositoryModel {
-  timestamp: Date;
   cpu: number;
   ram: number;
   disk: number;

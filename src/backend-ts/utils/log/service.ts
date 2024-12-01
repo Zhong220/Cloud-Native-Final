@@ -5,7 +5,6 @@ import si from "systeminformation";
 export function eventLogService(log: EventLogServiceModel) {
   try {
     eventLogRepository({
-      timestamp: new Date(),
       uid: log.uid,
       event: `API:[${log.apiUrl}], http code:[${log.httpCode}], description:[${log.description}]`,
     });
@@ -22,7 +21,6 @@ export async function hardwareLogService() {
     const network = await si.networkStats();
 
     const hardwareLog: HardwareLogRepositoryModel = {
-      timestamp: new Date(),
       cpu: cpu.currentLoad,
       ram: memory.used / (1024 * 1024 * 1024), // Convert bytes to GB
       disk: disk.reduce((acc, d) => acc + d.use, 0) / disk.length, // Average disk usage percentage

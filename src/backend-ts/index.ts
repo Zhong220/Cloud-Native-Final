@@ -1,5 +1,5 @@
 import express from "express";
-import http from "http";
+import http from "node:http";
 import routes from "./routes/index.ts";
 import { Server as SocketIOServer } from "socket.io";
 import {
