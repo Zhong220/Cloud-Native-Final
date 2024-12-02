@@ -10,8 +10,12 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (data: { room: string; userID: string }) => void;
-  chatMessage: (data: { room: string; message: string }) => void;
+  joinRoom: (data: { room: string; userName: string }) => void;
+  chatMessage: (data: {
+    sender: string;
+    room: string;
+    message: string;
+  }) => void;
 }
 
 export interface InterServerEvents {

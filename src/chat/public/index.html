@@ -60,8 +60,8 @@
 
       // Join a room
       const room = prompt("Enter room name:");
-      const userID = promt("Enter your id:");
-      socket.emit("joinRoom", { room, userID });
+      const userName = prompt("Enter your name:");
+      socket.emit("joinRoom", { room, userName });
 
       // Listen for messages
       socket.on("currentMessage", (data) => {
@@ -89,7 +89,7 @@
       messageForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const message = messageInput.value;
-        socket.emit("chatMessage", { room, message });
+        socket.emit("chatMessage", { userName, room, message });
         messageInput.value = "";
       });
     </script>

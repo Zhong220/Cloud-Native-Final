@@ -23,14 +23,21 @@ const io = new SocketIOServer<
 >(server);
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join("../public")));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, "../public")));
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 io.on("connection", (socket) => {
   console.log(`A user connected: ${socket.id}`);
 
   // Handle 'joinRoom' event
   socket.on("joinRoom", (data) => {
-    const { room, userID } = data;
+    const { room, userName } = data;
 
     // Check if the room exists in Redis
     redisClient.exists(`room:${room}`, (err, exists) => {
@@ -42,15 +49,17 @@ io.on("connection", (socket) => {
       if (exists === 1) {
         // Room list exists, join the room
         socket.join(room);
-        console.log(`A user ${userID} joined room: ${room}`);
+        console.log(`A user: ${userName} joined room: ${room}`);
 
         // Get all elements in the room list and send back to frontend
-        redisClient.lrange(`room:${room}`, 0, -1, (err, elements) => {
+        redisClient.lrange(`room:${room}`, 1, -1, (err, elements) => {
           if (err) {
             console.error("Error getting elements from room list:", err);
             return;
           }
+          // const messages = elements.map((element) => JSON.parse(element));
           socket.emit("historyMessage", JSON.parse(`[${elements}]`));
+            // messages);
         });
       } else {
         // Room list does not exist, create the room list in Redis and join
@@ -60,7 +69,9 @@ io.on("connection", (socket) => {
             return;
           }
           socket.join(room);
-          console.log(`Room list ${room} created and user joined.`);
+          console.log(
+            `Room list room: ${room} created and user:${userName} joined.`
+          );
           socket.emit("historyMessage", []);
         });
       }
@@ -68,19 +79,20 @@ io.on("connection", (socket) => {
   });
 
   // Handle 'chatMessage' event
-  socket.on("chatMessage", ({ room, message }) => {
-    const sender = socket.data.userID || "Anonymous";
-    const curr = new Date();
+  socket.on("chatMessage", ({ userName, room, message }) => {
+    const sender = userName || "Anonymous";
+    const curr = new Date().toISOString();
     io.to(room).emit("currentMessage", {
       sender,
       message,
-      timestamp: curr.toISOString(),
+      timestamp: curr,
     });
 
     // Add the message to the room list in Redis
-    redisClient.lpush(
+    // "room:${room}":"[{"sender":"Alice","message":"Hello","timestamp":"2021-12-01T00:00:00.000Z"}]"
+    redisClient.rpush(
       `room:${room}`,
-      JSON.stringify({ sender, message, curr }),
+      JSON.stringify({ sender, message, timestamp: curr }),
       (err) => {
         if (err) {
           console.error("Error adding message to room list in Redis:", err);
@@ -93,8 +105,4 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
-});
-
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
