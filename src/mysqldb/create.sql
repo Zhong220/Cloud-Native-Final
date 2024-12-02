@@ -1,5 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `cns_db`;
+CREATE DATABASE IF NOT EXISTS `cns_db`;
 
+USE `cns_db`;
 USE `cns_db`;
 
 -- create.sql
@@ -25,6 +27,10 @@ DROP TABLE IF EXISTS `channel`;
 DROP TABLE IF EXISTS `groups`;
 
 DROP TABLE IF EXISTS `user`;
+
+DROP TABLE IF EXISTS `event_logs`;
+
+DROP TABLE IF EXISTS `hardware_performance_logs`;
 
 DROP TABLE IF EXISTS `event_logs`;
 
