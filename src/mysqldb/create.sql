@@ -1,5 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `cns_db`;
+CREATE DATABASE IF NOT EXISTS `cns_db`;
 
+USE `cns_db`;
 USE `cns_db`;
 
 -- create.sql
@@ -25,6 +27,10 @@ DROP TABLE IF EXISTS `channel`;
 DROP TABLE IF EXISTS `groups`;
 
 DROP TABLE IF EXISTS `user`;
+
+DROP TABLE IF EXISTS `event_logs`;
+
+DROP TABLE IF EXISTS `hardware_performance_logs`;
 
 DROP TABLE IF EXISTS `event_logs`;
 
@@ -204,8 +210,8 @@ CREATE TABLE
 -- Create 'event_logs' table
 CREATE TABLE
     `event_logs` (
-        `id` VARCHAR(10) NOT NULL PRIMARY KEY,
-        `timestamp` DATETIME NOT NULL,
+        `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `uid` VARCHAR(10) NULL,
         `event` VARCHAR(50) NOT NULL COMMENT 'API:[API], http code:[http code], description:[description]', -- Event description
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE SET NULL
@@ -214,10 +220,10 @@ CREATE TABLE
 -- Create 'hardware_performance_logs' table
 CREATE TABLE
     `hardware_performance_logs` (
-        `id` VARCHAR(10) NOT NULL PRIMARY KEY,
-        `timestamp` DATETIME NOT NULL,
+        `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `cpu` FLOAT NOT NULL,
         `ram` FLOAT NOT NULL,
         `disk` FLOAT NOT NULL,
-        `network` TEXT NULL COMMENT 'in:[in], out:[out]' -- Network traffic in MB/s
+        `network` TEXT NULL COMMENT 'in:[in] MB/s, out:[out] MB/s' -- Network traffic in MB/s
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Hardware performance logs';

@@ -14,7 +14,6 @@ services:
       - 3307:3306
     volumes:
       - cns-db:/var/lib/mysql
-      #- ./my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -29,17 +28,19 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-    networks:
-      - cns_network
   redis:
     container_name: redis
-    image: redis:latest
+    image: redis:7.4
     ports:
       - "6380:6379"
-    networks:
-      - cns_network
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   backend:
     container_name: backend
     build:
@@ -50,8 +51,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - cns_network
+      redis:
+        condition: service_healthy
+  chatroom:
+    container_name: chatroom
+    build:
+      context: ./src/chat
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   cns-db:
