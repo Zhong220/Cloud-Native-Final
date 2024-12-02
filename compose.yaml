@@ -14,8 +14,6 @@ services:
       - 3307:3306
     volumes:
       - cns-db:/var/lib/mysql
-      - cns-db:/var/lib/mysql
-      #- ./my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -32,7 +30,7 @@ services:
       start_period: 30s
   redis:
     container_name: redis
-    image: redis:latest
+    image: redis:7.4
     ports:
       - "6380:6379"
     volumes:
