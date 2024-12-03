@@ -1,10 +1,12 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import routes from "./routes/index.ts";
+import cron from "node-cron";
+import { hardwareLogService } from "./utils/log/service.ts";
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = 8000;
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (req, res) => {
   res.status(200).send("CNS ts express backend is available.");
 });
 
@@ -13,4 +15,9 @@ routes.forEach((e) => {
   app.use(e.addr, e.router);
 });
 
-app.listen(port);
+// scheduled hardware log service
+cron.schedule("* * * * *", () => hardwareLogService());
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

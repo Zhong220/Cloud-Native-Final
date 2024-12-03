@@ -1,0 +1,74 @@
+services:
+  db:
+    container_name: mysqldb
+    build:
+      context: ./src/mysqldb
+      dockerfile: dockerfile
+    platform: linux/amd64
+    stdin_open: true
+    tty: true
+    restart: always
+    working_dir: /var/lib/mysql
+    command: --bind-address=0.0.0.0
+    ports:
+      - 3307:3306
+    volumes:
+      - cns-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} && mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'show databases;'",
+        ]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  redis:
+    container_name: redis
+    image: redis:7.4
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  backend:
+    container_name: backend
+    build:
+      context: ./src/backend-ts
+      dockerfile: dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  chatroom:
+    container_name: chatroom
+    build:
+      context: ./src/chat
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  cns-db:
+  redis-data:
+
+networks:
+  cns_network:
