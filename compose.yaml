@@ -4,7 +4,6 @@ services:
     build:
       context: ./src/mysqldb
       dockerfile: dockerfile
-    platform: linux/amd64
     stdin_open: true
     tty: true
     restart: always
