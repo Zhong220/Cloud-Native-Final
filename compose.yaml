@@ -4,7 +4,6 @@ services:
     build:
       context: ./src/mysqldb
       dockerfile: dockerfile
-    platform: linux/amd64
     stdin_open: true
     tty: true
     restart: always
@@ -14,6 +13,8 @@ services:
       - 3307:3306
     volumes:
       - cns-db:/var/lib/mysql
+    env_file:
+      - ./src/mysqldb/.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -30,7 +31,7 @@ services:
       start_period: 30s
   redis:
     container_name: redis
-    image: redis:7.4
+    image: redis:alpine
     ports:
       - "6380:6379"
     volumes:
@@ -48,6 +49,8 @@ services:
       dockerfile: dockerfile
     ports:
       - "8000:8000"
+    env_file:
+      - ./src/backend-ts/.env
     depends_on:
       db:
         condition: service_healthy
