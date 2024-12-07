@@ -1,7 +1,5 @@
 FROM denoland/deno:2.0.0
 
-USER deno
-
 WORKDIR /app
 
 COPY . /app/

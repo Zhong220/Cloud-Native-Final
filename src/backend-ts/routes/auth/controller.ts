@@ -18,12 +18,24 @@ router.get("/login", (req: Request, res: Response) => {
   // } catch (error) {}
 });
 
+type loginError = {msg:string};
 router.post("/login", (req:Request, res: Response) => {
-  const {email, password} = req.body;
-  console.log("req.body:", email, password);
-  const success = loginService({mail:email, hashPassword:password});
-  console.log("success",success);
-  res.status(200).json({msg: req.body})
+  try {
+    const {email, password} = req.body;
+    console.log("req.body:", email, password);
+    const success = loginService({mail:email, hashPassword:password});
+    console.log("success",success);
+    if (true) {
+      const msg = new Error("Fuck");
+      throw msg;
+    }
+   
+    res.status(200).json({msg: req.body})
+  } catch (error) { 
+    console.error(error.msg);
+    return ;
+  };
+  
 })
 
 
