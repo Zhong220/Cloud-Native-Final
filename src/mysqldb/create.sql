@@ -1,7 +1,5 @@
 CREATE DATABASE IF NOT EXISTS `cns_db`;
-CREATE DATABASE IF NOT EXISTS `cns_db`;
 
-USE `cns_db`;
 USE `cns_db`;
 
 -- create.sql

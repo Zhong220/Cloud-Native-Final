@@ -10,7 +10,7 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 router.get("/login", (req: Request, res: Response) => {
-  res.status(200).send("Login router is availble");
+  res.status(200).send("Login router is availblemm");
   // try {
   //   res
   //     .status(201)
@@ -18,14 +18,14 @@ router.get("/login", (req: Request, res: Response) => {
   // } catch (error) {}
 });
 
-type loginError = {msg:string};
+
 router.post("/login", (req:Request, res: Response) => {
   try {
     const {email, password} = req.body;
     console.log("req.body:", email, password);
     const success = loginService({mail:email, hashPassword:password});
     console.log("success",success);
-    if (true) {
+    if (false) {
       const msg = new Error("Fuck");
       throw msg;
     }
