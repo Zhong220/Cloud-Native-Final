@@ -4,8 +4,9 @@ export type RoomMessage = {
   timestamp: string;
 };
 
-export type UserRoomMapModel = {
+export type UserRoomMappingModel = {
   room: string;
+  userId: string;
   userName: string;
 };
 
@@ -16,13 +17,13 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (data: UserRoomMapModel) => void;
+  joinRoom: (data: UserRoomMappingModel) => void;
   chatMessage: (
-    data: UserRoomMapModel & {
+    data: UserRoomMappingModel & {
       message: string;
     }
   ) => void;
-  getPartialMessage: (data: UserRoomMapModel) => void;
+  getPartialMessage: (data: UserRoomMappingModel & { lastLoad: number }) => void;
 }
 
 export interface InterServerEvents {

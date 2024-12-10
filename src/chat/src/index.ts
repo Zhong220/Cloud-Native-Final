@@ -1,7 +1,6 @@
 import express from "express";
 import http from "node:http";
 import path from "node:path";
-import Redis from "ioredis";
 import { fileURLToPath } from "node:url";
 import { Server as SocketIOServer } from "socket.io";
 import {
@@ -18,7 +17,6 @@ import {
 
 const app = express();
 const PORT = 8080;
-const redisClient = new Redis("redis");
 const server = http.createServer(app);
 const io = new SocketIOServer<
   ClientToServerEvents,
@@ -43,9 +41,15 @@ io.on("connection", (socket) => {
   // Handle 'joinRoom' event
   socket.on("joinRoom", async (data) => {
     const elements = await joinRoomService(data);
-    console.log("Elements:", elements);
+    const systemWelcomeMessage = {
+      sender: "system",
+      message: `Welcome ${data.userName} join ${data.room}`,
+      timestamp: new Date().toISOString(),
+    };
     socket.join(data.room);
     socket.emit("historyMessage", elements);
+    socket.emit("currentMessage", systemWelcomeMessage);
+    socket.to(data.room).emit("currentMessage", systemWelcomeMessage);
   });
 
   // Handle 'chatMessage' event
@@ -65,8 +69,8 @@ io.on("connection", (socket) => {
   });
 
   // Handle 'getPartialMessage' event
-  socket.on("getPartialMessage", (data) => {
-    socket.emit("historyMessage", partialMessageService(data));
+  socket.on("getPartialMessage", async (data) => {
+    socket.emit("historyMessage", await partialMessageService(data));
   });
 
   // Handle 'disconnect' event
