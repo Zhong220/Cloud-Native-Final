@@ -74,6 +74,7 @@ export async function chatMessageService(data: RoomMessage, room: string) {
 export async function partialMessageService(data: {
   room: string;
   lastLoad: number;
+  end?: number;
 }): Promise<RoomMessage[]> {
   const { room, lastLoad } = data;
   let result: RoomMessage[] = [];
@@ -81,7 +82,11 @@ export async function partialMessageService(data: {
   try {
     // Get specific amount message in the room list
     const start = Math.max(0, lastLoad - 100);
-    const messages = await redisClient.lrange(`room:${room}`, start, -1);
+    const messages = await redisClient.lrange(
+      `room:${room}`,
+      start,
+      data.end ? data.end : -1
+    );
     result = messages.map((element) => JSON.parse(element));
     console.log("Retrieved messages:", result);
   } catch (err) {

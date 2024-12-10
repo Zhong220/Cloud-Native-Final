@@ -196,7 +196,7 @@ CREATE TABLE
         `cid` VARCHAR(10) NOT NULL,
         `message` TEXT NOT NULL,
         `timestamp` TIMESTAMP NOT NULL,
-        PRIMARY KEY (`uid`, `cid`, `timestamp`),
+        PRIMARY KEY (`timestamp`),
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
         FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
