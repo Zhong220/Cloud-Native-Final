@@ -3,35 +3,46 @@ import React, { useState } from 'react';
 import {Text, View, TextInput, TouchableOpacity, Image, Pressable } from 'react-native';
 import styles from './style.ts';
 import {Stack, useRouter, Navigator, router, Link} from 'expo-router';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { Alert } from 'react-native';
 
 export default function login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  // const frontendRouter = useRouter();
+  const frontendRouter = useRouter();
 
-  const handleLogin = async (email:string, password:string) => {
+  const handleLogin = async (email: string, password: string) => {
     const hashedPassword = SHA256(password).toString();
     try {
       const response = await axios.post('http://localhost:8000/auth/login', {
         email: email,
-        password: hashedPassword
-      })
-      .then(response => console.log(response))
-      .catch(error => console.error(error));
-      
+        password: hashedPassword,
+      });
+      if (response.status === 200) {
+        const jwtToken = response.data.jwttok;
+        console.log('JWT Token:', jwtToken);
+  
+        // 存入 SecureStore
+        await AsyncStorage.setItem('jwtToken', jwtToken);
+        // await SecureStore.setItemAsync('jwtToken', jwtToken);
+        console.log('Token saved to asyncstorage');
+        frontendRouter.push('/homepg')
+      }
+      else if (response.status === 401) {
+        // Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+        // window.alert('Login Failed Invalid email or password. Please try again.')
+        console.log("登入錯誤：")
+      }
     } catch (error) {
-      console.error('FUCKKKKKK!!!!!Error:', error);
+      console.error('Error:', error.response?.data || error.message);
     }
-  }
-
-
+  };
+  
   return (
     <View style={styles.container}>
       {/* Title */}

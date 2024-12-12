@@ -4,12 +4,31 @@ import {Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import styles from './style.ts';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from '../../node_modules/expo-router/build/exports.d.ts';
+import axios from "axios";
+import SHA256 from 'crypto-js/sha256';
+import { func } from '../../node_modules/@types/prop-types/index.d.ts';
 
 export default function createAccount() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handleRegister = async (name:string, email:string, password:string) => {
+    const hashedPassword = SHA256(password).toString();
+    try {
+      const response = await axios.post('http://localhost:8000/auth/register', {
+        name: name,
+        email: email,
+        password: hashedPassword
+      })  
+      .then(response => console.log(response))
+      .catch(error => console.error(error));
+      
+    } catch (error) {
+      console.error('FUCKKKKKK!!!!!Error:', error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -66,16 +85,13 @@ export default function createAccount() {
 
       {/* Keep me logged in & Forgot Password */}
       <View style={styles.optionsContainer}>
-        {/* <TouchableOpacity>
-          <Text style={styles.optionText}>Keep me logged in</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity>
           <Text style={[styles.optionText, styles.forgotPassword]}>Forget Password?</Text>
         </TouchableOpacity>
       </View>
 
       {/* Sign up Button */}
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={function(){ handleRegister(name, email, password) }}> 
         <Text style={styles.loginButtonText}>Sign up</Text>
       </TouchableOpacity>
 
