@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
-import loginService from "./service.ts";
+import {loginService, registerService} from "./service.ts";
 import cors from "cors"
+import { JsonWebTokenError } from "../../node_modules/jsonwebtoken/index.js";
+
 const router = express.Router();
 router.use(cors());
 router.use(express.json());
@@ -11,31 +13,31 @@ router.get("/", (req: Request, res: Response) => {
 
 router.get("/login", (req: Request, res: Response) => {
   res.status(200).send("Login router is availblemm");
-  // try {
-  //   res
-  //     .status(201)
-  //     .send(loginService({ mail: "sdfa", hashPassword: "sfajgla" }));
-  // } catch (error) {}
 });
 
 
-router.post("/login", (req:Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
     console.log("req.body:", email, password);
-    const success = loginService({mail:email, hashPassword:password});
-    console.log("success",success);
-    if (false) {
-      const msg = new Error("Fuck");
-      throw msg;
-    }
-   
-    res.status(200).json({msg: req.body})
-  } catch (error) { 
-    console.error(error.msg);
-    return ;
+
+    const successTok = await loginService({ mail: email, hashPassword: password });
+    console.log("success", successTok);
+    res.status(200).json({ msg: "Login Success!", jwttok: successTok.jwtToken });
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(401).json({ msg: error.message });
+  }
+});
+
+router.post("/register", (req:Request, res: Response) => {
+  try {
+    const {name, email, password} = req.body;
+    registerService({name:name, mail:email, hashPassword:password});
+    res.status(200).json({msg: req.body}) 
+  } catch (err) {
+    console.error(err);
   };
-  
 })
 
 
