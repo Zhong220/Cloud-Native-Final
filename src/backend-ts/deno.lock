@@ -8,6 +8,8 @@
     "npm:@types/node@^22.9.3": "22.10.2",
     "npm:@types/socket.io@^3.0.1": "3.0.2",
     "npm:cors@^2.8.5": "2.8.5",
+    "npm:crypto-js@^4.2.0": "4.2.0",
+    "npm:crypto@^1.0.1": "1.0.1",
     "npm:dotenv@^16.4.5": "16.4.5",
     "npm:expo-secure-store@14": "14.0.0_expo@52.0.18__react@18.3.1__react-native@0.76.5___react@18.3.1",
     "npm:express-session@^1.18.1": "1.18.1",
@@ -2600,8 +2602,14 @@
     "crypt@0.0.2": {
       "integrity": "sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow=="
     },
+    "crypto-js@4.2.0": {
+      "integrity": "sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q=="
+    },
     "crypto-random-string@2.0.0": {
       "integrity": "sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA=="
+    },
+    "crypto@1.0.1": {
+      "integrity": "sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig=="
     },
     "debug@2.6.9": {
       "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==",
@@ -5623,11 +5631,14 @@
         "npm:@types/node@^22.9.3",
         "npm:@types/socket.io@^3.0.1",
         "npm:cors@^2.8.5",
+        "npm:crypto-js@^4.2.0",
+        "npm:crypto@^1.0.1",
         "npm:dotenv@^16.4.5",
         "npm:expo-secure-store@14",
         "npm:express-session@^1.18.1",
         "npm:express@^4.21.1",
         "npm:ioredis@^5.4.1",
+        "npm:js-sha256@0.11",
         "npm:jsonwebtoken@^9.0.2",
         "npm:mysql2@^3.11.4",
         "npm:node-cron@^3.0.3",
