@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     welcomeIcon: {
-      width:400,
-      height:400,
+      width:550,
+      height:450,
     }
   });
 

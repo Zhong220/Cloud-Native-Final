@@ -10,12 +10,13 @@
     return (
       <View style={styles.container}>
         {/* Title */}
-        <Text style={styles.title}>GroupUp!</Text>
-        <Text style={styles.subtitle}>Welcome back to GroupUp</Text>
-        <Link href="../login">About</Link>
+        
 
-        <Image source={require("../../assets/icon.png")} style={styles.welcomeIcon}/>
-
+        <Image source={require("../../assets/image.png")} style={styles.welcomeIcon}/>
+        <Text style={styles.title}>
+          <Text style={{ color: 'black' }}>Welcome to </Text>
+          <Text style={{ color: 'orange' }}>GroupUp!</Text>
+        </Text>
         {/* Login Button */}
         <Link href="loginPage/login" asChild>
          <Pressable style={styles.loginButton }>

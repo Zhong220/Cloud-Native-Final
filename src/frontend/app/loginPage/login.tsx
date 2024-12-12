@@ -9,6 +9,10 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import { PlayFabClient } from 'playfab-sdk';
+
+
 
 export default function login() {
   const [email, setEmail] = useState('');
@@ -42,6 +46,10 @@ export default function login() {
       console.error('Error:', error.response?.data || error.message);
     }
   };
+
+  const handleGoogleLogin = async() => {
+    await console.log("E04");
+  }
   
   return (
     <View style={styles.container}>
@@ -111,7 +119,7 @@ export default function login() {
           <TouchableOpacity onPress={() => {console.log("fb login")}}>
           <AntDesign name="facebook-square" size={24} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {console.log("google  login")}}>
+          <TouchableOpacity onPress={() =>  handleGoogleLogin() }>
             <AntDesign name="google" size={24} color="black" />
           </TouchableOpacity>
         </View>

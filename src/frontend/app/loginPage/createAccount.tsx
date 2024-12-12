@@ -3,17 +3,16 @@ import React, { useState } from 'react';
 import {Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import styles from './style.ts';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link } from '../../node_modules/expo-router/build/exports.d.ts';
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';
-import { func } from '../../node_modules/@types/prop-types/index.d.ts';
+import {Stack, useRouter, Navigator, router, Link} from 'expo-router';
 
 export default function createAccount() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const frontendRouter = useRouter();
   const handleRegister = async (name:string, email:string, password:string) => {
     const hashedPassword = SHA256(password).toString();
     try {
@@ -22,9 +21,16 @@ export default function createAccount() {
         email: email,
         password: hashedPassword
       })  
-      .then(response => console.log(response))
+      .then(response => {
+        if (response.status === 200){
+          frontendRouter.push('/loginPage/login');
+        }
+        else if (response.status === 401) {
+          console.error("Login Fail:401")
+        }
+       })
       .catch(error => console.error(error));
-      
+
     } catch (error) {
       console.error('FUCKKKKKK!!!!!Error:', error);
     }
