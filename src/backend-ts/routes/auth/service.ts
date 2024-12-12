@@ -6,7 +6,24 @@ import jwt from 'jsonwebtoken';
 import process from "node:process";
 import dotenv from "dotenv";
 import { TokenExpiredError } from "../../node_modules/jsonwebtoken/index.js";
+import {sha256} from 'js-sha256';
+import redisClient from "../../utils/redis.ts";
 dotenv.config()
+
+redisClient.connect()
+  .then(() => console.log('Connected to Redis'))
+  .catch((err) => console.error('Redis connection error:', err));
+
+
+async function writeToRedis(key:string, value:string, second:Number) {
+  try {
+    await redisClient.set(key, value, {EX : second});
+    console.log(`Key: ${key}, Value: ${value} written to Redis`);
+  } catch (err) {
+    console.error('Error writing to Redis:', err);
+  }
+}
+
 
 export async function loginService(model: DtoModel): Promise<ViewModel> {
   try {
@@ -16,6 +33,7 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
       throw new Error("Wrong mail or password");
     }
     const jwtToken = getJWTToken(result.mail);
+    await writeToRedis("jwtToken", jwtToken, 3600);
     return { jwtToken };
   } catch (err) {
     console.error("loginService error:", err);
@@ -24,11 +42,26 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
 }
 
 
-export function registerService(model: registerModel): ViewModel {
+export async function registerService(model: registerModel) {
   const result: DataModel  = registerRepository(model);
-  mysqlAddAccount(model);
+  try {
+    const mysql = await mysqlPool.getConnection();
+    const q = `
+    SELECT email, password FROM user WHERE email = ?;`;
+    const value = [model.mail, model.hashPassword];
+    const [rows] = await mysql.query(q, value);
+    console.log(rows);
+    if (!rows.length) {
+      mysqlAddAccount(model);
+    }
+    else {
+      throw new Error("Already have account!");
+    }
 
-  return { jwtToken: getJWTToken(result.mail) };
+  } catch(err) {
+    console.error("registerService", err);
+    throw err;
+  }
 }
 
 
@@ -36,7 +69,7 @@ async function mysqlAddAccount(userData:registerModel) {
   try {
     const mysql = await mysqlPool.getConnection();
     const userCol = `uid, username, email, password, phone, description, icon, birthday, gender, attend_time, update_time`;
-    const uid = '100';
+    const uid = sha256(userData.mail).substring(0,9);
     const phone = '0912345678';
     const description = 'Nothing to description';
     const icon = 'NULL';
@@ -45,16 +78,13 @@ async function mysqlAddAccount(userData:registerModel) {
     const attend_time = 'NOW()';
     const update_time = 'NULL';
     const userTuple = ['U'+uid, userData.name, userData.mail, userData.hashPassword, 
-      phone, description, icon, birthday, gender, attend_time, update_time];
-    const q = `insert into user (${userCol})
-                values (${userTuple})`;
+      phone, description, icon, birthday, gender];
+    
     const query = `
       insert into user (${userCol})
-      value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      value (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NULL)
     `;
-    mysql.query(query, userTuple);
-    mysql.query(q);
-    const [rows, fields] = await mysql.query(q);
+    const [rows, fields] = await mysql.query(query, userTuple);
     console.log(rows, fields);
   } catch (err) {
     console.error("mysqlSearchAccount fail:\n", err);

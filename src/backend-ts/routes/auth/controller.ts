@@ -3,6 +3,7 @@ import {loginService, registerService} from "./service.ts";
 import cors from "cors"
 import { JsonWebTokenError } from "../../node_modules/jsonwebtoken/index.js";
 
+
 const router = express.Router();
 router.use(cors());
 router.use(express.json());
@@ -30,15 +31,27 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/register", (req:Request, res: Response) => {
+router.post("/register", async (req:Request, res: Response) => {
   try {
     const {name, email, password} = req.body;
-    registerService({name:name, mail:email, hashPassword:password});
+    await registerService({name:name, mail:email, hashPassword:password});
     res.status(200).json({msg: req.body}) 
   } catch (err) {
-    console.error(err);
+    console.error("Email has Existed:", err);
+    res.status(401).json({msg: err.message})
   };
 })
+
+router.post("/google-login", async (req: Request, res: Response) => {
+  try {
+    
+    
+  } catch (error) {
+    console.error("Error during google-login:", error);
+    res.status(401).json({ msg: error.message });
+  }
+});
+
 
 
 export default router;
