@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import process from "node:process";
 
 dotenv.config();
 
@@ -10,5 +9,3 @@ const mysqlPool = mysql.createPool({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 });
-
-export default mysqlPool;
