@@ -1,12 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-<<<<<<< Updated upstream
-    "strict": true
-  }
-=======
     "strict": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./*"
@@ -19,5 +14,4 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
->>>>>>> Stashed changes
 }
