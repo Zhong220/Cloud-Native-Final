@@ -20,13 +20,13 @@
 
 ### Run
 ```bash
-$ cd Cloud-Native-Final/src/backend-ts/
+cd Cloud-Native-Final/src/backend-ts/
 
 # install
-$ deno install
+deno install
 
 # run 
-$ deno run --allow-all index.ts
+deno run --allow-all index.ts
 ```
 
 ### Reference

@@ -1,0 +1,11 @@
+FROM denoland/deno:alpine
+
+WORKDIR /app
+
+COPY . /app/
+
+RUN deno install
+
+EXPOSE 8080
+
+CMD ["deno", "run", "--allow-all", "--unstable-sloppy-imports", "src/index.ts"]

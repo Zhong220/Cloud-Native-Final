@@ -1,4 +1,4 @@
-# React Native 與 TypeScript 前端開發規範
+# React Native, TypeScript, Express 開發規範
 
 ## 0. 開發原則
 
@@ -79,7 +79,7 @@
 
 ## 1. File Structure
 
-資料夾結構:
+frontend:
 
 ```plaintext
 src/
@@ -87,6 +87,23 @@ src/
 ├── app/               # 頁面程式碼
 ├── services/          # API 和網路請求
 └── App.tsx            # 主程式
+```
+
+backend:
+
+```plaintext
+backend-ts/
+├── routes/                 # routes
+│   ├── auth/               # Auth API router
+│   │   ├── controller.ts   # APU web endpoint
+│   │   ├── model.ts        # All models
+│   │   ├── repository.ts   # API database endpoint
+│   │   └── service.ts      # Business logic
+│   ├── channel/            # Channel API router ...
+│   └── index.ts            # Integration of routers
+├── .env                    # Environment variables
+├── dockerfile              # dockerfile, don't revise
+└── index.ts                # Main function
 ```
 
 ## 2. Naming Conventions
@@ -102,6 +119,7 @@ src/
   - 附註: component 雖然長得像 function 但請不要使用 camelcase，不然 react 會辨識不到
 - interface 或 type: 使用 **PascalCase**，(例如：UserProfileProps)
 - 若要在其他頁面使用此頁 interface ，可以 `export interface`，並在其他頁 `import interface`
+- model: 使用 **PascalCase**，(例如： UserProfile)，並記得 `export` 該 model
 ```typescript
 // user.tsx
 export interface UserProp {
