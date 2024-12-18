@@ -2,7 +2,7 @@
   import React, { useState } from 'react';
   import {Text, View, TouchableOpacity, Image, requireNativeComponent, Pressable } from 'react-native';
   // import styles from './style.ts';
-  import styles from '@/app/(tabs)/loginPage/style';
+  import styles from './style';
   import { Router, Link } from "expo-router";
 
 
@@ -13,7 +13,7 @@
         {/* Title */}
         
 
-        <Image source={require("../../../assets/images/image.png")} style={styles.welcomeIcon}/>
+        <Image source={require("../../assets/images/image.png")} style={styles.welcomeIcon}/>
         <Text style={styles.title}>
           <Text style={{ color: 'black' }}>Welcome to </Text>
           <Text style={{ color: 'orange' }}>GroupUp!</Text>

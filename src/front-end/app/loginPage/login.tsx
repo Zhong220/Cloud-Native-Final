@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import {Text, View, TextInput, TouchableOpacity, Image, Pressable } from 'react-native';
-import styles from '@/app/(tabs)/loginPage/style';
+import styles from './style';
 import {Stack, useRouter, Navigator, router, Link} from 'expo-router';
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';

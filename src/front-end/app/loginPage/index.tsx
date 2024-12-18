@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import styles from '@/app/(tabs)/loginPage/style';
+import styles from './style';
 
 import { Router, Link } from "expo-router";
 

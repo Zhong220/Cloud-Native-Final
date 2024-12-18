@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import {Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import styles from '@/app/(tabs)/loginPage/style';
+import styles from './style';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from "axios";
 import SHA256 from 'crypto-js/sha256';
