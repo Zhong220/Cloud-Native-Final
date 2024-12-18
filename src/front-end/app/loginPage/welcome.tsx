@@ -6,7 +6,7 @@
   import { Router, Link } from "expo-router";
 
 
-  export default function welcome() { 
+  export default function Welcome() { 
 
     return (
       <View style={styles.container}>
