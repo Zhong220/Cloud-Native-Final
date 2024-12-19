@@ -192,11 +192,12 @@ CREATE TABLE
 -- Create 'chat_in' table (Users chat in Channels)
 CREATE TABLE
     `chat_in` (
+        `mid` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         `uid` VARCHAR(10) NOT NULL,
         `cid` VARCHAR(10) NOT NULL,
         `message` TEXT NOT NULL,
         `timestamp` TIMESTAMP NOT NULL,
-        PRIMARY KEY (`timestamp`),
+        -- PRIMARY KEY (`uid`, `cid`, `timestamp`),
         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
         FOREIGN KEY (`cid`) REFERENCES `channel` (`cid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'Users chat in Channels';
