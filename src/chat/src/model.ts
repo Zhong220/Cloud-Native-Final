@@ -4,7 +4,7 @@ export type RoomMessage = {
   timestamp: string;
 };
 
-export type UserRoomMappingModel = {
+export type UserRoomModel = {
   room: string;
   userId: string;
   userName: string;
@@ -12,18 +12,13 @@ export type UserRoomMappingModel = {
 
 export interface ServerToClientEvents {
   currentMessage: (data: RoomMessage) => void;
-  historyMessage: (data: RoomMessage[]) => void;
   partialMessage: (data: RoomMessage[]) => void;
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (data: UserRoomMappingModel) => void;
-  chatMessage: (
-    data: UserRoomMappingModel & {
-      message: string;
-    }
-  ) => void;
-  getPartialMessage: (data: UserRoomMappingModel & { lastLoad: number }) => void;
+  joinRoom: (data: UserRoomModel) => void;
+  chatMessage: (data: UserRoomModel & { message: string }) => void;
+  getPartialMessage: (data: { room: string; lastLoad: number }) => void;
 }
 
 export interface InterServerEvents {
@@ -33,3 +28,14 @@ export interface InterServerEvents {
 export interface SocketData {
   userID?: string;
 }
+
+export type StoreMessageDto = RoomMessage & {
+  roomId: string;
+};
+
+export type StoreMessageDataModel = {
+  uid: string;
+  cid: string;
+  message: string;
+  timestamp: string;
+};
