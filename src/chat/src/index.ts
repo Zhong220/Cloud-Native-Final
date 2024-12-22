@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
       timestamp: new Date().toISOString(),
     };
     socket.join(data.room);
-    socket.emit("historyMessage", elements);
+    socket.emit("partialMessage", elements);
     socket.emit("currentMessage", systemWelcomeMessage);
     socket.to(data.room).emit("currentMessage", systemWelcomeMessage);
   });
@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
 
   // Handle 'getPartialMessage' event
   socket.on("getPartialMessage", async (data) => {
-    socket.emit("historyMessage", await partialMessageService(data));
+    socket.emit("partialMessage", await partialMessageService(data));
   });
 
   // Handle 'disconnect' event

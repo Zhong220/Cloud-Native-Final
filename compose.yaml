@@ -21,30 +21,28 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} && mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'show databases;'",
-        ]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} && mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'show databases;'" ]
       timeout: 5s
       retries: 10
       start_period: 30s
   redis:
     container_name: redis
-    image: redis:alpine
+    build:
+      context: .
+      dockerfile: dockerfile.redis
     restart: always
     ports:
       - "7000:6379"
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
-  backend:
-    container_name: backend
+  express_server:
+    container_name: express_server
     build:
       context: ./src/backend-ts
       dockerfile: dockerfile
@@ -57,8 +55,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-  chatroom:
-    container_name: chatroom
+  socket_server:
+    container_name: socket_server
     build:
       context: ./src/chat
       dockerfile: dockerfile
@@ -75,6 +73,7 @@ services:
 volumes:
   cns-db:
   redis-data:
+
 
 networks:
   cns_network:
