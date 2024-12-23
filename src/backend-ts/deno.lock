@@ -15,7 +15,10 @@
     "npm:express-session@^1.18.1": "1.18.1",
     "npm:express@^4.21.1": "4.21.1",
     "npm:ioredis@^5.4.1": "5.4.1",
+<<<<<<< HEAD
     "npm:js-sha256@0.11": "0.11.0",
+=======
+>>>>>>> 4c421d93646698b44060a5b256ab365ab425a239
     "npm:jsonwebtoken@^9.0.2": "9.0.2",
     "npm:mysql2@^3.11.4": "3.11.5",
     "npm:node-cron@^3.0.3": "3.0.3",
@@ -3611,9 +3614,12 @@
     "join-component@1.1.0": {
       "integrity": "sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ=="
     },
+<<<<<<< HEAD
     "js-sha256@0.11.0": {
       "integrity": "sha512-6xNlKayMZvds9h1Y1VWc0fQHQ82BxTXizWPEtEeGvmOUYpBRy4gbWroHLpzowe6xiQhHpelCQiE7HEdznyBL9Q=="
     },
+=======
+>>>>>>> 4c421d93646698b44060a5b256ab365ab425a239
     "js-tokens@4.0.0": {
       "integrity": "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="
     },
