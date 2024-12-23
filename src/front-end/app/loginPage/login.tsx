@@ -108,7 +108,7 @@ export default function login() {
 
 
       {/* Social Media Login */}
-      <View style={styles.socialContainer}>
+      {/* <View style={styles.socialContainer}>
         <View style={styles.divider}>
           <Text style={styles.dividerText}>or sign in with</Text>
         </View>
@@ -123,7 +123,7 @@ export default function login() {
             <AntDesign name="google" size={24} color="black" />
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
       {/* Create Account */}
       <Link href="loginPage/createAccount" asChild>
