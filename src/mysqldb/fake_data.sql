@@ -27,6 +27,7 @@ INSERT INTO `user` VALUES
 ('U009', 'user9', 'user9@example.com', '9323dd6786ebcbf3ac87357cc78ba1abfda6cf5e55cd01097b90d4a286cac90e', '1234567898', 'User 9 description', NULL, '1998-09-09', '2', NOW(), NULL),
 ('U010', 'user10', 'user10@example.com', 'aa4a9ea03fcac15b5fc63c949ac34e7b0fd17906716ac3b8e58c599cdc5a52f0', '1234567899', 'User 10 description', NULL, '1999-10-10', '0', NOW(), NULL);
 
+
 -- Insert data into 'groups' table
 INSERT INTO `groups` VALUES
 ('G001', 'Group Alpha', FALSE, NULL, 'This is Group Alpha.', NULL, NOW(), 'U001', NULL, NULL),

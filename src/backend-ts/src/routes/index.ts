@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { default as authRouter } from "./auth/controller.ts";
-import { default as channelRouter } from "./channel/controller.ts";
+import { default as authRouter } from "./auth/controller";
+import { default as channelRouter } from "./channel/controller";
 
 type RouteProps = {
   addr: string;

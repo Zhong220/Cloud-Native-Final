@@ -1,9 +1,10 @@
 import express from "express";
-import routes from "./routes/index.ts";
+import routes from "./routes/index";
 import cron from "node-cron";
-import { hardwareLogService } from "./utils/log/service.ts";
+import { hardwareLogService } from "./utils/log/service";
 
 const app = express();
+
 const port = 8000;
 
 app.get("/", (req, res) => {
@@ -21,3 +22,5 @@ cron.schedule("* * * * *", () => hardwareLogService());
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+export default app;

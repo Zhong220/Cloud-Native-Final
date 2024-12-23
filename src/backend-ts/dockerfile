@@ -11,4 +11,4 @@ COPY . /app/
 
 EXPOSE 8000
 
-CMD ["deno", "run", "--allow-all", "index.ts"]
+CMD ["deno", "run", "--allow-all", "--unstable-sloppy-imports", "src/index.ts"]

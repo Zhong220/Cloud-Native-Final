@@ -3,7 +3,6 @@ FROM denoland/deno:alpine
 WORKDIR /app
 
 COPY package*.json /app/
-COPY deno.lock /app/
 
 RUN deno install
 
