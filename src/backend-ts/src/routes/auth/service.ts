@@ -11,7 +11,6 @@ import mysqlPool from "../../utils/mysql";
 import jwt from "jsonwebtoken";
 import process from "node:process";
 import dotenv from "dotenv";
-import { TokenExpiredError } from "../../node_modules/jsonwebtoken/index.js";
 import { sha256 } from "js-sha256";
 import redisClient from "../../utils/redis";
 dotenv.config();
