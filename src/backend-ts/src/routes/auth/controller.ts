@@ -18,6 +18,7 @@ router.get("/login", (req: Request, res: Response) => {
 
 
 router.post("/login", async (req: Request, res: Response) => {
+
   try {
     const { email, password } = req.body;
     console.log("req.body:", email, password);
@@ -27,9 +28,11 @@ router.post("/login", async (req: Request, res: Response) => {
     res.status(200).json({ msg: "Login Success!", jwttok: successTok.jwtToken });
   } catch (error) {
     console.error("Error during login:", error);
+
     res.status(401).json({ msg: error.message });
   }
 });
+
 
 router.post("/register", async (req:Request, res: Response) => {
   try {
@@ -41,6 +44,7 @@ router.post("/register", async (req:Request, res: Response) => {
     res.status(401).json({msg: err.message})
   };
 })
+
 
 
 
