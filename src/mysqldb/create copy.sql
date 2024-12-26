@@ -22,7 +22,7 @@ CREATE TABLE
 
 CREATE TABLE
     `chatroom` (
-        `cid` INT NOT NULL AUTO_INCREMENT COMMENT 'chatroom ID',
+        `cid` VARCHAR(6) NOT NULL COMMENT 'chatroom ID',
         `name` VARCHAR(64) NOT NULL,
         `description` TEXT DEFAULT NULL,
         PRIMARY KEY (`cid`)
