@@ -2,8 +2,7 @@ CREATE DATABASE IF NOT EXISTS `cns_db`;
 
 USE `cns_db`;
 
-DROP TABLE IF EXISTS `split`;
-DROP TABLE IF EXISTS `member`;
+DROP TABLE IF EXISTS `accounting`;
 DROP TABLE IF EXISTS `chatroom_msg`;
 DROP TABLE IF EXISTS `chatroom`;
 DROP TABLE IF EXISTS `user`;
@@ -51,7 +50,7 @@ CREATE TABLE
         `sender` INT NOT NULL COMMENT 'sender',
         `msg` TEXT NOT NULL,
         `times` TEXT NOT NULL,
-        PRIMARY KEY (`msg_id`),
+        PRIMARY KEY (`mid`),
         FOREIGN KEY (`sender`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
         FOREIGN KEY (`super_cid`) REFERENCES `chatroom` (`cid`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
