@@ -17,7 +17,7 @@ routes.forEach((e) => {
 });
 
 // scheduled hardware log service
-cron.schedule("* * * * *", () => hardwareLogService());
+// cron.schedule("* * * * *", () => hardwareLogService());
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
