@@ -8,6 +8,9 @@ import {
 import { loginRepository, registerRepository } from "./repository";
 
 import mysqlPool from "../../utils/mysql";
+
+import SHA256 from 'crypto-js/sha256';
+import Base64 from 'crypto-js/enc-base64';
 import jwt from "jsonwebtoken";
 import process from "node:process";
 import dotenv from "dotenv";
@@ -15,19 +18,7 @@ import { sha256 } from "js-sha256";
 import redisClient from "../../utils/redis";
 dotenv.config();
 
-redisClient
-  .connect()
-  .then(() => console.log("Connected to Redis"))
-  .catch((err) => console.error("Redis connection error:", err));
 
-async function writeToRedis(key: string, value: string, second: Number) {
-  try {
-    await redisClient.set(key, value, { EX: second });
-    console.log(`Key: ${key}, Value: ${value} written to Redis`);
-  } catch (err) {
-    console.error("Error writing to Redis:", err);
-  }
-}
 
 export async function loginService(model: DtoModel): Promise<ViewModel> {
   try {
@@ -37,7 +28,6 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
       throw new Error("Wrong mail or password");
     }
     const jwtToken = getJWTToken(result.mail);
-    await writeToRedis("jwtToken", jwtToken, 3600);
     return { jwtToken };
   } catch (err) {
     console.error("loginService error:", err);

@@ -1,5 +1,5 @@
-import { DataModel, DtoModel, ViewModel } from "./model.ts";
-import loginRepository from "./repository.ts";
+import { DataModel, DtoModel, ViewModel } from "./model.js";
+import loginRepository from "./repository.js";
 
 export default function loginService(model: DtoModel): ViewModel {
   const result: DataModel = loginRepository(model);
