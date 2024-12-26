@@ -32,8 +32,6 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.4",
     "node-cron": "^3.0.3",
-    "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
     "systeminformation": "^5.23.5"
   },
   "devDependencies": {
