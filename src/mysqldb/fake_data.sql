@@ -28,5 +28,5 @@ INSERT INTO `chatroom` (`name`, `description`) VALUES
 ('RQWsp0', 'Chatroom 3', 'This is the third chatroom');
 
 INSERT INTO `accounting` (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
-('Dinner at Restaurant', 1, 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
-('Stationery Purchase', 2, 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
+('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
+('Stationery Purchase', 'b63sTZ', 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
