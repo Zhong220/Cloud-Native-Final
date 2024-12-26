@@ -3,15 +3,13 @@ CREATE DATABASE IF NOT EXISTS `cns_db`;
 USE `cns_db`;
 
 DROP TABLE IF EXISTS `accounting`;
-
 DROP TABLE IF EXISTS `chatroom_msg`;
-
 DROP TABLE IF EXISTS `chatroom`;
-
 DROP TABLE IF EXISTS `user`;
 
 -- create.sql
 -- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
+
 -- Create 'user' table
 CREATE TABLE
     `user` (
@@ -24,11 +22,12 @@ CREATE TABLE
 
 CREATE TABLE
     `chatroom` (
-        `cid` INT NOT NULL AUTO_INCREMENT COMMENT 'chatroom ID',
+        `cid` VARCHAR(6) NOT NULL COMMENT 'chatroom ID',
         `name` VARCHAR(64) NOT NULL,
         `description` TEXT DEFAULT NULL,
         PRIMARY KEY (`cid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
 
 CREATE TABLE
     `accounting` (

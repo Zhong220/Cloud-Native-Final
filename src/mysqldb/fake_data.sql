@@ -1,4 +1,4 @@
-USE `cns_db`;
+USE `cns2_db`;
 
 -- fake data rule:
 -- 1. 3 different groups
@@ -23,8 +23,9 @@ INSERT INTO `user` (`username`, `email`, `password`) VALUES
 ('user3', 'charlie@example.com', '5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764'); -- password3
 
 INSERT INTO `chatroom` (`name`, `description`) VALUES
-('Weekend Getaway', 'Planning a weekend trip with friends'),
-('Office Expenses', 'Shared expenses for office supplies');
+('crHjSb', 'Chatroom 1', 'This is the first chatroom'),
+('b63sTZ', 'Chatroom 2', 'This is the second chatroom'),
+('RQWsp0', 'Chatroom 3', 'This is the third chatroom');
 
 INSERT INTO `accounting` (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
 ('Dinner at Restaurant', 1, 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
