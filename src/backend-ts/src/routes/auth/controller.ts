@@ -42,16 +42,6 @@ router.post("/register", async (req:Request, res: Response) => {
   };
 })
 
-router.post("/google-login", async (req: Request, res: Response) => {
-  try {
-    
-    
-  } catch (error) {
-    console.error("Error during google-login:", error);
-    res.status(401).json({ msg: error.message });
-  }
-});
-
 
 
 export default router;
