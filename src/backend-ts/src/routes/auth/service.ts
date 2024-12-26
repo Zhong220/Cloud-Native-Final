@@ -16,6 +16,7 @@ import process from "node:process";
 import dotenv from "dotenv";
 import { sha256 } from "js-sha256";
 import redisClient from "../../utils/redis";
+import { RowDataPacket } from "mysql2";
 dotenv.config();
 
 
@@ -40,7 +41,7 @@ export async function registerService(model: registerModel) {
   try {
     const mysql = await mysqlPool.getConnection();
     const q = `
-    SELECT email, password FROM user WHERE email = ?;`;
+    SELECT email, password FROM user WHERE email = ? and password = ?;`;
     const value = [model.mail, model.hashPassword];
     const [rows] = await mysql.query(q, value);
     console.log(rows);
@@ -58,32 +59,12 @@ export async function registerService(model: registerModel) {
 async function mysqlAddAccount(userData: registerModel) {
   try {
     const mysql = await mysqlPool.getConnection();
-    const userCol = `uid, username, email, password, phone, description, icon, birthday, gender, attend_time, update_time`;
-    const uid = sha256(userData.mail).substring(0, 9);
-    const phone = "0912345678";
-    const description = "Nothing to description";
-    const icon = "NULL";
-    const birthday = "1990-01-01";
-    const gender = "1";
-    const attend_time = "NOW()";
-    const update_time = "NULL";
-    const userTuple = [
-      "U" + uid,
-      userData.name,
-      userData.mail,
-      userData.hashPassword,
-      phone,
-      description,
-      icon,
-      birthday,
-      gender,
-    ];
-
     const query = `
-      insert into user (${userCol})
-      value (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NULL)
+      insert into user (\`username\`, \`email\`, \`password\`)
+      value (?, ?, ?)
     `;
-    const [rows, fields] = await mysql.query(query, userTuple);
+    const value = [userData.name, userData.mail, userData.hashPassword];
+    const [rows, fields] = await mysql.query(query, value);
     console.log(rows, fields);
   } catch (err) {
     console.error("mysqlSearchAccount fail:\n", err);

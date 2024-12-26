@@ -29,7 +29,7 @@ router.post("/login", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error during login:", error);
 
-    res.status(401).json({ msg: error.message });
+    res.status(401).json({ msg: error });
   }
 });
 
@@ -41,7 +41,7 @@ router.post("/register", async (req:Request, res: Response) => {
     res.status(200).json({msg: req.body}) 
   } catch (err) {
     console.error("Email has Existed:", err);
-    res.status(401).json({msg: err.message})
+    res.status(401).json({msg: err});
   };
 })
 
