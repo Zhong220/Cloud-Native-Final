@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import axios from 'axios';
+
 
 const AddExpense = ({ navigation }) => {
   const [payers, setPayers] = useState(['']); // 初始只有一位付款者
@@ -7,6 +9,23 @@ const AddExpense = ({ navigation }) => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [title, setTitle] = useState('');
+
+  const [groupName, setgName] = useState('Group1');
+  useEffect(() => {
+    const fetchName = async() => {
+      try {
+        const response = await axios.post('http://localhost:8000/split/add');
+        console.log(response.data[0].channel_name)
+        setgName(response.data[0].channel_name); // 假設後端返回一個記錄數組
+      } catch (error) {
+        console.error('Error fetching records:', error);
+      } finally {
+      }
+    }
+    fetchName();
+  })
+
+
 
   const addPayer = () => setPayers([...payers, '']);
   const addSplitter = () => setSplitters([...splitters, '']);
@@ -23,7 +42,7 @@ const AddExpense = ({ navigation }) => {
     setSplitters(updated);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async() => {
     // 假設資料需傳至後端
     const expenseData = {
       title,
@@ -34,14 +53,20 @@ const AddExpense = ({ navigation }) => {
       date: new Date().toISOString(),
     };
     console.log('提交資料:', expenseData);
-
+    try {
+      const response = await axios.post('http://localhost:8000/split/addBill', expenseData);
+      console.log(response)
+    } catch (error) {
+      console.error('Error Add Bill records:', error);
+    } finally {
+    }
     // 可用於跳轉回上一頁
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.groupChannel}>GroupName-ChannelName</Text>
+      <Text style={styles.groupChannel}>{groupName}</Text>
       
       <View style={styles.inputRow}>
         <TextInput
@@ -72,9 +97,9 @@ const AddExpense = ({ navigation }) => {
             onChangeText={(value) => updatePayer(index, value)}
           />
         ))}
-        <TouchableOpacity style={styles.addButton} onPress={addPayer}>
+        {/* <TouchableOpacity style={styles.addButton} onPress={addPayer}>
           <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View style={styles.section}>
