@@ -1,11 +1,13 @@
-CREATE DATABASE IF NOT EXISTS `cns2_db`;
+CREATE DATABASE IF NOT EXISTS `cns_db`;
 
-USE `cns2_db`;
+USE `cns_db`;
 
 DROP TABLE IF EXISTS `split`;
 DROP TABLE IF EXISTS `member`;
+DROP TABLE IF EXISTS `chatroom_msg`;
 DROP TABLE IF EXISTS `chatroom`;
 DROP TABLE IF EXISTS `user`;
+
 -- create.sql
 -- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
 
@@ -28,7 +30,6 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 
-
 CREATE TABLE
     `accounting` (
         `acid` INT NOT NULL AUTO_INCREMENT,
@@ -45,17 +46,12 @@ CREATE TABLE
 
 CREATE TABLE
     `chatroom_msg` (
-        `name` VARCHAR(64) NOT NULL,
-        `sender` INT NOT NULL,
+        `mid` INT NOT NULL AUTO_INCREMENT,
+        `super_cid` INT NOT NULL,
+        `sender` INT NOT NULL COMMENT 'sender',
         `msg` TEXT NOT NULL,
-        
-    )
-
--- CREATE TABLE
---     `member` (
---         `cid` INT NOT NULL  COMMENT 'chatroom ID',
---         `uid` INT NOT NULL  COMMENT 'User ID',
---         PRIMARY KEY (`cid`, `uid`),
---         FOREIGN KEY (`cid`) REFERENCES `chatroom` (`cid`) ON DELETE CASCADE,
---         FOREIGN KEY (`uid`) REFERENCES `user` (`uid`) ON DELETE CASCADE 
---     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+        `times` TEXT NOT NULL,
+        PRIMARY KEY (`msg_id`),
+        FOREIGN KEY (`sender`) REFERENCES `user` (`uid`) ON DELETE CASCADE,
+        FOREIGN KEY (`super_cid`) REFERENCES `chatroom` (`cid`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
