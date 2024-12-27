@@ -10,7 +10,7 @@ import {
 import styles from "./style";
 import { Stack, useRouter, Navigator, router, Link } from "expo-router";
 import axios from "axios";
-import SHA256 from "crypto-js/sha256";
+import CryptoJS from "crypto-js";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
@@ -22,7 +22,7 @@ export default function login() {
   const frontendRouter = useRouter();
 
   const handleLogin = async (email: string, password: string) => {
-    const hashedPassword = SHA256(password).toString();
+    const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
       const response = await axios.post("http://localhost:8000/auth/login", {
         email: email,
