@@ -24,3 +24,8 @@ export type searchResult = {
   success: boolean;
   mail: string;
 };
+
+export type payLoad = {
+  userID:number;
+  username:string;
+}
