@@ -29,3 +29,9 @@ export type payLoad = {
   userID:number;
   username:string;
 }
+
+type payTransaction = {
+  from: number;
+  to: number;
+  amount: number;
+};
