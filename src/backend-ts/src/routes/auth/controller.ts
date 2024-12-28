@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
-import {loginService, registerService, verifyJWTToken} from "./service.ts";
+import {loginService, mysqlAddAccount, registerService, verifyJWTToken} from "./service.ts";
 import cors from "cors"
-import { JsonWebTokenError } from "../../node_modules/jsonwebtoken/index.js";
+import redisClient from "../../utils/redis";
+import { registerModel } from "./model.js";
 
 
 const router = express.Router();
@@ -58,6 +59,26 @@ router.post("/register", async (req:Request, res: Response) => {
   };
 })
 
+router.get("/registerVertifyMail", async (req:Request, res:Response) => {
+  const token = req.query;
+  console.log("TOK", token.token);
+  const userData = await redisClient.get(`verify:${token.token}`);
+  console.log("userDaata", userData);
+  if (!userData) {
+    return res.status(400).send("Invalid or expired token.");
+  }
+  const { email, name, password } = JSON.parse(userData);
+  console.log("User verified:", email);
+  await redisClient.del(`verify:${token}`);
+  const accountData:registerModel = {
+    name:name,
+    mail:email,
+    hashPassword:password
+  }
+  mysqlAddAccount(accountData);
+  res.status(200).send("Email successfully verified!");
+
+})
 
 
 
