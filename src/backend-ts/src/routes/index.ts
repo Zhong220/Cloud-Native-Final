@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { default as authRouter } from "./auth/controller";
-import { default as channelRouter } from "./channel/controller";
+
+import {default as splitRouter} from "./split/controller"
+
 
 type RouteProps = {
   addr: string;
@@ -9,8 +11,8 @@ type RouteProps = {
 
 // Integration of routers
 const routes: RouteProps[] = [
-  { addr: "/auth", router: authRouter },
-  { addr: "/channel", router: channelRouter },
+  { addr: "/auth", router: authRouter }, 
+  { addr: "/split", router:splitRouter}
 ];
 
 export default routes;

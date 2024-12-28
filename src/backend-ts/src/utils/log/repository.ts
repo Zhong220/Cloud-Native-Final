@@ -1,9 +1,5 @@
-import {
-  EventLogRepositoryModel,
-  HardwareLogRepositoryModel,
-} from "./model.ts";
-import mysqlPool from "../mysql.ts";
-
+import { EventLogRepositoryModel, HardwareLogRepositoryModel } from "./model";
+import mysqlPool from "../mysql";
 
 export async function eventLogRepository(log: EventLogRepositoryModel) {
   const connection = await mysqlPool.getConnection();
