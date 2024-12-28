@@ -30,10 +30,13 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
       // return { jwtToken:'0' };
       throw new Error("Wrong mail or password");
     }
-    model.mail
+    const mail = model.mail
+    const tokenUpdateTime = 60 * 60 * 1000 // 1hr
     const pl:payLoad= {
       username:result.name,
-      userID:result.uid
+      userID:result.uid,
+      userMail:mail,
+      currentTime:Math.floor(Date.now()/tokenUpdateTime)
     } 
     const jwtToken = getJWTToken(pl);
     return { jwtToken };
@@ -44,7 +47,8 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
 }
 
 export async function registerService(model: registerModel) {
-  const result: DataModel = registerRepository(model);
+  // const result: DataModel = registerRepository(model);
+  console.log(model);
   try {
     const mysql = await mysqlPool.getConnection();
     const q = `
@@ -68,13 +72,12 @@ async function mysqlAddAccount(userData: registerModel) {
     const mysql = await mysqlPool.getConnection();
     const query = `
       insert into user (\`username\`, \`email\`, \`password\`)
-      value (?, ?, ?)
-    `;
+      values (?, ?, ?);`;
     const value = [userData.name, userData.mail, userData.hashPassword];
     const [rows, fields] = await mysql.query(query, value);
     console.log(rows, fields);
   } catch (err) {
-    console.error("mysqlSearchAccount fail:\n", err);
+    console.error("mysqlAddAccount fail:\n", err);
   }
 }
 
@@ -99,12 +102,11 @@ async function mysqlSearchAccount(userData: DtoModel) {
 }
 
 // Base64Url 編碼方法
-function base64UrlEncode(str: string): string {
-  return Buffer.from(str)
-    .toString("base64")
-    .replace(/=/g, "") // 去掉填充符號 "="
-    .replace(/\+/g, "-") // "+" 替換成 "-"
-    .replace(/\//g, "_"); // "/" 替換成 "_"
+function base64UrlEncode(input: string): string {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input); // 使用 TextEncoder 來編碼字串
+  const base64 = btoa(String.fromCharCode(...data)); // 將 Uint8Array 轉換為 base64 字串
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // Base64Url 編碼
 }
 
 // HMAC SHA256 簽名方法

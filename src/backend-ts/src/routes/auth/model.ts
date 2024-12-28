@@ -28,6 +28,8 @@ export type searchResult = {
 export type payLoad = {
   userID:number;
   username:string;
+  userMail:string;
+  currentTime:number;
 }
 
 type payTransaction = {
