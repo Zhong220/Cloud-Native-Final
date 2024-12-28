@@ -33,5 +33,5 @@ docker exec -it mysqldb mysql -uroot -p
 
 # Enter Redis container
 ```bash
-redis-cli -p 7000
+redis-cli -p 6380
 ```
