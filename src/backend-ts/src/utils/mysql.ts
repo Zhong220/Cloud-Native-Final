@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import process from "node:process";
 
 dotenv.config();
 
@@ -10,4 +11,4 @@ const mysqlPool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
-export default pool;
+export default mysqlPool;

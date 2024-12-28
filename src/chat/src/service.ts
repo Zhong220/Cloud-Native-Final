@@ -1,10 +1,16 @@
 import Redis from "ioredis";
-import { RoomMessage, UserRoomMappingModel } from "./model";
+import {
+  RoomMessage,
+  StoreMessageDataModel,
+  StoreMessageDto,
+  UserRoomModel,
+} from "./model";
+import { storeMessageRepository } from "./repository";
 
 const redisClient = new Redis("redis");
 
 export async function joinRoomService(
-  data: UserRoomMappingModel
+  data: UserRoomModel
 ): Promise<RoomMessage[]> {
   console.log(data);
   const { room, userId, userName } = data;
@@ -17,12 +23,8 @@ export async function joinRoomService(
       console.log(`A user: ${userName} joined room: ${room}`);
 
       // Get all elements in the room list (last 100 messages)
-      const roomMessageAmount = await redisClient.llen(`room:${room}`);
-      const start = Math.max(0, roomMessageAmount - 100);
-      const elements = await redisClient.lrange(`room:${room}`, start, -1);
-      result = elements.map((element) => JSON.parse(element));
-
-      console.log("Retrieved messages:", result);
+      const amount = await redisClient.llen(`room:${room}`);
+      result = await partialMessageService({ room, lastLoad: amount });
     } else {
       console.log(`Room ${room} does not exist. Creating it.`);
 
@@ -50,49 +52,64 @@ export async function joinRoomService(
   return result;
 }
 
-export function chatMessageService(data: RoomMessage, room: string) {
+export async function chatMessageService(data: RoomMessage, room: string) {
   // "room:${room}":"[{"sender":"Alice","message":"Hello","timestamp":"2021-12-01T00:00:00.000Z"}]"
-  redisClient.rpush(
-    `room:${room}`,
-    JSON.stringify({
-      sender: data.sender,
-      message: data.message,
-      timestamp: data.timestamp,
-    }),
-    (err) => {
-      if (err) {
-        console.error("Error adding message to room list in Redis:", err);
-      }
-    }
-  );
+  try {
+    // if amount in memory greater than 3000 or message exist in memory for too long
+    // store into db
+
+    await redisClient.rpush(
+      `room:${room}`,
+      JSON.stringify({
+        sender: data.sender,
+        message: data.message,
+        timestamp: data.timestamp,
+      })
+    );
+  } catch (err) {
+    console.error("Error adding message to room list in Redis:", err);
+  }
 }
 
-export async function partialMessageService(
-  data: UserRoomMappingModel & { lastLoad: number }
-): Promise<RoomMessage[]> {
-  const { room, userId, userName, lastLoad } = data;
+export async function partialMessageService(data: {
+  room: string;
+  lastLoad: number;
+  end?: number;
+}): Promise<RoomMessage[]> {
+  const { room, lastLoad } = data;
   let result: RoomMessage[] = [];
 
-  // get last time load and amount of message in room
-  // and decide how many to load
   try {
-    const userLoad = Number(
-      await redisClient.hget(`room:${room}:members:${userName}`, "load")
+    // Get specific amount message in the room list
+    const start = Math.max(0, lastLoad - 100);
+    const messages = await redisClient.lrange(
+      `room:${room}`,
+      start,
+      data.end ? data.end : -1
     );
-    const roomMessageAmount = await redisClient.llen(`room:${room}`);
-    const toLoad =
-      roomMessageAmount >= userLoad + 100 ? userLoad + 100 : roomMessageAmount;
-
-    // Get specific amount message in the room list and send back to frontend
-    const messages = await redisClient.lrange(`room:${room}`, 0, toLoad);
     result = messages.map((element) => JSON.parse(element));
-    // update load
-    await redisClient.hset(`room:${room}:members:${userName}`, {
-      load: toLoad,
-    });
+    console.log("Retrieved messages:", result);
   } catch (err) {
     console.error("Error in partialMessageService:", err);
   }
 
   return result;
+}
+
+// function is
+
+async function storeMessageService(data: StoreMessageDto[]) {
+  try {
+    const toStore: StoreMessageDataModel[] = data.map((e) => {
+      return {
+        uid: e.sender,
+        cid: e.roomId,
+        message: e.message,
+        timestamp: e.timestamp,
+      };
+    });
+    await storeMessageRepository(toStore);
+  } catch (error) {
+    console.error(error);
+  }
 }
