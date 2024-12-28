@@ -14,8 +14,8 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE
     `user` (
         `uid` INT NOT NULL AUTO_INCREMENT COMMENT 'User ID',
-        `username` VARCHAR(255) NOT NULL UNIQUE,
-        `email` VARCHAR(255) NOT NULL,
+        `username` VARCHAR(255) NOT NULL,
+        `email` VARCHAR(255) NOT NULL UNIQUE,
         `password` VARCHAR(64) NOT NULL,
         PRIMARY KEY (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
