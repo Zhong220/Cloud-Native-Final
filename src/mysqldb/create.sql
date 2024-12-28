@@ -33,7 +33,7 @@ CREATE TABLE
     `accounting` (
         `acid` INT NOT NULL AUTO_INCREMENT,
         `title` TEXT DEFAULT NULL,
-        `super_cid` INT NOT NULL COMMENT 'chatroom ID',
+        `super_cid` VARCHAR(6) NOT NULL COMMENT 'chatroom ID',
         `payer` INT NOT NULL,
         `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
         `price` DECIMAL(10, 2) NOT NULL COMMENT 'NewTaiwanDollar',
@@ -46,7 +46,7 @@ CREATE TABLE
 CREATE TABLE
     `chatroom_msg` (
         `mid` INT NOT NULL AUTO_INCREMENT,
-        `super_cid` INT NOT NULL,
+        `super_cid` VARCHAR(6) NOT NULL,
         `sender` INT NOT NULL COMMENT 'sender',
         `msg` TEXT NOT NULL,
         `times` TEXT NOT NULL,

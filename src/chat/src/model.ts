@@ -39,3 +39,8 @@ export type StoreMessageDataModel = {
   message: string;
   timestamp: string;
 };
+
+export type CreateRoomModel = {
+  name: string;
+  description: string;
+};

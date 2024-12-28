@@ -22,7 +22,7 @@ INSERT INTO `user` (`username`, `email`, `password`) VALUES
 ('user2', 'bob@example.com', '6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4'), -- password2
 ('user3', 'charlie@example.com', '5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764'); -- password3
 
-INSERT INTO `chatroom` (`name`, `description`) VALUES
+INSERT INTO `chatroom` (`cid`, `name`, `description`) VALUES
 ('crHjSb', 'Chatroom 1', 'This is the first chatroom'),
 ('b63sTZ', 'Chatroom 2', 'This is the second chatroom'),
 ('RQWsp0', 'Chatroom 3', 'This is the third chatroom');
