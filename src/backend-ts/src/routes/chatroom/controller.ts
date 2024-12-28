@@ -18,10 +18,11 @@ router.post("/getChatrooms", async (req, res) => {
   try {
   const mysql = mysqlPool.getConnection();
   const q = `select * from chatroom`;
-  const rows = (await mysql).query(q);
+  const [rows, fields] = await (await mysql).query(q);
   res.status(200).send(rows);
   } catch (error) {
     console.error("Error [/getChatrooms] :", error);
+    res.status(400);
   }
 });
 
