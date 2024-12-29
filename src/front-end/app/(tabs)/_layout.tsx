@@ -1,5 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
@@ -10,10 +11,10 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: React.ComponentProps<typeof FontAwesome5>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome5 size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
@@ -39,10 +40,11 @@ export default function TabLayout() {
             shadowRadius: 4, // Shadow blur radius
             elevation: 5, // Android shadow elevation (works on Android API level 21 and above)
             alignItems: 'center',
+            justifyContent: 'center',
           },
           headerShown: false,
         }}>
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="home"
           options={{
             href: "/(tabs)/home",
@@ -54,44 +56,30 @@ export default function TabLayout() {
             //icon
             tabBarIcon: () => <TabBarIcon name="home" color={iconColor} />,
           }}
-        />
+        /> */}
         <Tabs.Screen
-          name="group"
+          name="chatrooms"
           options={{
-            href: "/(tabs)/group",
+            href: "/(tabs)/chatrooms",
             tabBarStyle: tabbarStyles,
-
             //tabBar label
             tabBarLabel: '群組',
             tabBarLabelStyle: textStyles,
             //icon
-            tabBarIcon: () => <TabBarIcon name="group" color={iconColor} />,
+            tabBarIcon: () => <TabBarIcon name="rocketchat" color={iconColor} />,
           }}
         />
         <Tabs.Screen
-          name="friend"
+          name="splitbill"
           options={{
-            href: "/(tabs)/friend",
+            href: "/(tabs)/splitbill",
             tabBarStyle: tabbarStyles,
 
             //tabBar label
-            tabBarLabel: 'friend',
+            tabBarLabel: '分帳',
             tabBarLabelStyle: textStyles,
             //icon
-            tabBarIcon: () => <TabBarIcon name="users" color={iconColor} />,
-          }}
-        />
-        <Tabs.Screen
-          name="intro"
-          options={{
-            href: "/(tabs)/intro",
-            tabBarStyle: tabbarStyles,
-
-            //tabBar label
-            tabBarLabel: '個人介紹',
-            tabBarLabelStyle: textStyles,
-            //icon
-            tabBarIcon: () => <TabBarIcon name="user" color={iconColor} />,
+            tabBarIcon: () => <TabBarIcon name="money-bill-alt" color={iconColor} />,
           }}
         />
       </Tabs>
@@ -99,16 +87,14 @@ export default function TabLayout() {
   );
 }
 
-
-
 const styles = StyleSheet.create({
   lightText: {
     color: '#000',
-    fontSize: 8,
+    fontSize: 16,
   },
   darkText: {
     color: '#fff',
-    fontSize: 8,
+    fontSize: 16,
   },
   lightTabbar: {
     height: 80,

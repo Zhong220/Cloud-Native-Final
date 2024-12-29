@@ -62,7 +62,7 @@
       const profile = prompt("Enter your ID and name, e.g. U123,Alice: ");
       const room = prompt("Enter room name:");
       const [userId, userName] = profile.split(",");
-      socket.emit("joinRoom", { room, userId, userName });
+      socket.emit("joinRoom", { room, userId, userName }); // 進入房間的方式
 
       // Listen for messages
       socket.on("currentMessage", (data) => {
@@ -75,7 +75,7 @@
       });
 
       // Listen for chat history
-      socket.on("historyMessage", (messages) => {
+      socket.on("historyMessage", (messages) => { // 聊天紀錄
         messages.forEach((msg) => {
           const messageElement = document.createElement("div");
           messageElement.textContent = `${msg.sender}: ${
@@ -90,7 +90,7 @@
       messageForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const message = messageInput.value;
-        socket.emit("chatMessage", { userName, room, message });
+        socket.emit("chatMessage", { userName, room, message }); // 訊息傳到後端的方式
         messageInput.value = "";
       });
     </script>
