@@ -37,3 +37,10 @@ type payTransaction = {
   to: number;
   amount: number;
 };
+
+export type registerTokenRedisModle = {
+  token: string;
+  mail:string;
+  name: string;
+  hashPassword: string;
+}
