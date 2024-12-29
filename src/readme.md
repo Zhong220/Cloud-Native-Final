@@ -18,6 +18,9 @@ r
 docker compose up -d --build
 # or
 docker-compose up -d --build
+
+# delpoy
+docker compose -f compose-deploy.yml up -d
 ```
 - stop containers 
 ```bash
