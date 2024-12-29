@@ -20,7 +20,10 @@ docker compose up -d --build
 docker-compose up -d --build
 
 # delpoy
+# Retired
 docker compose -f compose-deploy.yml up -d
+# at root
+./script/deploy.sh --version [version]
 ```
 - stop containers 
 ```bash

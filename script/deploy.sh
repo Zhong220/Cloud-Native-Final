@@ -1,30 +1,66 @@
 #!/bin/bash
 
-# read -p "Enter version number: " version
-version_file="../docs/version.txt"
+# Variables
+ROOT="$(dirname "$(dirname "$(realpath "$0")")")"
+VERSION_FILE="$ROOT/docs/version.txt"
 
-if [[ -f $version_file ]]; then
-    current_version=$(cat $version_file)
-    echo "Current version: $current_version"
+if [[ -f $VERSION_FILE ]]; then
+    echo "Current version: $(cat "$VERSION_FILE")"
 else
     echo "Version file not found."
     exit 1
 fi
 
-read -p "Enter version number: " version
+version_validate() {
+    local _version=$1
+    if [[ $_version =~ ^[0-9]+\.[0-9]+$ ]] || [[ $_version == "latest" ]]; then
+        echo "Build version: $_version"
+        return 0
+    else
+        echo "Invalid version. Enter in the format X.Y (e.g., 1.1)."
+        return 1
+    fi
+}
 
-if [[ $version =~ ^[0-9]+\.[0-9]+$ ]]; then
-    echo "Deployment version: $version"
+# Check for --version argument
+if [[ $1 == "--version" ]]; then
+    if [[ -n $2 ]]; then
+        VERSION=$2
+        while true; do
+            version_validate $VERSION
+            if [[ $? -eq 0 ]]; then
+                break
+            else
+                read -p "Enter deployment version: " VERSION
+            fi
+        done
+    else
+        echo "No version specified. Please provide a version."
+        exit 1
+    fi
 else
-    echo "Invalid version number. Enter in the format X.Y (e.g., 1.1)"
-    exit 1
+    # input validation
+    while true; do
+        read -p "Enter deployment version: " VERSION
+        version_validate $VERSION
+        if [[ $? -eq 0 ]]; then
+            break
+        fi
+    done
 fi
 
-./build.sh $version
+"$ROOT/script/build.sh" $VERSION
 if [[ $? -eq 0 ]]; then
-    echo $version >$version_file
-    echo "Build and deployment successful."
+    echo $VERSION >"$VERSION_FILE"
+    echo "Version file updated."
 else
-    echo "Build failed. Version not updated."
     exit 1
 fi
+
+# "$ROOT/script/update.sh"
+# if [[ $? -eq 0 ]]; then
+#     echo "Deployment successful."
+# else
+#     echo "Deployment failed."
+#     exit 1
+# fi
