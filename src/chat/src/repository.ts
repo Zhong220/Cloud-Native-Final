@@ -1,6 +1,7 @@
 import mysql, { RowDataPacket } from "mysql2/promise";
 import dotenv from "dotenv";
-import { StoreMessageDataModel } from "./model";
+import { StoreMessageDataModel, CreateRoomModel } from "./model";
+import { generateChatroomID } from "./service";
 
 dotenv.config();
 
@@ -72,4 +73,15 @@ export async function getMessageRepository(data: {
   }
 
   return result;
+}
+
+export async function createAChatroom(data:CreateRoomModel) {
+  try {
+    const connection = await mysqlPool.getConnection();
+    const query = `INSERT INTO \`chatroom\` (\`cid\`, \`name\`, \`description\`) VALUES (?, ?, ?);`
+    const value = [generateChatroomID(), data.name,  data.description];
+    const [rows, fields] = connection.query(query, value);
+  } catch (error) {
+    console.error("createAChatroom Error", error);
+  }
 }

@@ -24,3 +24,23 @@ export type searchResult = {
   success: boolean;
   mail: string;
 };
+
+export type payLoad = {
+  userID:number;
+  username:string;
+  userMail:string;
+  currentTime:number;
+}
+
+type payTransaction = {
+  from: number;
+  to: number;
+  amount: number;
+};
+
+export type registerTokenRedisModle = {
+  token: string;
+  mail:string;
+  name: string;
+  hashPassword: string;
+}

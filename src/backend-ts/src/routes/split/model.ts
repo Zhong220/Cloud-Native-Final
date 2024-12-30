@@ -1,3 +1,5 @@
+import exp from "node:constants";
+
 // from repository to service
 export interface DataModel {
   mail: string;
@@ -12,4 +14,26 @@ export interface DtoModel {
 // from service to controller
 export interface ViewModel {
   jwtToken: string;
+}
+
+export type Record = {
+  payer: number;
+  attendees_ids: string;
+  price: number;
+};
+
+export type AccountingRecord = {
+  acid: number;
+  title: string | null;
+  super_cid: number;
+  payer: number;
+  attendees_ids: string;
+  price: number;
+  issplited: boolean;
+};
+
+export type payTransaction = {
+  from: number;
+  to: number;
+  amount: number;
 }
