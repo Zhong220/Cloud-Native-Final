@@ -3,22 +3,17 @@ import {
   ViewModel,
   registerModel,
   payLoad,
-  registerTokenRedisModle
+  registerTokenRedisModle,
 } from "./model";
 import { registerTokenRedis } from "./repository";
-
 import mysqlPool from "../../utils/mysql";
-
-
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 import process from "node:process";
 import dotenv from "dotenv";
 import { RowDataPacket } from "mysql2";
 import nodemailer from "nodemailer";
 dotenv.config();
-
-
 
 export async function loginService(model: DtoModel): Promise<ViewModel> {
   try {
@@ -27,14 +22,14 @@ export async function loginService(model: DtoModel): Promise<ViewModel> {
       // return { jwtToken:'0' };
       throw new Error("Wrong mail or password");
     }
-    const mail = model.mail
-    const tokenUpdateTime = 60 * 60 * 1000 // 1hr
-    const pl:payLoad= {
-      username:result.name,
-      userID:result.uid,
-      userMail:mail,
-      currentTime:Math.floor(Date.now()/tokenUpdateTime)
-    } 
+    const mail = model.mail;
+    const tokenUpdateTime = 60 * 60 * 1000; // 1hr
+    const pl: payLoad = {
+      username: result.name,
+      userID: result.uid,
+      userMail: mail,
+      currentTime: Math.floor(Date.now() / tokenUpdateTime),
+    };
     const jwtToken = getJWTToken(pl);
     return { jwtToken };
   } catch (err) {
@@ -53,16 +48,15 @@ export async function registerService(model: registerModel) {
     const value = [model.mail, model.hashPassword];
     const [rows] = await mysql.query<RowDataPacket[]>(q, value);
     console.log(rows);
-    
 
     if (!rows.length) {
       const registerToken = registerVertifyMail(model.mail);
-      const tokenMail :registerTokenRedisModle = {
-        token:registerToken,
-        mail:model.mail,
-        name:model.name,
-        hashPassword:model.hashPassword
-      }
+      const tokenMail: registerTokenRedisModle = {
+        token: registerToken,
+        mail: model.mail,
+        name: model.name,
+        hashPassword: model.hashPassword,
+      };
       registerTokenRedis(tokenMail);
 
       // mysqlAddAccount(model);
@@ -99,13 +93,17 @@ async function mysqlSearchAccount(userData: DtoModel) {
     console.log("mysqlSearchAccount:", rows, typeof rows, rows.length);
 
     if (rows.length) {
-      return { success: true, mail: userData.mail, uid:rows[0].uid, name:rows[0].username };
+      return {
+        success: true,
+        mail: userData.mail,
+        uid: rows[0].uid,
+        name: rows[0].username,
+      };
     }
-    return { success: false, mail: userData.mail, uid:0, name:'0' };
+    return { success: false, mail: userData.mail, uid: 0, name: "0" };
   } catch (err) {
     console.error("mysqlSearchAccount fail:\n", err);
-    return { success: false, mail: userData.mail, uid:0, name:'0' };
-
+    return { success: false, mail: userData.mail, uid: 0, name: "0" };
   }
 }
 
@@ -114,12 +112,14 @@ function base64UrlEncode(input: string): string {
   const encoder = new TextEncoder();
   const data = encoder.encode(input); // 使用 TextEncoder 來編碼字串
   const base64 = btoa(String.fromCharCode(...data)); // 將 Uint8Array 轉換為 base64 字串
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // Base64Url 編碼
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); // Base64Url 編碼
 }
 
 // HMAC SHA256 簽名方法
 function createHmacSignature(message: string, secret: string): string {
-  const signature = CryptoJS.HmacSHA256(message, secret).toString(CryptoJS.enc.Base64);
+  const signature = CryptoJS.HmacSHA256(message, secret).toString(
+    CryptoJS.enc.Base64
+  );
   return signature.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
@@ -147,7 +147,6 @@ export const getJWTToken = (payload: payLoad): string => {
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 };
 
-
 export function verifyJWTToken(token: string): payLoad {
   const secret = "P9/mQY0iZqNJ9xAzMVSS+c7tPWay8673rMKVk7EjJyU=";
 
@@ -160,8 +159,7 @@ export function verifyJWTToken(token: string): payLoad {
   }
 }
 
-
-function registerVertifyMail(receiverMail:string):string {
+function registerVertifyMail(receiverMail: string): string {
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com", // 寄信的host，
     port: 465,
@@ -172,14 +170,14 @@ function registerVertifyMail(receiverMail:string):string {
     },
   });
   const randomString = Math.random().toString(36).substr(2);
-  console.log(randomString)
+  console.log(randomString);
   const token = CryptoJS.SHA256(randomString).toString(CryptoJS.enc.Hex);
   const verificationLink = `http://localhost:8000/auth/registerVertifyMail?token=${token}`;
 
   let mailOptions = {
     from: process.env.MAILSENDER, //寄件人emai
     to: receiverMail, //收件人email
-    subject: "GroupUp Validation Mail",  //主旨
+    subject: "GroupUp Validation Mail", //主旨
     text: "Plaintext version of the message", //信件內容，純文字
     html: `
         <p>Click the button below to verify your email:</p>
@@ -193,14 +191,14 @@ function registerVertifyMail(receiverMail:string):string {
           border-radius: 5px;
         ">Verify Email</a>
         <p>If the button above doesn't work, click the following link:</p>
-        <a href="${verificationLink}">${verificationLink}</a>` //信件內容，html
+        <a href="${verificationLink}">${verificationLink}</a>`, //信件內容，html
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-        return console.log(error);
+      return console.log(error);
     }
-    console.log("Message sent: %s", info.messageId); 
+    console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-  })
+  });
   return token;
 }
