@@ -31,3 +31,9 @@ export type AccountingRecord = {
   price: number;
   issplited: boolean;
 };
+
+export type payTransaction = {
+  from: number;
+  to: number;
+  amount: number;
+}
