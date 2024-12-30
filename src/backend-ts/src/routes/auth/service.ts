@@ -1,23 +1,19 @@
 import {
-  DataModel,
   DtoModel,
   ViewModel,
   registerModel,
-  searchResult,
   payLoad,
   registerTokenRedisModle
 } from "./model";
-import { loginRepository, registerRepository, registerTokenRedis } from "./repository";
+import { registerTokenRedis } from "./repository";
 
 import mysqlPool from "../../utils/mysql";
 
-// import SHA256 from 'crypto-js/sha256';
-// import Base64 from 'crypto-js/enc-base64';
+
 import CryptoJS from 'crypto-js';
 import jwt from "jsonwebtoken";
 import process from "node:process";
 import dotenv from "dotenv";
-import { sha256 } from "js-sha256";
 import { RowDataPacket } from "mysql2";
 import nodemailer from "nodemailer";
 dotenv.config();
