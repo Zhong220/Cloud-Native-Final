@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors"
 import mysqlPool from "../../utils/mysql";
-import { error } from "node:console";
-import Redis from "ioredis";
+
 
 const router = express.Router();
 router.use(cors());
