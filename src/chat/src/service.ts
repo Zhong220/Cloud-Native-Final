@@ -6,8 +6,7 @@ import {
   UserRoomModel,
 } from "./model";
 import { storeMessageRepository } from "./repository";
-
-const redisClient = new Redis("redis");
+import redisClient from "./utils/redis";
 
 export async function joinRoomService(
   data: UserRoomModel
