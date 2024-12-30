@@ -26,11 +26,11 @@ export type searchResult = {
 };
 
 export type payLoad = {
-  userID:number;
-  username:string;
-  userMail:string;
-  currentTime:number;
-}
+  userID: number;
+  username: string;
+  userMail: string;
+  currentTime: number;
+};
 
 type payTransaction = {
   from: number;
@@ -40,7 +40,7 @@ type payTransaction = {
 
 export type registerTokenRedisModle = {
   token: string;
-  mail:string;
+  mail: string;
   name: string;
   hashPassword: string;
-}
+};

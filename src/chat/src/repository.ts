@@ -75,11 +75,11 @@ export async function getMessageRepository(data: {
   return result;
 }
 
-export async function createAChatroom(data:CreateRoomModel) {
+export async function createAChatroom(data: CreateRoomModel) {
   try {
     const connection = await mysqlPool.getConnection();
-    const query = `INSERT INTO \`chatroom\` (\`cid\`, \`name\`, \`description\`) VALUES (?, ?, ?);`
-    const value = [generateChatroomID(), data.name,  data.description];
+    const query = `INSERT INTO \`chatroom\` (\`cid\`, \`name\`, \`description\`) VALUES (?, ?, ?);`;
+    const value = [generateChatroomID(), data.name, data.description];
     const [rows, fields] = connection.query(query, value);
   } catch (error) {
     console.error("createAChatroom Error", error);
