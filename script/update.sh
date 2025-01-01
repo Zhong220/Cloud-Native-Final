@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-CLUSTER_NAME="your-cluster-name"
+CLUSTER_NAME="CNS_GroupUp"
 SERVICE_NAME="your-service-name"
 TASK_DEFINITION="your-task-definition"
 

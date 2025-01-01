@@ -1,0 +1,139 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:ap-southeast-2:222634375601:task-definition/test:3",
+  "containerDefinitions": [
+    {
+      "name": "socket-server",
+      "image": "neopan718/cns-socket-server:1.1",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "8000",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "MYSQL_DATABASE",
+          "value": "cns_db"
+        },
+        {
+          "name": "MYSQL_PASSWORD",
+          "value": "cnsadmin2024"
+        },
+        {
+          "name": "MYSQL_PORT",
+          "value": "3306"
+        },
+        {
+          "name": "MYSQL_HOST",
+          "value": "cns-db.cj22k26weska.ap-southeast-2.rds.amazonaws.com"
+        },
+        {
+          "name": "MYSQL_USER",
+          "value": "admin"
+        }
+      ],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "dependsOn": [
+        {
+          "containerName": "redis",
+          "condition": "HEALTHY"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/test",
+          "mode": "non-blocking",
+          "awslogs-create-group": "true",
+          "max-buffer-size": "25m",
+          "awslogs-region": "ap-southeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "systemControls": []
+    },
+    {
+      "name": "redis",
+      "image": "redis:alpine",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "6379",
+          "containerPort": 6379,
+          "hostPort": 6379,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "healthCheck": {
+        "command": ["CMD", "redis-cli", "ping"],
+        "interval": 30,
+        "timeout": 10,
+        "retries": 5,
+        "startPeriod": 30
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "test",
+  "executionRoleArn": "arn:aws:iam::222634375601:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 3,
+  "volumes": [
+    {
+      "name": "redis_data",
+      "host": {}
+    }
+  ],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+    },
+    {
+      "name": "ecs.capability.container-ordering"
+    },
+    {
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2024-12-30T12:22:05.921Z",
+  "registeredBy": "arn:aws:iam::222634375601:root",
+  "enableFaultInjection": false,
+  "tags": []
+}
