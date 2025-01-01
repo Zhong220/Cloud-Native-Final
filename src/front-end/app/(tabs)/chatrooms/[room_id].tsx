@@ -1,52 +1,164 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput,  Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from 'react';
+import io from "socket.io-client";
 // import EmojiBoard from 'react-native-emoji-board'; // Make sure to install this package
+import NewTransactionInput, { InputTransactionProps } from "./newTransactionInput";
 
-
+const socket = io("http://localhost:8080"); // Update the URL to localhost:8080
 const userId = 1; // Example user ID
 
-const chatrooms = [
+interface ChatroomProps {
+  id: number;
+  room_id: number;
+  name: string;
+}
+
+
+interface MessageProps {
+  id: number;
+  timestamp: string;
+  sender: number;
+  text: string;
+}
+
+const messages:MessageProps[] = [
+  { id: 1, timestamp: new Date("2021-10-01 20:00:00").toISOString(), 
+    sender: 1, text: "Hello from user 1" 
+  },
+  { id: 2, timestamp: new Date("2021-10-01 20:00:00").toISOString(),
+    sender: 2, text: "Hello from user 2" 
+  }
+]
+// INSERT INTO `accounting` (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
+// ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
+// ('Stationery Purchase', 'b63sTZ', 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
+
+interface Transaction {
+  id: number;
+  datetime: string;
+  title: string;
+  super_cid: string;
+  payer: number;
+  attendees_ids: number[];
+  price: number;
+  issplited: boolean;
+}
+
+const accounting:Transaction[] = [
   {
     id: 1,
-    room_id: 1,
-    name: "Chatroom 1",
-    description: "Chatroom 1 description",
-    messages: [
-      { id: 1, user_id: 1, text: "Hello from user 1" },
-      { id: 2, user_id: 2, text: "Hello from user 2" }
-    ]
+    // datetime: "2021-10-01 20:00:00",
+    datetime: new Date("2021-10-01 20:00:00").toISOString(),
+    title: "Dinner at Restaurant",
+    super_cid: "crHjSb",
+    payer: 1,
+    attendees_ids: [2, 3],
+    price: 1200.50,
+    issplited: true
   },
   {
     id: 2,
-    room_id: 2,
-    name: "Chatroom 2",
-    description: "Chatroom 2 description",
-    messages: [
-      { id: 3, user_id: 1, text: "Hi from user 1" },
-      { id: 4, user_id: 3, text: "Hi from user 3" }
-    ]
+    datetime: new Date("2021-10-02 10:00:00").toISOString(),
+    title: "Stationery Purchase",
+    super_cid: "b63sTZ",
+    payer: 2,
+    attendees_ids: [1, 3],
+    price: 300.00,
+    issplited: false
   },
   {
     id: 3,
-    room_id: 3,
-    name: "Chatroom 3",
-    description: "Chatroom 3 description",
-    messages: []
-  }
-];
+    datetime: new Date("2021-10-03 12:00:00").toISOString(),
+    title: "Lunch at School",
+    super_cid: "a63sTZ",
+    payer: 3,
+    attendees_ids: [1, 2],
+    price: 100.00,
+    issplited: false
+  },
+  {
+    id: 4,
+    datetime: new Date("2021-10-01 20:00:00").toISOString(),
+    title: "Dinner at Restaurant",
+    super_cid: "crHjSb",
+    payer: 1,
+    attendees_ids: [2, 3],
+    price: 1200.50,
+    issplited: true
+  },
+  {
+    id: 5,
+    datetime: new Date("2021-10-02 10:00:00").toISOString(),
+    title: "Stationery Purchase",
+    super_cid: "b63sTZ",
+    payer: 2,
+    attendees_ids: [1, 3],
+    price: 300.00,
+    issplited: true
+  },
+  {
+    id: 6,
+    datetime: new Date("2021-10-03 12:00:00").toISOString(),
+    title: "Lunch at School",
+    super_cid: "a63sTZ",
+    payer: 3,
+    attendees_ids: [1, 2],
+    price: 100.00,
+    issplited: true
+  },
+];  
+
 
 export default function ChatroomDetails() {
   const { room_id } = useLocalSearchParams();
   const router = useRouter();
-
   const darkmode = true;
   const [message, setMessage] = useState("");
-  const [chatroomMessages, setChatroomMessages] = useState(chatrooms.find(room => room.room_id === parseInt(room_id as string))?.messages || []);
+  const [chatroomMessages, setChatroomMessages] = useState(messages);
 
-  const chatroom = chatrooms.find(room => room.room_id === parseInt(room_id as string));
+  const chatroom:ChatroomProps = {
+    id: 1,
+    room_id: room_id ? parseInt(room_id.toString()) : 1,
+    name: "Chatroom " + (room_id ? room_id.toString() : "1"),
+  };
+
+  useEffect(() => {
+    socket.emit("joinRoom", { room: chatroom.room_id, userId });
+
+    socket.on("currentMessage", (data) => {
+      const newMessage: MessageProps = {
+        id: chatroomMessages.length + 1,
+        timestamp: data.timestamp,
+        sender: data.sender,
+        text: data.message,
+      };
+      setChatroomMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    socket.on("historyMessage", (messages) => {
+      interface SocketMessage {
+        timestamp: string;
+        sender: number;
+        message: string;
+      }
+
+      const formattedMessages: MessageProps[] = (messages as SocketMessage[]).map((msg: SocketMessage) => ({
+        id: chatroomMessages.length + 1,
+        timestamp: msg.timestamp,
+        sender: msg.sender,
+        text: msg.message,
+      }));
+      setChatroomMessages(formattedMessages);
+    });
+
+    return () => {
+      socket.off("currentMessage");
+      socket.off("historyMessage");
+    };
+  }, [chatroom.room_id]);
 
   if (!chatroom) {
     return (
@@ -57,11 +169,11 @@ export default function ChatroomDetails() {
   const handleSendMessage = () => {
     if (message.trim()) {
       const newMessage = {
-        id: chatroomMessages.length + 1,
-        user_id: userId,
-        text: message.trim()
+        userName: "User" + userId,
+        room: chatroom.room_id,
+        message: message.trim(),
       };
-      setChatroomMessages([...chatroomMessages, newMessage]);
+      socket.emit("chatMessage", newMessage);
       setMessage("");
     }
   };
@@ -75,6 +187,32 @@ export default function ChatroomDetails() {
   //   setMessage(message + emoji.code);
   //   setShowEmojiBoard(false);
   // };
+
+  const [transactions, setTransactions] = useState(accounting);
+
+  const addTransaction = (inputTransaction:InputTransactionProps) => {
+    const newTransaction:Transaction = {
+      id: transactions.length + 1,
+      datetime: inputTransaction.datetime,
+      title: inputTransaction.title,
+      super_cid: 'super_cid',
+      payer: parseInt(inputTransaction.payer),
+      attendees_ids: inputTransaction.attendees_ids.map(id => parseInt(id)),
+      price: inputTransaction.price,
+      issplited: inputTransaction.issplited,
+    };
+    setTransactions([...transactions, newTransaction]);
+    console.log(transactions)
+  };
+  const [showAccounting, setShowAccounting] = useState(false);
+
+  const openModal = () => {
+    setShowAccounting(true);
+  };
+
+  const closeModal = () => {
+    setShowAccounting(false);
+  };
   
   return (
     <View style={styles.container}>
@@ -111,10 +249,10 @@ export default function ChatroomDetails() {
       <View style={[styles.chatBackground, {backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",} ]}>
         <View style={{ borderRadius: 10, marginBottom: 10 }}/>
         <FlatList
-          data={chatroomMessages}
+          data={chatroomMessages.sort((a, b) => a.timestamp.localeCompare(b.timestamp))}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={[styles.messageContainer, item.user_id === userId ? styles.userMessage : styles.otherMessage]}>
+            <View style={[styles.messageContainer, item.sender === userId ? styles.userMessage : styles.otherMessage]}>
               <Text style={styles.messageText}>{item.text}</Text>
             </View>
           )}
@@ -139,6 +277,64 @@ export default function ChatroomDetails() {
             // }
           }}
         />
+
+        {/* Bill button */}
+        {/* <TouchableOpacity ref={billButtonRef} onLayout={handleLayout} style={styles.billButton} onPress={() => setShowAccounting(!showAccounting)}> */}
+        <TouchableOpacity style={styles.billButton} onPress={() => setShowAccounting(!showAccounting)}>
+          <Text style={styles.billButtonText}>bill</Text>
+        </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showAccounting}
+          onRequestClose={closeModal}
+        >
+          <View style={modalStyles.modalOverlay}>
+            <View style={modalStyles.modalContent}>
+              <Text style={modalStyles.modalTitle}> Accounting Details </Text>
+              {/* <Text style={modalStyles.modalText}>
+                Here is the information you want to display.
+              </Text> */}
+              <NewTransactionInput onAddTransaction={addTransaction} />
+
+              <View style={[
+                { flexDirection: 'row', marginBottom: 10, width: 900 },
+                { backgroundColor: 'lightgrey', paddingLeft: 5, paddingRight: 10 },
+              ]}>
+                <Text style={[{ flex: 2}, modalStyles.modalListTitle,]}> {"DateTime"} </Text>
+                <Text style={[{ flex: 3}, modalStyles.modalListTitle,]}> {"Title"} </Text>
+                <Text style={[{ flex: 1}, modalStyles.modalListTitle,]}> {"Payer"} </Text>
+                <Text style={[{ flex: 3}, modalStyles.modalListTitle,]}> {"Attendies"} </Text>
+                <Text style={[{ flex: 2, marginRight: 30}, modalStyles.modalListTitle,]}> {"Price"} </Text>
+              </View>
+
+              <FlatList
+                data={transactions.sort((a, b) => {
+                  if (a.issplited === b.issplited) {
+                    return a.datetime.localeCompare(b.datetime);
+                  }
+                  return a.issplited ? 1 : -1;
+                })}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <AccountListItem
+                    datetime={item.datetime}
+                    title={item.title}
+                    payer={item.payer.toString()}
+                    attendies={item.attendees_ids}
+                    price={item.price}
+                    isSplit={item.issplited}
+                  />
+                )}
+              />
+              <TouchableOpacity onPress={closeModal} style={modalStyles.closeButton}>
+                <Text style={modalStyles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
           <Text style={styles.sendButtonText}>Send</Text>
         </TouchableOpacity>
@@ -162,11 +358,74 @@ export default function ChatroomDetails() {
   );
 }
 
+const AccountListItem = ( {
+  datetime,
+  title, 
+  payer, 
+  attendies, 
+  price, 
+  isSplit,
+}: {datetime:string, title:string, payer:string, attendies:number[], price:number, isSplit:boolean} ) => {
+
+  {/* (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
+  ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳 */}
+
+  const parseISODate = (isoDate:string) => {
+    // parse ISO date string to "YYYY-MM-DD HH:MM:SS"
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+
+    const padZero = (num:number) => {
+      return num < 10 ? '0' + num : num;
+    };
+
+    return `${year}-${padZero(month)}-${padZero(day)} ${padZero(hour)}:${padZero(minute)}:${padZero(second)}`;
+  };
+
+  return (
+    <View style={[
+      { flexDirection: 'row', marginBottom: 10, width: 900 },
+      // { backgroundColor: isTitle ? 'lightgrey' : 'white' },
+    ]}>
+      <Text style={[modalStyles.modalText,
+        {flex: 2, color: isSplit ? "lightblue" : "black"}, ]
+      }>
+        {parseISODate(datetime)}
+      </Text>
+      <Text style={[modalStyles.modalText,
+        {flex: 3, color: isSplit ? "lightblue" : "black"}, ]
+      }>
+        {title}
+      </Text>
+      <Text style={[modalStyles.modalText,
+        {flex: 1, color: isSplit ? "lightblue" : "black"}, ]
+      }>
+        {payer}
+      </Text>
+      <Text style={[modalStyles.modalText, 
+        {flex: 3, color: isSplit ? "lightblue" : "black"}, ]
+      }>
+        {attendies.join(', ')}
+      </Text>
+      <Text style={[modalStyles.modalText, 
+        {flex: 2, marginRight:30, color: isSplit ? "lightblue" : "black"}, ]
+      }>
+        {price}
+      </Text>
+    </View>
+  );
+}
+
 const NotFoundChatroom = () => {
   const router = useRouter();
   const darkmode = true;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       {/* a stylish Not Found Page with Orange and Black and a cute icon */}
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6" }}>
         {/* A message */}
@@ -192,10 +451,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 16,
-    color: '#666',
   },
   chatBackground: {
     color: '#f0f0f0', 
@@ -253,6 +508,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
+  billButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  billButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
   sendButton: {
     backgroundColor: '#007AFF',
     padding: 10,
@@ -271,5 +536,57 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+  },
+});
+
+
+const modalStyles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '60%',
+    padding: 20,
+    height: '60%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalListTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 5,
+    textAlign: 'center',
+    padding: 5,
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    // backgroundColor: 'lightgrey',
+    padding: 5,
+  },
+  closeButton: {
+    backgroundColor: '#FF3B30',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

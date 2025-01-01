@@ -7,7 +7,6 @@ interface ChatroomProps {
   id: number;
   room_id: number;
   name: string;
-  description: string;
 }
 
 const chatrooms: ChatroomProps[] = [
@@ -15,25 +14,21 @@ const chatrooms: ChatroomProps[] = [
     id: 1,
     room_id: 1,
     name: "Chatroom 1",
-    description: "Chatroom 1 description"
   },
   {
     id: 2,
     room_id: 2,
     name: "Chatroom 2",
-    description: "Chatroom 2 description"
   },
   {
     id: 3,
     room_id: 3,
     name: "Chatroom 3",
-    description: "Chatroom 3 description"
   },
   {
     id: 4,
     room_id: 4,
     name: "Chatroom 4",
-    description: "Chatroom 4 description"
   },
 ];
 
@@ -63,7 +58,6 @@ export default function Chatrooms() {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.chatroom} onPress={() => handlePress(item.room_id)}>
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.description}>{item.description}</Text>
           </TouchableOpacity>
         )}
       />
