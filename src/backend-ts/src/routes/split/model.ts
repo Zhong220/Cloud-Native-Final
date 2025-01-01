@@ -36,4 +36,4 @@ export type payTransaction = {
   from: number;
   to: number;
   amount: number;
-}
+};

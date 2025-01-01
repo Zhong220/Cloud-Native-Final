@@ -1,4 +1,8 @@
-import { DataModel, DtoModel, ViewModel, Record, AccountingRecord } from "./model.js";
+import {
+  DataModel,
+  DtoModel,
+  ViewModel,
+} from "./model.js";
 import loginRepository from "./repository.js";
 
 export function loginService(model: DtoModel): ViewModel {
