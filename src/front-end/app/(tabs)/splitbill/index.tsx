@@ -1,7 +1,22 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import {
+  useNavigation,
+  useRoute,
+  RouteProp,
+  NavigationProp,
+} from "@react-navigation/native";
+import { RootStackParamList, Transaction } from "@/constants/types";
+import { useRouter } from "expo-router";
 
-type Transaction = {
+type Split = {
   from: string;
   to: string;
   amount: number;
@@ -9,19 +24,44 @@ type Transaction = {
 
 const SplitBillPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([
-    { from: "Ryan", to: "Neo", amount: 500 },
-    { from: "Neo", to: "Rong", amount: 300 },
+    {
+      Name: "Lunch",
+      timestamp: new Date().toISOString(),
+      Payer: "Ryan",
+      Debter: ["Neo"],
+      Amount: 500,
+    },
+    {
+      Name: "Dinner",
+      timestamp: new Date().toISOString(),
+      Payer: "Neo",
+      Debter: ["Rong"],
+      Amount: 300,
+    },
   ]);
-  const [splitResult, setSplitResult] = useState<Transaction[]>([]);
+  const [splitResult, setSplitResult] = useState<Split[]>([]);
+  const router = useRouter();
+  const route = useRoute<RouteProp<RootStackParamList, "splitbill">>();
+
+  // 當返回頁面時，檢查是否有新交易，並更新交易列表
+  useEffect(() => {
+    const newTransaction = route.params?.newTransaction;
+    if (newTransaction) {
+      setTransactions((prev) => [...prev, newTransaction]);
+    }
+  }, [route.params]);
 
   const handleSplit = () => {
-    const result: Transaction[] = [];
+    const result: Split[] = [];
     const balance: Record<string, number> = {};
 
     // Calculate balances
-    transactions.forEach(({ from, to, amount }) => {
-      balance[from] = (balance[from] || 0) - amount;
-      balance[to] = (balance[to] || 0) + amount;
+    transactions.forEach(({ Payer, Debter, Amount }) => {
+      balance[Payer] = (balance[Payer] || 0) + Amount;
+      const splitAmount = Amount / Debter.length;
+      Debter.forEach((debter) => {
+        balance[debter] = (balance[debter] || 0) - splitAmount;
+      });
     });
 
     // Resolve balances
@@ -48,6 +88,15 @@ const SplitBillPage = () => {
 
   const renderTransaction = ({ item }: { item: Transaction }) => (
     <View style={styles.row}>
+      <Text style={styles.cell}>{item.Name}</Text>
+      <Text style={styles.cell}>{item.Payer}</Text>
+      <Text style={styles.cell}>{item.Debter.join(", ")}</Text>
+      <Text style={styles.cell}>{item.Amount}</Text>
+    </View>
+  );
+
+  const renderSplit = ({ item }: { item: Split }) => (
+    <View style={styles.row}>
       <Text style={styles.cell}>{item.from}</Text>
       <Text style={styles.cell}>{item.to}</Text>
       <Text style={styles.cell}>{item.amount}</Text>
@@ -57,7 +106,10 @@ const SplitBillPage = () => {
   return (
     <View style={styles.container}>
       {/* Add Transaction Button */}
-      <TouchableOpacity style={styles.addButton} onPress={() => Alert.alert("Add Transaction", "Feature not implemented")}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.navigate("/(tabs)/splitbill/addbill")}
+      >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
 
@@ -65,11 +117,16 @@ const SplitBillPage = () => {
       <Text style={styles.header}>Transactions</Text>
       <View style={styles.table}>
         <View style={styles.row}>
-          <Text style={styles.headerCell}>From</Text>
-          <Text style={styles.headerCell}>To</Text>
+          <Text style={styles.headerCell}>Name</Text>
+          <Text style={styles.headerCell}>Payer</Text>
+          <Text style={styles.headerCell}>Debter</Text>
           <Text style={styles.headerCell}>Amount</Text>
         </View>
-        <FlatList data={transactions} renderItem={renderTransaction} keyExtractor={(item, index) => index.toString()} />
+        <FlatList
+          data={transactions}
+          renderItem={renderTransaction}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
 
       {/* Split Button */}
@@ -85,7 +142,11 @@ const SplitBillPage = () => {
           <Text style={styles.headerCell}>To</Text>
           <Text style={styles.headerCell}>Amount</Text>
         </View>
-        <FlatList data={splitResult} renderItem={renderTransaction} keyExtractor={(item, index) => index.toString()} />
+        <FlatList
+          data={splitResult}
+          renderItem={renderSplit}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
     </View>
   );

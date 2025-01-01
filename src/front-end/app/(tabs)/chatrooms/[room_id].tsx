@@ -1,13 +1,29 @@
+<<<<<<< Updated upstream
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput,  Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
+=======
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+>>>>>>> Stashed changes
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useRef, useState } from 'react';
 import io from "socket.io-client";
 // import EmojiBoard from 'react-native-emoji-board'; // Make sure to install this package
 import NewTransactionInput, { InputTransactionProps } from "./newTransactionInput";
 
+<<<<<<< Updated upstream
 const socket = io("http://localhost:8080"); // Update the URL to localhost:8080
+=======
+>>>>>>> Stashed changes
 const userId = 1; // Example user ID
 
 interface ChatroomProps {
@@ -50,6 +66,7 @@ interface Transaction {
 const accounting:Transaction[] = [
   {
     id: 1,
+<<<<<<< Updated upstream
     // datetime: "2021-10-01 20:00:00",
     datetime: new Date("2021-10-01 20:00:00").toISOString(),
     title: "Dinner at Restaurant",
@@ -111,12 +128,41 @@ const accounting:Transaction[] = [
   },
 ];  
 
+=======
+    room_id: 1,
+    name: "Chatroom 1",
+    description: "Chatroom 1 description",
+    messages: [
+      { id: 1, user_id: 1, text: "Hello from user 1" },
+      { id: 2, user_id: 2, text: "Hello from user 2" },
+    ],
+  },
+  {
+    id: 2,
+    room_id: 2,
+    name: "Chatroom 2",
+    description: "Chatroom 2 description",
+    messages: [
+      { id: 3, user_id: 1, text: "Hi from user 1" },
+      { id: 4, user_id: 3, text: "Hi from user 3" },
+    ],
+  },
+  {
+    id: 3,
+    room_id: 3,
+    name: "Chatroom 3",
+    description: "Chatroom 3 description",
+    messages: [],
+  },
+];
+>>>>>>> Stashed changes
 
 export default function ChatroomDetails() {
   const { room_id } = useLocalSearchParams();
   const router = useRouter();
   const darkmode = true;
   const [message, setMessage] = useState("");
+<<<<<<< Updated upstream
   const [chatroomMessages, setChatroomMessages] = useState(messages);
 
   const chatroom:ChatroomProps = {
@@ -159,19 +205,33 @@ export default function ChatroomDetails() {
       socket.off("historyMessage");
     };
   }, [chatroom.room_id]);
+=======
+  const [chatroomMessages, setChatroomMessages] = useState(
+    chatrooms.find((room) => room.room_id === parseInt(room_id as string))
+      ?.messages || []
+  );
+
+  const chatroom = chatrooms.find(
+    (room) => room.room_id === parseInt(room_id as string)
+  );
+>>>>>>> Stashed changes
 
   if (!chatroom) {
-    return (
-      <NotFoundChatroom />
-    );
+    return <NotFoundChatroom />;
   }
 
   const handleSendMessage = () => {
     if (message.trim()) {
       const newMessage = {
+<<<<<<< Updated upstream
         userName: "User" + userId,
         room: chatroom.room_id,
         message: message.trim(),
+=======
+        id: chatroomMessages.length + 1,
+        user_id: userId,
+        text: message.trim(),
+>>>>>>> Stashed changes
       };
       socket.emit("chatMessage", newMessage);
       setMessage("");
@@ -188,6 +248,7 @@ export default function ChatroomDetails() {
   //   setShowEmojiBoard(false);
   // };
 
+<<<<<<< Updated upstream
   const [transactions, setTransactions] = useState(accounting);
 
   const addTransaction = (inputTransaction:InputTransactionProps) => {
@@ -214,45 +275,76 @@ export default function ChatroomDetails() {
     setShowAccounting(false);
   };
   
+=======
+>>>>>>> Stashed changes
   return (
     <View style={styles.container}>
       {/* Topbar */}
       <View style={styles.topbar}>
         {/* Chatroom title */}
         <Text style={styles.topbarTitle}>{chatroom.name}</Text>
-        
+
         {/* Back button */}
-        <TouchableOpacity 
-          onPress={ () => router.navigate("/(tabs)/chatrooms") } 
-          style={{ marginRight: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        <TouchableOpacity
+          onPress={() => router.navigate("/(tabs)/chatrooms")}
+          style={{
+            marginRight: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           <View style={{ marginRight: 15 }}>
             <FontAwesome5 name="arrow-left" size={22} color="black" />
           </View>
-          <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{"Back"}</Text>
+          <Text style={{ fontSize: 22, fontWeight: "bold" }}>{"Back"}</Text>
         </TouchableOpacity>
 
         {/* Split Bill Button */}
-        <TouchableOpacity 
-          onPress={ () => router.navigate("/(tabs)/splitbill") } 
-          style={{ marginRight: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', right: 0, position: 'absolute' }}
+        <TouchableOpacity
+          onPress={() => router.navigate("/(tabs)/splitbill")}
+          style={{
+            marginRight: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            right: 0,
+            position: "absolute",
+          }}
         >
-          <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{"Split-bill"}</Text>
+          <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+            {"Split-bill"}
+          </Text>
           <View style={{ marginLeft: 15 }}>
             <FontAwesome5 name="money-bill-alt" size={22} color="black" />
           </View>
         </TouchableOpacity>
-
       </View>
 
       {/* Chatroom messages */}
-      <View style={[styles.chatBackground, {backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",} ]}>
-        <View style={{ borderRadius: 10, marginBottom: 10 }}/>
+      <View
+        style={[
+          styles.chatBackground,
+          { backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6" },
+        ]}
+      >
+        <View style={{ borderRadius: 10, marginBottom: 10 }} />
         <FlatList
           data={chatroomMessages.sort((a, b) => a.timestamp.localeCompare(b.timestamp))}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
+<<<<<<< Updated upstream
             <View style={[styles.messageContainer, item.sender === userId ? styles.userMessage : styles.otherMessage]}>
+=======
+            <View
+              style={[
+                styles.messageContainer,
+                item.user_id === userId
+                  ? styles.userMessage
+                  : styles.otherMessage,
+              ]}
+            >
+>>>>>>> Stashed changes
               <Text style={styles.messageText}>{item.text}</Text>
             </View>
           )}
@@ -260,18 +352,29 @@ export default function ChatroomDetails() {
       </View>
 
       {/* Input field and send button */}
-      <View style={[styles.inputContainer, {backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",} ]}>
+      <View
+        style={[
+          styles.inputContainer,
+          { backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6" },
+        ]}
+      >
         <TextInput
-          style={[styles.input, {backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6", color: darkmode ? "#fff" : "#000"}]}
+          style={[
+            styles.input,
+            {
+              backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",
+              color: darkmode ? "#fff" : "#000",
+            },
+          ]}
           value={message}
           onChangeText={setMessage}
           placeholder="Type a message"
           onKeyPress={(e) => {
             // if (e.nativeEvent.key === 'Enter' && !e.shiftKey) {
-            if (e.nativeEvent.key === 'Enter') {
+            if (e.nativeEvent.key === "Enter") {
               e.preventDefault();
               handleSendMessage();
-            } 
+            }
             // else if (e.nativeEvent.key === 'Enter' && e.shiftKey) {
             //   setMessage((prevMessage) => prevMessage + '\n');
             // }
@@ -427,21 +530,36 @@ const NotFoundChatroom = () => {
   return (
     <View style={[styles.container]}>
       {/* a stylish Not Found Page with Orange and Black and a cute icon */}
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",
+        }}
+      >
         {/* A message */}
         {/* A Figure of a cute cat */}
         <FontAwesome5 name="cat" size={100} color="#FF8F3B" />
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color:"white" }}>Oops...! Chatroom not found</Text>
-        
-        <TouchableOpacity onPress={ () => router.navigate("/(tabs)/chatrooms") }
-          style={{ marginTop: 20, padding: 10, backgroundColor: '#FF8F3B', borderRadius: 10 }}
+        <Text style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
+          Oops...! Chatroom not found
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => router.navigate("/(tabs)/chatrooms")}
+          style={{
+            marginTop: 20,
+            padding: 10,
+            backgroundColor: "#FF8F3B",
+            borderRadius: 10,
+          }}
         >
-          <Text style={{ fontSize: 18, color: 'white' }}>Go back</Text>
+          <Text style={{ fontSize: 18, color: "white" }}>Go back</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -450,12 +568,19 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
+<<<<<<< Updated upstream
+=======
+  description: {
+    fontSize: 16,
+    color: "#666",
+  },
+>>>>>>> Stashed changes
   chatBackground: {
-    color: '#f0f0f0', 
-    padding: 12, 
-    flex: 1 
+    color: "#f0f0f0",
+    padding: 12,
+    flex: 1,
   },
   messageContainer: {
     padding: 10,
@@ -463,48 +588,48 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   userMessage: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     // backgroundColor: '#DCF8C6', // Light green
-    backgroundColor: '#FFF0D3',
-    borderWidth:1,
-    borderColor:'#fbc9a3',
+    backgroundColor: "#FFF0D3",
+    borderWidth: 1,
+    borderColor: "#fbc9a3",
   },
   otherMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#ECECEC',
+    alignSelf: "flex-start",
+    backgroundColor: "#ECECEC",
   },
   messageText: {
     fontSize: 16,
   },
   topbar: {
     height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 15,
-    borderBlockColor: 'black',
+    borderBlockColor: "black",
     borderBottomWidth: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   topbarTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    position: 'absolute',
+    fontWeight: "bold",
+    position: "absolute",
     left: 0,
     right: 0,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: "#ddd",
   },
   input: {
     flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 20,
     marginRight: 10,
   },
@@ -519,12 +644,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     padding: 10,
     borderRadius: 20,
   },
   sendButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
   emojiButton: {
@@ -533,11 +658,12 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
   },
 });
+<<<<<<< Updated upstream
 
 
 const modalStyles = StyleSheet.create({
@@ -590,3 +716,5 @@ const modalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+=======
+>>>>>>> Stashed changes

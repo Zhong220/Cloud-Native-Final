@@ -1,6 +1,12 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from 'expo-router';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useRouter } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 interface ChatroomProps {
@@ -14,21 +20,37 @@ const chatrooms: ChatroomProps[] = [
     id: 1,
     room_id: 1,
     name: "Chatroom 1",
+<<<<<<< Updated upstream
+=======
+    description: "Chatroom 1 description",
+>>>>>>> Stashed changes
   },
   {
     id: 2,
     room_id: 2,
     name: "Chatroom 2",
+<<<<<<< Updated upstream
+=======
+    description: "Chatroom 2 description",
+>>>>>>> Stashed changes
   },
   {
     id: 3,
     room_id: 3,
     name: "Chatroom 3",
+<<<<<<< Updated upstream
+=======
+    description: "Chatroom 3 description",
+>>>>>>> Stashed changes
   },
   {
     id: 4,
     room_id: 4,
     name: "Chatroom 4",
+<<<<<<< Updated upstream
+=======
+    description: "Chatroom 4 description",
+>>>>>>> Stashed changes
   },
 ];
 
@@ -56,7 +78,10 @@ export default function Chatrooms() {
         data={chatrooms}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.chatroom} onPress={() => handlePress(item.room_id)}>
+          <TouchableOpacity
+            style={styles.chatroom}
+            onPress={() => handlePress(item.room_id)}
+          >
             <Text style={styles.name}>{item.name}</Text>
           </TouchableOpacity>
         )}
@@ -69,36 +94,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 16,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   chatroom: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   topbar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: 60,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 15,
-    borderBlockColor: 'black',
+    borderBlockColor: "black",
     borderBottomWidth: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   topbarTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    position: 'absolute',
+    fontWeight: "bold",
+    position: "absolute",
     left: 0,
     right: 0,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
