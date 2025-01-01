@@ -1,31 +1,33 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet } from "react-native";
 export type { InputTransactionProps };
 
 interface InputTransactionProps {
-    datetime: string;
-    title: string;
-    payer: string;
-    attendees_ids: string[];
-    price: number;
-    issplited: boolean;
+  datetime: string;
+  title: string;
+  payer: string;
+  attendees_ids: string[];
+  price: number;
+  issplited: boolean;
 }
 
-const NewTransactionInput = ({ onAddTransaction }: {
-    onAddTransaction: (transaction: InputTransactionProps) => void;
+const NewTransactionInput = ({
+  onAddTransaction,
+}: {
+  onAddTransaction: (transaction: InputTransactionProps) => void;
 }) => {
   const [datetime, setDatetime] = useState(new Date().toISOString());
-  const [title, setTitle] = useState('');
-  const [payer, setPayer] = useState('');
-  const [attendees, setAttendees] = useState('');
-  const [price, setPrice] = useState('');
+  const [title, setTitle] = useState("");
+  const [payer, setPayer] = useState("");
+  const [attendees, setAttendees] = useState("");
+  const [price, setPrice] = useState("");
 
   const handleAddTransaction = () => {
     const newTransaction = {
       datetime,
       title,
       payer,
-      attendees_ids: attendees.split(',').map(id => id.trim()),
+      attendees_ids: attendees.split(",").map((id) => id.trim()),
       price: parseFloat(price),
       issplited: false, // Default value, adjust as needed
     };
@@ -35,14 +37,14 @@ const NewTransactionInput = ({ onAddTransaction }: {
 
   const clearInputs = () => {
     setDatetime(new Date().toISOString());
-    setTitle('');
-    setPayer('');
-    setAttendees('');
-    setPrice('');
+    setTitle("");
+    setPayer("");
+    setAttendees("");
+    setPrice("");
   };
 
   return (
-    <View style={[styles.inputContainer, {flexDirection: 'row'}]}>
+    <View style={[styles.inputContainer, { flexDirection: "row" }]}>
       <TextInput
         placeholder="Title"
         value={title}
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: "grey",
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,

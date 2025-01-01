@@ -1,23 +1,28 @@
 // src/pages/HomePage.tsx
-import React from 'react';
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import EventCard from '@/components/app/EventCard';
-import ServiceCard from '@/components/app/ServiceCard';
-
+import React from "react";
+import { Link } from "expo-router";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import EventCard from "@/components/app/EventCard";
+import ServiceCard from "@/components/app/ServiceCard";
 
 export default function HomePage() {
-  const services = ['Template Converter', 'Recommend', 'Other'];
+  const services = ["Template Converter", "Recommend", "Other"];
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>GroupUp</Text>
       {/* <Link href="/home/notiBoard"> */}
-      <Link href={'/(tabs)/home/notiBoard'}>
+      <Link href={"/(tabs)/home/notiBoard"}>
         <EventCard
           type="Event"
           title="EventName"
-          details={['Detail 1', 'Detail 2', 'Detail 3']}
+          details={["Detail 1", "Detail 2", "Detail 3"]}
           channelName="Channel Name"
           time="Now"
         />
@@ -39,15 +44,20 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#f39c12' },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  title: { fontSize: 24, fontWeight: "bold", color: "#f39c12" },
   createGroup: {
     marginVertical: 10,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: '#ffdd99',
-    alignItems: 'center',
+    backgroundColor: "#ffdd99",
+    alignItems: "center",
   },
-  createText: { color: '#e67e22', fontWeight: 'bold' },
-  additionalTitle: { fontSize: 16, marginTop: 20, marginBottom: 10, color: '#7f8c8d' },
+  createText: { color: "#e67e22", fontWeight: "bold" },
+  additionalTitle: {
+    fontSize: 16,
+    marginTop: 20,
+    marginBottom: 10,
+    color: "#7f8c8d",
+  },
 });
