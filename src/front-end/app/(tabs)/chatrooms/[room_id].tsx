@@ -16,7 +16,8 @@ import io from "socket.io-client";
 import NewTransactionInput, {
   InputTransactionProps,
 } from "./newTransactionInput";
-import { ChatroomProps, MessageProps, Transaction } from "./model";
+import { ChatroomProps, MessageProps } from "./model";
+
 import { sampleMessages } from "./constants/messages";
 import { sampleAccounting } from "./constants/accounting";
 
@@ -29,7 +30,88 @@ const messages = sampleMessages;
 // ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
 // ('Stationery Purchase', 'b63sTZ', 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
 
-const accounting = sampleAccounting;
+interface Transaction {
+  id: number;
+  datetime: string;
+  title: string;
+  super_cid: string;
+  payer: number;
+  attendees_ids: number[];
+  price: number;
+  issplited: boolean;
+}
+
+interface SplitTransaction {
+  from: number;
+  to: number;
+  amount: number;
+}
+
+
+const accounting:Transaction[] = [
+  {
+    id: 1,
+    // datetime: "2021-10-01 20:00:00",
+    datetime: new Date("2021-10-01 20:00:00").toISOString(),
+    title: "Dinner at Restaurant",
+    super_cid: "crHjSb",
+    payer: 1,
+    attendees_ids: [2, 3],
+    price: 1200.50,
+    issplited: true
+  },
+  {
+    id: 2,
+    datetime: new Date("2021-10-02 10:00:00").toISOString(),
+    title: "Stationery Purchase",
+    super_cid: "b63sTZ",
+    payer: 2,
+    attendees_ids: [1, 3],
+    price: 300.00,
+    issplited: false
+  },
+  {
+    id: 3,
+    datetime: new Date("2021-10-03 12:00:00").toISOString(),
+    title: "Lunch at School",
+    super_cid: "a63sTZ",
+    payer: 3,
+    attendees_ids: [1, 2],
+    price: 100.00,
+    issplited: false
+  },
+  {
+    id: 4,
+    datetime: new Date("2021-10-01 20:00:00").toISOString(),
+    title: "Dinner at Restaurant",
+    super_cid: "crHjSb",
+    payer: 1,
+    attendees_ids: [2, 3],
+    price: 1200.50,
+    issplited: true
+  },
+  {
+    id: 5,
+    datetime: new Date("2021-10-02 10:00:00").toISOString(),
+    title: "Stationery Purchase",
+    super_cid: "b63sTZ",
+    payer: 2,
+    attendees_ids: [1, 3],
+    price: 300.00,
+    issplited: true
+  },
+  {
+    id: 6,
+    datetime: new Date("2021-10-03 12:00:00").toISOString(),
+    title: "Lunch at School",
+    super_cid: "a63sTZ",
+    payer: 3,
+    attendees_ids: [1, 2],
+    price: 100.00,
+    issplited: true
+  },
+];  
+
 
 export default function ChatroomDetails() {
   const { room_id } = useLocalSearchParams();
@@ -115,6 +197,33 @@ export default function ChatroomDetails() {
   // };
 
   const [transactions, setTransactions] = useState(accounting);
+  const [splitTransactions, setSplitTransactions] = useState<SplitTransaction[]>([]);
+
+  const formatSplitTransactions = (transactions:Transaction[]) => {
+    const splitTransactions:SplitTransaction[] = [];
+    transactions.forEach((transaction) => {
+      transaction.attendees_ids.forEach((attendee) => {
+        if (attendee !== transaction.payer) {
+          splitTransactions.push({
+            from: transaction.payer,
+            to: attendee,
+            amount: transaction.price / transaction.attendees_ids.length,
+          });
+        }
+      });
+    });
+    return splitTransactions;
+  }
+
+  const handleSplitButton = () => {
+    // console.log("Split button clicked");
+    setSplitTransactions(
+      formatSplitTransactions(
+        transactions.filter((item) => item.issplited === false)
+      )
+    );
+
+  }
 
   const addTransaction = (inputTransaction: InputTransactionProps) => {
     const newTransaction: Transaction = {
@@ -164,16 +273,9 @@ export default function ChatroomDetails() {
         </TouchableOpacity>
 
         {/* Split Bill Button */}
-        <TouchableOpacity
-          onPress={() => router.navigate("/(tabs)/splitbill")}
-          style={{
-            marginRight: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            right: 0,
-            position: "absolute",
-          }}
+        <TouchableOpacity 
+          onPress={ () => setShowAccounting(!showAccounting) } 
+          style={{ marginRight: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', right: 0, position: 'absolute' }}
         >
           <Text style={{ fontSize: 22, fontWeight: "bold" }}>
             {"Split-bill"}
@@ -258,75 +360,84 @@ export default function ChatroomDetails() {
           onRequestClose={closeModal}
         >
           <View style={modalStyles.modalOverlay}>
-            <View style={modalStyles.modalContent}>
+            <View style={[modalStyles.modalContent]}>
               <Text style={modalStyles.modalTitle}> Accounting Details </Text>
               {/* <Text style={modalStyles.modalText}>
                 Here is the information you want to display.
               </Text> */}
-              <NewTransactionInput onAddTransaction={addTransaction} />
-
-              <View
-                style={[
-                  { flexDirection: "row", marginBottom: 10, width: 900 },
-                  {
-                    backgroundColor: "lightgrey",
-                    paddingLeft: 5,
-                    paddingRight: 10,
-                  },
-                ]}
-              >
-                <Text style={[{ flex: 2 }, modalStyles.modalListTitle]}>
-                  {" "}
-                  {"DateTime"}{" "}
-                </Text>
-                <Text style={[{ flex: 3 }, modalStyles.modalListTitle]}>
-                  {" "}
-                  {"Title"}{" "}
-                </Text>
-                <Text style={[{ flex: 1 }, modalStyles.modalListTitle]}>
-                  {" "}
-                  {"Payer"}{" "}
-                </Text>
-                <Text style={[{ flex: 3 }, modalStyles.modalListTitle]}>
-                  {" "}
-                  {"Attendies"}{" "}
-                </Text>
-                <Text
-                  style={[
-                    { flex: 2, marginRight: 30 },
-                    modalStyles.modalListTitle,
-                  ]}
-                >
-                  {" "}
-                  {"Price"}{" "}
-                </Text>
+              
+              <View style={{ flexDirection: 'row', marginBottom: 10 }} >
+                <NewTransactionInput onAddTransaction={addTransaction} />
+                <TouchableOpacity onPress={() => handleSplitButton()} style={[modalStyles.splitButton, {backgroundColor: 'orange'}]}>
+                  <Text style={modalStyles.splitButtonText}>Split bill</Text>
+                </TouchableOpacity>
               </View>
 
-              <FlatList
-                data={transactions.sort((a, b) => {
-                  if (a.issplited === b.issplited) {
-                    return a.datetime.localeCompare(b.datetime);
-                  }
-                  return a.issplited ? 1 : -1;
-                })}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <AccountListItem
-                    datetime={item.datetime}
-                    title={item.title}
-                    payer={item.payer.toString()}
-                    attendies={item.attendees_ids}
-                    price={item.price}
-                    isSplit={item.issplited}
+              <View style={{ flexDirection: 'row', flex: 1, justifyContent:'center' }} >
+                <View style={{ flex: 4, alignItems: 'center', justifyContent: 'center', marginRight: 20 }}>
+
+                  <View style={[
+                    { flexDirection: 'row', marginBottom: 10, width: 700 },
+                    { backgroundColor: 'lightgrey', paddingLeft: 5, paddingRight: 10 },
+                  ]}>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 2}, ]}> {"DateTime"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 3}, ]}> {"Title"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 1}, ]}> {"Payer"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 3}, ]}> {"Attendies"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 1, marginRight: 30}, ]}> {"Price"} </Text>
+                  </View>
+
+                  <FlatList
+                    data={transactions.sort((a, b) => {
+                      if (a.issplited === b.issplited) {
+                        return a.datetime.localeCompare(b.datetime);
+                      }
+                      return a.issplited ? 1 : -1;
+                    }).filter((item) => item.issplited === false)}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                      <AccountListItem
+                        datetime={item.datetime}
+                        title={item.title}
+                        payer={item.payer.toString()}
+                        attendies={item.attendees_ids}
+                        price={item.price}
+                        isSplit={item.issplited}
+                      />
+                    )}
                   />
-                )}
-              />
-              <TouchableOpacity
-                onPress={closeModal}
-                style={modalStyles.closeButton}
-              >
+                </View>
+
+                <View style={{ flex: 3, alignItems: 'center'}}>
+                  <View style={[
+                    { flexDirection: 'row', marginBottom: 10, width: 400 },
+                    { backgroundColor: 'lightgrey', paddingLeft: 5, paddingRight: 10 },
+                  ]}>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 4}, ]}> {"From"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 4}, ]}> {"To"} </Text>
+                    <Text style={[modalStyles.modalListTitle,{ flex: 3}, ]}> {"Amount"} </Text>
+                  </View>
+                  
+                  {splitTransactions.length === 0 && <Text style={modalStyles.modalText}>No split transactions</Text>}
+                  <FlatList
+                    data={splitTransactions}
+                    keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
+                    renderItem={({ item }) => (
+                      <SplitListItem
+                        from={item.from.toString()}
+                        to={item.to.toString()}
+                        amount={item.amount}
+                      />
+                    )}
+                  />
+                  
+                </View>
+              </View>
+              
+              <TouchableOpacity onPress={closeModal} style={modalStyles.closeButton}>
                 <Text style={modalStyles.closeButtonText}>Close</Text>
               </TouchableOpacity>
+              
             </View>
           </View>
         </Modal>
@@ -394,18 +505,13 @@ const AccountListItem = ({
   };
 
   return (
-    <View
-      style={[
-        { flexDirection: "row", marginBottom: 10, width: 900 },
-        // { backgroundColor: isTitle ? 'lightgrey' : 'white' },
-      ]}
-    >
-      <Text
-        style={[
-          modalStyles.modalText,
-          { flex: 2, color: isSplit ? "lightblue" : "black" },
-        ]}
-      >
+    <View style={[
+      { flexDirection: 'row', marginBottom: 10, width: 700 },
+      // { backgroundColor: isTitle ? 'lightgrey' : 'white' },
+    ]}>
+      <Text style={[modalStyles.modalText,
+        {flex: 2, color: isSplit ? "blue" : "black"}, ]
+      }>
         {parseISODate(datetime)}
       </Text>
       <Text
@@ -432,17 +538,41 @@ const AccountListItem = ({
       >
         {attendies.join(", ")}
       </Text>
-      <Text
-        style={[
-          modalStyles.modalText,
-          { flex: 2, marginRight: 30, color: isSplit ? "lightblue" : "black" },
-        ]}
-      >
+      <Text style={[modalStyles.modalText, 
+        {flex: 1, marginRight:30, color: isSplit ? "lightblue" : "black"}, ]
+      }>
         {price}
       </Text>
     </View>
   );
 };
+
+const SplitListItem = ( {
+  from,
+  to,
+  amount,
+}: {from: string, to:string, amount:number} ) => {
+
+  {/* (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
+  ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳 */}
+
+  return (
+    <View style={[
+      { flexDirection: 'row', marginBottom: 10, width: 400 },
+      // { backgroundColor: isTitle ? 'lightgrey' : 'white' },
+    ]}>
+      <Text style={[modalStyles.modalText,  {flex: 4}, ]}>
+        {from}
+      </Text>
+      <Text style={[modalStyles.modalText,  {flex: 4}, ]}>
+        {to}
+      </Text>
+      <Text style={[modalStyles.modalText,  {flex: 3}, ]}>
+        {amount}
+      </Text>
+    </View>
+  );
+}
 
 const NotFoundChatroom = () => {
   const router = useRouter();
@@ -585,10 +715,10 @@ const modalStyles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: "60%",
+    width: '85%',
     padding: 20,
-    height: "60%",
-    backgroundColor: "#fff",
+    height: '85%',
+    backgroundColor: '#fff',
     borderRadius: 10,
     alignItems: "center",
     shadowColor: "#000",
@@ -603,16 +733,16 @@ const modalStyles = StyleSheet.create({
     marginBottom: 10,
   },
   modalListTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: 'bold',
     marginVertical: 5,
     textAlign: "center",
     padding: 5,
   },
   modalText: {
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: 'bold',
     // backgroundColor: 'lightgrey',
     padding: 5,
   },
@@ -625,5 +755,18 @@ const modalStyles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  splitButton: {
+    backgroundColor: 'blue',
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 42,
+    marginHorizontal: 5,
+  },
+  splitButtonText: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
