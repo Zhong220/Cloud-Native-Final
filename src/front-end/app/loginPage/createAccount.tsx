@@ -1,16 +1,15 @@
-
-import React, { useState } from 'react';
-import {Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import styles from './style';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import React, { useState } from "react";
+import { Text, View, TextInput, TouchableOpacity, Image } from "react-native";
+import styles from "./style";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import {Stack, useRouter, Navigator, router, Link} from 'expo-router';
 
 export default function createAccount() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const frontendRouter = useRouter();
   const handleRegister = async (name:string, email:string, password:string) => {
@@ -32,9 +31,9 @@ export default function createAccount() {
       .catch(error => console.error(error));
 
     } catch (error) {
-      console.error('FUCKKKKKK!!!!!Error:', error);
+      console.error("FUCKKKKKK!!!!!Error:", error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -84,7 +83,7 @@ export default function createAccount() {
             onPress={() => setPasswordVisible(!passwordVisible)}
             style={styles.eyeIconContainer}
           >
-            <Text style={styles.eyeIcon}>{passwordVisible ? '👁️' : '👁️‍🗨️'}</Text>
+            <Text style={styles.eyeIcon}>{passwordVisible ? "👁️" : "👁️‍🗨️"}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -92,12 +91,19 @@ export default function createAccount() {
       {/* Keep me logged in & Forgot Password */}
       <View style={styles.optionsContainer}>
         <TouchableOpacity>
-          <Text style={[styles.optionText, styles.forgotPassword]}>Forget Password?</Text>
+          <Text style={[styles.optionText, styles.forgotPassword]}>
+            Forget Password?
+          </Text>
         </TouchableOpacity>
       </View>
 
       {/* Sign up Button */}
-      <TouchableOpacity style={styles.loginButton} onPress={function(){ handleRegister(name, email, password) }}> 
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={function () {
+          handleRegister(name, email, password);
+        }}
+      >
         <Text style={styles.loginButtonText}>Sign up</Text>
       </TouchableOpacity>
 
@@ -107,13 +113,25 @@ export default function createAccount() {
           <Text style={styles.dividerText}>or sign in with</Text>
         </View>
         <View style={styles.socialIcons}>
-          <TouchableOpacity onPress={() => {console.log("Apple login")}}>
-            <AntDesign name="apple1" size={24} color="black"  />
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Apple login");
+            }}
+          >
+            <AntDesign name="apple1" size={24} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {console.log("fb login")}}>
-          <AntDesign name="facebook-square" size={24} color="black" />
+          <TouchableOpacity
+            onPress={() => {
+              console.log("fb login");
+            }}
+          >
+            <AntDesign name="facebook-square" size={24} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {console.log("google  login")}}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("google  login");
+            }}
+          >
             <AntDesign name="google" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -125,8 +143,6 @@ export default function createAccount() {
         <Text style={styles.createAccount}>Already have an account ?</Text>
       </TouchableOpacity>
       </Link>
-     
     </View>
   );
 }
-

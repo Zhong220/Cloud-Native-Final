@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
 type Transaction = {
   from: string;
@@ -57,7 +64,12 @@ const SplitBillPage = () => {
   return (
     <View style={styles.container}>
       {/* Add Transaction Button */}
-      <TouchableOpacity style={styles.addButton} onPress={() => Alert.alert("Add Transaction", "Feature not implemented")}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() =>
+          Alert.alert("Add Transaction", "Feature not implemented")
+        }
+      >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
 
@@ -69,7 +81,11 @@ const SplitBillPage = () => {
           <Text style={styles.headerCell}>To</Text>
           <Text style={styles.headerCell}>Amount</Text>
         </View>
-        <FlatList data={transactions} renderItem={renderTransaction} keyExtractor={(item, index) => index.toString()} />
+        <FlatList
+          data={transactions}
+          renderItem={renderTransaction}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
 
       {/* Split Button */}
@@ -85,7 +101,11 @@ const SplitBillPage = () => {
           <Text style={styles.headerCell}>To</Text>
           <Text style={styles.headerCell}>Amount</Text>
         </View>
-        <FlatList data={splitResult} renderItem={renderTransaction} keyExtractor={(item, index) => index.toString()} />
+        <FlatList
+          data={splitResult}
+          renderItem={renderTransaction}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
     </View>
   );

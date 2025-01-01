@@ -1,6 +1,6 @@
 // src/components/ServiceCard.tsx
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 interface ServiceCardProps {
   title: string;
@@ -17,18 +17,18 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 20,
     margin: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#ddd',
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#ddd",
     borderWidth: 1,
   },
   title: {
-    fontWeight: 'bold',
-    color: '#e67e22',
+    fontWeight: "bold",
+    color: "#e67e22",
   },
 });
 

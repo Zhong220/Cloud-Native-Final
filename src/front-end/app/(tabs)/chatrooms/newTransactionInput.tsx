@@ -5,16 +5,18 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 export type { InputTransactionProps };
 
 interface InputTransactionProps {
-    datetime: string;
-    title: string;
-    payer: string;
-    attendees_ids: string[];
-    price: number;
-    issplited: boolean;
+  datetime: string;
+  title: string;
+  payer: string;
+  attendees_ids: string[];
+  price: number;
+  issplited: boolean;
 }
 
-const NewTransactionInput = ({ onAddTransaction }: {
-    onAddTransaction: (transaction: InputTransactionProps) => void;
+const NewTransactionInput = ({
+  onAddTransaction,
+}: {
+  onAddTransaction: (transaction: InputTransactionProps) => void;
 }) => {
   const [datetime, setDatetime] = useState(new Date());
   const [title, setTitle] = useState('');
@@ -27,7 +29,7 @@ const NewTransactionInput = ({ onAddTransaction }: {
       datetime: datetime.toISOString(),
       title,
       payer,
-      attendees_ids: attendees.split(',').map(id => id.trim()),
+      attendees_ids: attendees.split(",").map((id) => id.trim()),
       price: parseFloat(price),
       issplited: false, // Default value, adjust as needed
     };
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: "grey",
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,

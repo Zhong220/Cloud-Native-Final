@@ -1,6 +1,6 @@
 import {
   JoinRooomModel,
-  RoomMessage,
+  RoomMessageModel,
   StoreMessageDataModel,
   StoreMessageDto,
   UserRoomModel,
@@ -10,10 +10,10 @@ import redisClient from "./utils/redis";
 
 export async function joinRoomService(
   data: JoinRooomModel
-): Promise<RoomMessage[]> {
+): Promise<RoomMessageModel[]> {
   console.log(data);
   const { roomId, roomName, userId, userName } = data;
-  let result: RoomMessage[] = [];
+  let result: RoomMessageModel[] = [];
 
   try {
     // Check if the room exists in Redis
@@ -53,7 +53,7 @@ export async function joinRoomService(
 }
 
 export async function chatMessageService(
-  data: RoomMessage & { roomId: string }
+  data: RoomMessageModel & { roomId: string }
 ) {
   // "room:${room}":"[{"senderId":"Alice","message":"Hello","timestamp":"2021-12-01T00:00:00.000Z"}]"
   try {
@@ -73,10 +73,10 @@ export async function chatMessageService(
 export async function partialMessageService(data: {
   roomId: string;
   lastLoad: number;
-}): Promise<RoomMessage[]> {
+}): Promise<RoomMessageModel[]> {
   const { roomId, lastLoad } = data;
   const loadAmount = 20;
-  let result: RoomMessage[] = [];
+  let result: RoomMessageModel[] = [];
 
   try {
     // Get specific amount message in the room list

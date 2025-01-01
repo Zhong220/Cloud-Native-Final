@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 interface CardProps {
   title: string;
@@ -19,18 +19,18 @@ export default function Card({ title, description, children }: CardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
 });

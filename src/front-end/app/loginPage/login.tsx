@@ -32,7 +32,6 @@ export default function login() {
     checkToken();
   });
 
-
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
@@ -42,11 +41,13 @@ export default function login() {
       });
       if (response.status === 200) {
         const jwtToken = response.data.jwttok;
-        
 
         // 存入 SecureStore
-        
-        const encryptedToken = CryptoJS.AES.encrypt(jwtToken, 'your-secret-key').toString();
+
+        const encryptedToken = CryptoJS.AES.encrypt(
+          jwtToken,
+          "your-secret-key"
+        ).toString();
         localStorage.setItem("jwtToken", encryptedToken);
         console.log("Token saved to asyncstorage");
         frontendRouter.navigate("/(tabs)/chatrooms");

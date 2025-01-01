@@ -2,7 +2,7 @@ import React from "react";
 import { Stack } from "expo-router";
 
 const Layout = () => {
-    return <Stack/>
+  return <Stack />;
 };
 
 export default Layout;
