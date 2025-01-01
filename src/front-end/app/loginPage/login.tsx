@@ -24,7 +24,7 @@ export default function login() {
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
-      const response = await axios.post("http://localhost:8000/auth/login", {
+      const response = await axios.post(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/auth/login`, {
         email: email,
         password: hashedPassword,
       });
@@ -43,7 +43,7 @@ export default function login() {
         console.log("登入錯誤：");
       }
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
+      console.error("Error:", error);
     }
   };
 
@@ -132,7 +132,7 @@ export default function login() {
       </View> */}
 
       {/* Create Account */}
-      <Link href="loginPage/createAccount" asChild>
+      <Link href="/loginPage/createAccount" asChild>
         <TouchableOpacity>
           <Text style={styles.createAccount}>Create an Account</Text>
         </TouchableOpacity>
