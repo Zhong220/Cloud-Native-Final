@@ -8,7 +8,15 @@ import NewTransactionInput, { InputTransactionProps } from "./newTransactionInpu
 
 const userId = 1; // Example user ID
 
-const chatrooms = [
+interface ChatroomProps {
+  id: number;
+  room_id: number;
+  name: string;
+  description: string;
+  messages: { id: number, user_id: number, text: string }[];
+}
+
+const chatrooms:ChatroomProps[] = [
   {
     id: 1,
     room_id: 1,
