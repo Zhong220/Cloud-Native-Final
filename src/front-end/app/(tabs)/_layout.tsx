@@ -1,9 +1,10 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Link, Tabs } from 'expo-router';
+import { Link, Tabs, Stack } from 'expo-router';
 import { Pressable } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
+;
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -23,10 +24,12 @@ export default function TabLayout() {
   const iconColor = colorScheme === 'dark' ? 'white' : 'black'
   const tabbarStyles =
     colorScheme === 'dark' ? styles.darkTabbar : styles.lightTabbar
+
+  // Disable all the tabs on the web
   
   return (
     <>
-      <Tabs
+      {/* <Tabs
         screenOptions={{
           // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           // Disable the static render of the header on web
@@ -44,7 +47,7 @@ export default function TabLayout() {
           },
           headerShown: false,
         }}>
-        {/* <Tabs.Screen
+        <Tabs.Screen
           name="home"
           options={{
             href: "/(tabs)/home",
@@ -56,7 +59,7 @@ export default function TabLayout() {
             //icon
             tabBarIcon: () => <TabBarIcon name="home" color={iconColor} />,
           }}
-        /> */}
+        />
         <Tabs.Screen
           name="chatrooms"
           options={{
@@ -82,7 +85,8 @@ export default function TabLayout() {
             tabBarIcon: () => <TabBarIcon name="money-bill-alt" color={iconColor} />,
           }}
         />
-      </Tabs>
+      </Tabs> */}
+      <Stack  screenOptions={{ headerShown: false }} />
     </>
   );
 }
