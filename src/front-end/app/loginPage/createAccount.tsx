@@ -4,7 +4,7 @@ import {Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import styles from './style';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from "axios";
-import SHA256 from 'crypto-js/sha256';
+import CryptoJS from "crypto-js";
 import {Stack, useRouter, Navigator, router, Link} from 'expo-router';
 
 export default function createAccount() {
@@ -14,9 +14,9 @@ export default function createAccount() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const frontendRouter = useRouter();
   const handleRegister = async (name:string, email:string, password:string) => {
-    const hashedPassword = SHA256(password).toString();
+    const hashedPassword = CryptoJS.SHA256(password).toString();
     try {
-      const response = await axios.post('http://localhost:8000/auth/register', {
+      const response = await axios.post(`http://52.63.53.7:8000/auth/register`, {
         name: name,
         email: email,
         password: hashedPassword
@@ -120,7 +120,7 @@ export default function createAccount() {
       </View>
 
       {/* Create Account */}
-      <Link href="loginPage/login" asChild>
+      <Link href="/loginPage/login" asChild>
       <TouchableOpacity>
         <Text style={styles.createAccount}>Already have an account ?</Text>
       </TouchableOpacity>

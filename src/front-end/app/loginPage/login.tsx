@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -21,20 +21,33 @@ export default function login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const frontendRouter = useRouter();
 
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        console.log("Token exists");
+        frontendRouter.navigate("/(tabs)/home");
+      }
+    };
+    checkToken();
+  });
+
+
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
-      const response = await axios.post("http://localhost:8000/auth/login", {
+      const response = await axios.post(`http://localhost:8000/auth/login`, {
         email: email,
         password: hashedPassword,
       });
       if (response.status === 200) {
         const jwtToken = response.data.jwttok;
-        console.log("JWT Token:", jwtToken);
+        
 
         // 存入 SecureStore
-        await AsyncStorage.setItem("jwtToken", jwtToken);
-        // await SecureStore.setItemAsync('jwtToken', jwtToken);
+        
+        const encryptedToken = CryptoJS.AES.encrypt(jwtToken, 'your-secret-key').toString();
+        localStorage.setItem("jwtToken", encryptedToken);
         console.log("Token saved to asyncstorage");
         frontendRouter.navigate("/(tabs)/home");
       } else if (response.status === 401) {
@@ -43,7 +56,7 @@ export default function login() {
         console.log("登入錯誤：");
       }
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
+      console.error("Error:", error);
     }
   };
 
@@ -132,7 +145,7 @@ export default function login() {
       </View> */}
 
       {/* Create Account */}
-      <Link href="loginPage/createAccount" asChild>
+      <Link href="/loginPage/createAccount" asChild>
         <TouchableOpacity>
           <Text style={styles.createAccount}>Create an Account</Text>
         </TouchableOpacity>
