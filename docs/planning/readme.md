@@ -7,14 +7,3 @@
 #### [小組作業一](planning-01/readme.md)
 
 #### [小組作業二](planning-02/readme.md)
-
-#### [小組作業三](planning-03/readme.md)
-
-#### [小組作業四](planning-04/readme.md)
-
-#### [小組作業五](planning-05/readme.md)
-
-#### [小組作業六](planning-06/readme.md)
-
-#### [小組作業七](planning-07/readme.md)
-

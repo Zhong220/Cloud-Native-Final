@@ -1,11 +1,7 @@
-import {
-  DataModel,
-  DtoModel,
-  ViewModel,
-} from "./model.js";
+import { DataModel, DtoModel, ViewModel } from "./model.js";
 import loginRepository from "./repository.js";
 
-export function loginService(model: DtoModel): ViewModel {
+export default function loginService(model: DtoModel): ViewModel {
   const result: DataModel = loginRepository(model);
   return { jwtToken: getJWTToken(result.mail) };
 }

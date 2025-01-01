@@ -6,8 +6,7 @@ import {
   UserRoomModel,
 } from "./model";
 import { storeMessageRepository } from "./repository";
-
-const redisClient = new Redis("redis");
+import redisClient from "./utils/redis";
 
 export async function joinRoomService(
   data: UserRoomModel
@@ -112,4 +111,16 @@ async function storeMessageService(data: StoreMessageDto[]) {
   } catch (error) {
     console.error(error);
   }
+}
+
+export function generateChatroomID() {
+  const length = 6;
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+  return result;
 }

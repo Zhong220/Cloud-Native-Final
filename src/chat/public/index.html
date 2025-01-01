@@ -75,7 +75,8 @@
       });
 
       // Listen for chat history
-      socket.on("historyMessage", (messages) => { // 聊天紀錄
+      socket.on("historyMessage", (messages) => {
+        // 聊天紀錄
         messages.forEach((msg) => {
           const messageElement = document.createElement("div");
           messageElement.textContent = `${msg.sender}: ${
