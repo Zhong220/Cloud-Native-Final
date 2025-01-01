@@ -3,13 +3,15 @@ CREATE DATABASE IF NOT EXISTS `cns_db`;
 USE `cns_db`;
 
 DROP TABLE IF EXISTS `accounting`;
+
 DROP TABLE IF EXISTS `chatroom_msg`;
+
 DROP TABLE IF EXISTS `chatroom`;
+
 DROP TABLE IF EXISTS `user`;
 
 -- create.sql
 -- Drop tables if they exist (in correct order to avoid foreign key constraints issues)
-
 -- Create 'user' table
 CREATE TABLE
     `user` (
@@ -28,7 +30,6 @@ CREATE TABLE
         PRIMARY KEY (`cid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-
 CREATE TABLE
     `accounting` (
         `acid` INT NOT NULL AUTO_INCREMENT,
@@ -38,6 +39,7 @@ CREATE TABLE
         `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
         `price` DECIMAL(10, 2) NOT NULL COMMENT 'NewTaiwanDollar',
         `issplited` BOOLEAN DEFAULT FALSE,
+        `datetime` timestamp NOT NULL,
         PRIMARY KEY (`acid`),
         FOREIGN KEY (`super_cid`) REFERENCES `chatroom` (`cid`) ON DELETE CASCADE,
         FOREIGN KEY (`payer`) REFERENCES `user` (`uid`) ON DELETE CASCADE

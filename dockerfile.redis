@@ -1,7 +1,0 @@
-FROM redis:alpine
-
-WORKDIR /usr/local/bin
-
-COPY script/insert_redis_data.sh /usr/local/bin/insert_redis_data.sh
-
-RUN chmod +x /usr/local/bin/insert_redis_data.sh

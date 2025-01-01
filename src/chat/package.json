@@ -16,14 +16,14 @@
     "express": "^4.21.1",
     "ioredis": "^5.4.1",
     "mysql2": "^3.11.4",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/ioredis": "^4.28.10",
     "@types/node": "^22.10.1",
     "@types/socket.io": "^3.0.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
 }

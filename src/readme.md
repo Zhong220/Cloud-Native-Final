@@ -18,6 +18,12 @@ r
 docker compose up -d --build
 # or
 docker-compose up -d --build
+
+# delpoy
+# Retired
+docker compose -f compose-deploy.yml up -d
+# at root
+./script/deploy.sh --version [version]
 ```
 - stop containers 
 ```bash
@@ -33,5 +39,5 @@ docker exec -it mysqldb mysql -uroot -p
 
 # Enter Redis container
 ```bash
-redis-cli -p 7000
+redis-cli -p 6380
 ```
