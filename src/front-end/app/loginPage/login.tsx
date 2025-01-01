@@ -36,7 +36,7 @@ export default function login() {
         await AsyncStorage.setItem("jwtToken", jwtToken);
         // await SecureStore.setItemAsync('jwtToken', jwtToken);
         console.log("Token saved to asyncstorage");
-        frontendRouter.navigate("/(tabs)/home");
+        frontendRouter.navigate("/(tabs)/chatrooms");
       } else if (response.status === 401) {
         // Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
         // window.alert('Login Failed Invalid email or password. Please try again.')

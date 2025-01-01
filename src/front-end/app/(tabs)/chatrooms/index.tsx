@@ -1,13 +1,16 @@
-import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Alert } from "react-native";
 import { useRouter } from 'expo-router';
 import { FontAwesome5 } from "@expo/vector-icons";
+import io from 'socket.io-client';
 
 interface ChatroomProps {
   id: number;
   room_id: number;
   name: string;
 }
+
+const username = "User";
 
 const chatrooms: ChatroomProps[] = [
   {
@@ -32,11 +35,37 @@ const chatrooms: ChatroomProps[] = [
   },
 ];
 
+const socket = io('http://localhost:8080');
+
 export default function Chatrooms() {
   const router = useRouter();
+  const [search, setSearch] = useState("");
 
   const handlePress = (room_id: number) => {
+    console.log(`Joining chatroom ${room_id}`);
     router.push(`./chatrooms/${room_id}`);
+  };
+
+  const handleSearch = () => {
+    const chatroom = chatrooms.find(room => room.name.toLowerCase() === search.toLowerCase());
+    if (chatroom) {
+      handlePress(chatroom.room_id);
+    } else {
+      socket.emit('checkRoom', search, (exists: boolean) => {
+        Alert.alert(
+          "Create Chatroom",
+          `The chatroom "${search}" does not exist. Do you want to create it?`,
+          [
+            { text: "No", style: "cancel" },
+            { text: "Yes", onPress: () => {
+              const newRoom = { id: chatrooms.length + 1, room_id: chatrooms.length + 1, name: search };
+              chatrooms.push(newRoom);
+              handlePress(newRoom.room_id);
+            }}
+          ]
+        );
+      });
+    }
   };
 
   return (
@@ -50,6 +79,22 @@ export default function Chatrooms() {
           </View>
           <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{"Back"}</Text>
         </TouchableOpacity>   */}
+      </View>
+
+      {/* Add a search Text input */}
+      <View style={styles.searchContainer}>
+        <View style={{ marginRight: 10 }}>
+          <FontAwesome5 name="search" size={24} color="black" />
+        </View>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search chatrooms..."
+          value={search}
+          onChangeText={setSearch}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Text style={styles.searchButtonText}>Search</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -100,5 +145,34 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    paddingBottom: 15,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    fontSize: 18,
+  },
+  searchButton: {
+    marginLeft: 10,
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  searchButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
