@@ -9,6 +9,7 @@ import {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
+  RoomMessage,
 } from "./model";
 import {
   chatMessageService,
@@ -18,6 +19,16 @@ import {
 
 const app = express();
 const PORT = 8080;
+
+// Define the client URL
+const clientIP = "localhost";
+const clientURL = `http://${clientIP}:8081`;
+const corsOptions = {
+  origin: clientURL,
+  methods: ["GET", "POST"],
+  credentials: true,
+};
+
 const server = http.createServer(app);
 const io = new SocketIOServer<
   ClientToServerEvents,
@@ -25,30 +36,19 @@ const io = new SocketIOServer<
   InterServerEvents,
   SocketData
 >(server, {
-  cors: {
-      origin: PORT, // Allow your frontend origin
-      methods: ["GET", "POST"], // Specify allowed methods
-      credentials: true, // Allow credentials if needed
-  },
+  cors: corsOptions,
 });
-
 
 // Serve static files from the 'public' directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(
-  cors({
-    origin: "http://localhost:8081", // Replace with your frontend origin
-    methods: ["GET", "POST"], // Allowed HTTP methods
-    credentials: true, // Enable this if cookies or auth headers are needed
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, "../public")));
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Socket server is running on port ${PORT}`);
 });
 
 io.on("connection", (socket) => {
@@ -58,35 +58,38 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", async (data) => {
     const elements = await joinRoomService(data);
     const systemWelcomeMessage = {
-      sender: "system",
-      message: `Welcome ${data.userName} join ${data.room}`,
+      senderId: "system",
+      message: `Welcome ${data.userName} join ${data.roomName}`,
       timestamp: new Date().toISOString(),
     };
-    socket.join(data.room);
-    socket.emit("partialMessage", elements);
-    socket.emit("currentMessage", systemWelcomeMessage);
-    socket.to(data.room).emit("currentMessage", systemWelcomeMessage);
+    socket.join(data.roomId);
+    io.emit("partialMessage", elements);
+    io.to(data.roomId).emit("currentMessage", systemWelcomeMessage);
   });
 
   // Handle 'chatMessage' event
   socket.on("chatMessage", (data) => {
-    const curr = new Date().toISOString();
-    io.to(data.room).emit("currentMessage", {
-      sender: data.userName,
+    const messageDetail: RoomMessage = {
+      senderId: data.userId,
       message: data.message,
-      timestamp: curr,
-    });
+      timestamp: new Date().toISOString(),
+    };
+    io.to(data.roomId).emit("currentMessage", messageDetail);
 
     // Add the message to the room list in Redis
-    chatMessageService(
-      { sender: data.userName, message: data.message, timestamp: curr },
-      data.room
-    );
+    chatMessageService({ ...messageDetail, roomId: data.roomId });
   });
 
   // Handle 'getPartialMessage' event
   socket.on("getPartialMessage", async (data) => {
-    socket.emit("partialMessage", await partialMessageService(data));
+    let result: RoomMessage[] = [];
+    try {
+      result = await partialMessageService(data);
+    } catch (err) {
+      console.error("Error getting partial message:", err);
+    }
+
+    io.emit("partialMessage", result);
   });
 
   // Handle 'disconnect' event

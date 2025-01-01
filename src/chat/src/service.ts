@@ -1,5 +1,5 @@
-import Redis from "ioredis";
 import {
+  JoinRooomModel,
   RoomMessage,
   StoreMessageDataModel,
   StoreMessageDto,
@@ -9,41 +9,42 @@ import { storeMessageRepository } from "./repository";
 import redisClient from "./utils/redis";
 
 export async function joinRoomService(
-  data: UserRoomModel
+  data: JoinRooomModel
 ): Promise<RoomMessage[]> {
   console.log(data);
-  const { room, userId, userName } = data;
+  const { roomId, roomName, userId, userName } = data;
   let result: RoomMessage[] = [];
 
   try {
     // Check if the room exists in Redis
-    const exists = await redisClient.exists(`room:${room}`);
-    if (exists) {
-      console.log(`A user: ${userName} joined room: ${room}`);
+    const isRoomExists = await redisClient.exists(`room:${roomId}`);
+    if (isRoomExists) {
+      console.log(`A user: ${userName} joined room: ${roomId}, ${roomName}`);
 
       // Get all elements in the room list (last 100 messages)
-      const amount = await redisClient.llen(`room:${room}`);
-      result = await partialMessageService({ room, lastLoad: amount });
+      const amount = await redisClient.llen(`room:${roomId}`);
+      result = await partialMessageService({ roomId, lastLoad: amount });
     } else {
-      console.log(`Room ${room} does not exist. Creating it.`);
+      console.log(`Room ${roomId}, ${roomName} does not exist. Creating it.`);
 
       // Create the room and add a welcome message
       await redisClient.rpush(
-        `room:${room}`,
+        `room:${roomId}`,
         JSON.stringify({
-          sender: "system",
-          message: `Room ${room} created.`,
+          senderId: "system",
+          message: `Room ${roomId} created.`,
           timestamp: new Date().toISOString(),
         })
       );
 
       // Retrieve the initial message
-      const elements = await redisClient.lrange(`room:${room}`, 0, -1);
+      const elements = await redisClient.lrange(`room:${roomId}`, 0, -1);
       result = elements.map((element) => JSON.parse(element));
     }
 
-    // Record user in room
-    await redisClient.hset(`room:${room}:members`, userId, userName);
+    // Record users in rooms
+    await redisClient.hset(`room:${roomId}:members`, userId, userName);
+    await redisClient.hset(`user:${userId}:rooms`, roomId, roomName);
   } catch (err) {
     console.error("Error in joinRoomService:", err);
   }
@@ -51,16 +52,15 @@ export async function joinRoomService(
   return result;
 }
 
-export async function chatMessageService(data: RoomMessage, room: string) {
-  // "room:${room}":"[{"sender":"Alice","message":"Hello","timestamp":"2021-12-01T00:00:00.000Z"}]"
+export async function chatMessageService(
+  data: RoomMessage & { roomId: string }
+) {
+  // "room:${room}":"[{"senderId":"Alice","message":"Hello","timestamp":"2021-12-01T00:00:00.000Z"}]"
   try {
-    // if amount in memory greater than 3000 or message exist in memory for too long
-    // store into db
-
     await redisClient.rpush(
-      `room:${room}`,
+      `room:${data.roomId}`,
       JSON.stringify({
-        sender: data.sender,
+        senderId: data.senderId,
         message: data.message,
         timestamp: data.timestamp,
       })
@@ -71,21 +71,17 @@ export async function chatMessageService(data: RoomMessage, room: string) {
 }
 
 export async function partialMessageService(data: {
-  room: string;
+  roomId: string;
   lastLoad: number;
-  end?: number;
 }): Promise<RoomMessage[]> {
-  const { room, lastLoad } = data;
+  const { roomId, lastLoad } = data;
+  const loadAmount = 20;
   let result: RoomMessage[] = [];
 
   try {
     // Get specific amount message in the room list
-    const start = Math.max(0, lastLoad - 100);
-    const messages = await redisClient.lrange(
-      `room:${room}`,
-      start,
-      data.end ? data.end : -1
-    );
+    const start = Math.max(0, lastLoad - loadAmount);
+    const messages = await redisClient.lrange(`room:${roomId}`, start, -1);
     result = messages.map((element) => JSON.parse(element));
     console.log("Retrieved messages:", result);
   } catch (err) {
@@ -95,13 +91,11 @@ export async function partialMessageService(data: {
   return result;
 }
 
-// function is
-
 async function storeMessageService(data: StoreMessageDto[]) {
   try {
     const toStore: StoreMessageDataModel[] = data.map((e) => {
       return {
-        uid: e.sender,
+        uid: e.senderId,
         cid: e.roomId,
         message: e.message,
         timestamp: e.timestamp,
@@ -111,16 +105,4 @@ async function storeMessageService(data: StoreMessageDto[]) {
   } catch (error) {
     console.error(error);
   }
-}
-
-export function generateChatroomID() {
-  const length = 6;
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
-  return result;
 }
