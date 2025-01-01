@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Alert } from "react-native";
 import { useRouter } from 'expo-router';
 import { FontAwesome5 } from "@expo/vector-icons";
 import io from 'socket.io-client';
+import axios from "axios";
 
 interface ChatroomProps {
   id: number;
@@ -16,7 +17,7 @@ const chatrooms: ChatroomProps[] = [
   {
     id: 1,
     room_id: 1,
-    name: "Chatroom 1",
+    name: "Chatroom 1r3",
   },
   {
     id: 2,
@@ -40,6 +41,74 @@ const socket = io('http://localhost:8080');
 export default function Chatrooms() {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [userdata, setUserdata] = useState<any>(null);
+  const [chatrooms, setChatrooms] = useState<ChatroomProps[]>([
+    // {
+    //   id: 1,
+    //   room_id: 1,
+    //   name: "Chatroom 1",
+    // },
+    // {
+    //   id: 2,
+    //   room_id: 2,
+    //   name: "Chatroom 2",
+    // },
+    // {
+    //   id: 3,
+    //   room_id: 3,
+    //   name: "Chatroom 3",
+    // },
+    // {
+    //   id: 4,
+    //   room_id: 4,
+    //   name: "Chatroom 4",
+    // },
+  ]);
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("jwtToken");
+      console.log("Token:", token);       
+      if (token) {
+        try {
+          const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, { JWTtoken: token });
+          setUserdata(response.data);
+          console.log("Token exists", response.data);
+        } catch (error) {
+          console.error("checkTokenError:", error);
+          localStorage.removeItem("jwtToken");
+          await router.push("/loginPage/login");
+        }
+      } else {
+        await router.push("/loginPage/login");
+      }
+    };
+
+    checkToken();
+  }, [router]);
+
+  useEffect(() => {
+    if (userdata) {
+      const fetchChatrooms = async () => {
+        try {
+          const response = await axios.post('http://localhost:8000/chatroom/userGetChatroomRedis', {
+            user: userdata.userID  // 使用從 token 中獲取的使用者 ID
+          });
+          const newChatrooms = response.data.map((chatroom: any, index: number) => ({
+            id: index,
+            room_id: chatroom.chatroomID,
+            name: chatroom.name,
+          }));
+          setChatrooms(newChatrooms);
+          console.log("HAHA!", newChatrooms);
+        } catch (error) {
+          console.error("Error fetching chatrooms", error);
+        }
+      };
+
+      fetchChatrooms();
+    }
+  }, [userdata]);
+
 
   const handlePress = (room_id: number) => {
     console.log(`Joining chatroom ${room_id}`);
