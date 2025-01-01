@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -15,27 +15,39 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 
-
 export default function login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const frontendRouter = useRouter();
 
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        console.log("Token exists");
+        frontendRouter.navigate("/(tabs)/home");
+      }
+    };
+    checkToken();
+  });
+
+
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
-      const response = await axios.post(`http://52.63.53.7:8000/auth/login`, {
+      const response = await axios.post(`http://localhost:8000/auth/login`, {
         email: email,
         password: hashedPassword,
       });
       if (response.status === 200) {
         const jwtToken = response.data.jwttok;
-        console.log("JWT Token:", jwtToken);
+        
 
         // 存入 SecureStore
-        await AsyncStorage.setItem("jwtToken", jwtToken);
-        // await SecureStore.setItemAsync('jwtToken', jwtToken);
+        
+        const encryptedToken = CryptoJS.AES.encrypt(jwtToken, 'your-secret-key').toString();
+        localStorage.setItem("jwtToken", encryptedToken);
         console.log("Token saved to asyncstorage");
         frontendRouter.navigate("/(tabs)/home");
       } else if (response.status === 401) {
