@@ -16,115 +16,20 @@ import io from "socket.io-client";
 import NewTransactionInput, {
   InputTransactionProps,
 } from "./newTransactionInput";
+import { ChatroomProps, MessageProps, Transaction } from "./model";
+import { sampleMessages } from "./constants/messages";
+import { sampleAccounting } from "./constants/accounting";
 
-const socket = io("http://localhost:8080"); // Update the URL to localhost:8080
+const sockerServer = "http://localhost:8080";
+const socket = io(sockerServer);
 const userId = 1; // Example user ID
 
-interface ChatroomProps {
-  id: number;
-  room_id: number;
-  name: string;
-}
-
-interface MessageProps {
-  id: number;
-  timestamp: string;
-  sender: number;
-  text: string;
-}
-
-const messages: MessageProps[] = [
-  {
-    id: 1,
-    timestamp: new Date("2021-10-01 20:00:00").toISOString(),
-    sender: 1,
-    text: "Hello from user 1",
-  },
-  {
-    id: 2,
-    timestamp: new Date("2021-10-01 20:00:00").toISOString(),
-    sender: 2,
-    text: "Hello from user 2",
-  },
-];
+const messages = sampleMessages;
 // INSERT INTO `accounting` (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
 // ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
 // ('Stationery Purchase', 'b63sTZ', 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
 
-interface Transaction {
-  id: number;
-  datetime: string;
-  title: string;
-  super_cid: string;
-  payer: number;
-  attendees_ids: number[];
-  price: number;
-  issplited: boolean;
-}
-
-const accounting: Transaction[] = [
-  {
-    id: 1,
-    // datetime: "2021-10-01 20:00:00",
-    datetime: new Date("2021-10-01 20:00:00").toISOString(),
-    title: "Dinner at Restaurant",
-    super_cid: "crHjSb",
-    payer: 1,
-    attendees_ids: [2, 3],
-    price: 1200.5,
-    issplited: true,
-  },
-  {
-    id: 2,
-    datetime: new Date("2021-10-02 10:00:00").toISOString(),
-    title: "Stationery Purchase",
-    super_cid: "b63sTZ",
-    payer: 2,
-    attendees_ids: [1, 3],
-    price: 300.0,
-    issplited: false,
-  },
-  {
-    id: 3,
-    datetime: new Date("2021-10-03 12:00:00").toISOString(),
-    title: "Lunch at School",
-    super_cid: "a63sTZ",
-    payer: 3,
-    attendees_ids: [1, 2],
-    price: 100.0,
-    issplited: false,
-  },
-  {
-    id: 4,
-    datetime: new Date("2021-10-01 20:00:00").toISOString(),
-    title: "Dinner at Restaurant",
-    super_cid: "crHjSb",
-    payer: 1,
-    attendees_ids: [2, 3],
-    price: 1200.5,
-    issplited: true,
-  },
-  {
-    id: 5,
-    datetime: new Date("2021-10-02 10:00:00").toISOString(),
-    title: "Stationery Purchase",
-    super_cid: "b63sTZ",
-    payer: 2,
-    attendees_ids: [1, 3],
-    price: 300.0,
-    issplited: true,
-  },
-  {
-    id: 6,
-    datetime: new Date("2021-10-03 12:00:00").toISOString(),
-    title: "Lunch at School",
-    super_cid: "a63sTZ",
-    payer: 3,
-    attendees_ids: [1, 2],
-    price: 100.0,
-    issplited: true,
-  },
-];
+const accounting = sampleAccounting;
 
 export default function ChatroomDetails() {
   const { room_id } = useLocalSearchParams();
@@ -139,23 +44,30 @@ export default function ChatroomDetails() {
     name: "Chatroom " + (room_id ? room_id.toString() : "1"),
   };
 
+  // handle socket events
   useEffect(() => {
-    socket.emit("joinRoom", { room: chatroom.room_id, userId });
+    // Need to check again
+    socket.emit("joinRoom", {
+      roomId: chatroom.room_id,
+      roomName: chatroom.name,
+      userId,
+      userName: "User" + userId,
+    });
 
     socket.on("currentMessage", (data) => {
       const newMessage: MessageProps = {
         id: chatroomMessages.length + 1,
         timestamp: data.timestamp,
-        sender: data.sender,
+        senderId: data.senderId,
         text: data.message,
       };
       setChatroomMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
-    socket.on("historyMessage", (messages) => {
+    socket.on("partialMessage", (messages) => {
       interface SocketMessage {
         timestamp: string;
-        sender: number;
+        senderId: number;
         message: string;
       }
 
@@ -164,7 +76,7 @@ export default function ChatroomDetails() {
       ).map((msg: SocketMessage) => ({
         id: chatroomMessages.length + 1,
         timestamp: msg.timestamp,
-        sender: msg.sender,
+        senderId: msg.senderId,
         text: msg.message,
       }));
       setChatroomMessages(formattedMessages);
@@ -172,7 +84,7 @@ export default function ChatroomDetails() {
 
     return () => {
       socket.off("currentMessage");
-      socket.off("historyMessage");
+      socket.off("partialMessage");
     };
   }, [chatroom.room_id]);
 
@@ -183,8 +95,8 @@ export default function ChatroomDetails() {
   const handleSendMessage = () => {
     if (message.trim()) {
       const newMessage = {
-        userName: "User" + userId,
-        room: chatroom.room_id,
+        userId,
+        roomId: chatroom.room_id,
         message: message.trim(),
       };
       socket.emit("chatMessage", newMessage);
@@ -289,7 +201,7 @@ export default function ChatroomDetails() {
             <View
               style={[
                 styles.messageContainer,
-                item.sender === userId
+                item.senderId === userId
                   ? styles.userMessage
                   : styles.otherMessage,
               ]}
