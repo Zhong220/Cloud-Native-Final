@@ -16,7 +16,7 @@ export default function createAccount() {
   const handleRegister = async (name:string, email:string, password:string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString();
     try {
-      const response = await axios.post(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/auth/register`, {
+      const response = await axios.post(`http://52.63.53.7:8000/auth/register`, {
         name: name,
         email: email,
         password: hashedPassword

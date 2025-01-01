@@ -15,6 +15,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 
+
 export default function login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +25,7 @@ export default function login() {
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
-      const response = await axios.post(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/auth/login`, {
+      const response = await axios.post(`http://52.63.53.7:8000/auth/login`, {
         email: email,
         password: hashedPassword,
       });
