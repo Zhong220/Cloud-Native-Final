@@ -4,6 +4,7 @@
 ROOT="$(dirname "$(dirname "$(realpath "$0")")")"
 VERSION_FILE="$ROOT/docs/version.txt"
 
+# read version from version file
 if [[ -f $VERSION_FILE ]]; then
     echo "Current version: $(cat "$VERSION_FILE")"
 else
@@ -49,6 +50,7 @@ else
     done
 fi
 
+# build and push to docker hub
 "$ROOT/script/build.sh" $VERSION
 if [[ $? -eq 0 ]]; then
     echo $VERSION >"$VERSION_FILE"
@@ -57,6 +59,7 @@ else
     exit 1
 fi
 
+# deploy to ECS
 # "$ROOT/script/update.sh"
 # if [[ $? -eq 0 ]]; then
 #     echo "Deployment successful."
