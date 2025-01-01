@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Alert } from "react-native";
-import { useRouter } from 'expo-router';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Alert,
+} from "react-native";
+import { useRouter } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import axios from "axios";
 
 interface ChatroomProps {
@@ -36,7 +44,7 @@ const chatrooms: ChatroomProps[] = [
   },
 ];
 
-const socket = io('http://localhost:8080');
+const socket = io("http://localhost:8080");
 
 export default function Chatrooms() {
   const router = useRouter();
@@ -116,21 +124,30 @@ export default function Chatrooms() {
   };
 
   const handleSearch = () => {
-    const chatroom = chatrooms.find(room => room.name.toLowerCase() === search.toLowerCase());
+    const chatroom = chatrooms.find(
+      (room) => room.name.toLowerCase() === search.toLowerCase()
+    );
     if (chatroom) {
       handlePress(chatroom.room_id);
     } else {
-      socket.emit('checkRoom', search, (exists: boolean) => {
+      socket.emit("checkRoom", search, (exists: boolean) => {
         Alert.alert(
           "Create Chatroom",
           `The chatroom "${search}" does not exist. Do you want to create it?`,
           [
             { text: "No", style: "cancel" },
-            { text: "Yes", onPress: () => {
-              const newRoom = { id: chatrooms.length + 1, room_id: chatrooms.length + 1, name: search };
-              chatrooms.push(newRoom);
-              handlePress(newRoom.room_id);
-            }}
+            {
+              text: "Yes",
+              onPress: () => {
+                const newRoom = {
+                  id: chatrooms.length + 1,
+                  room_id: chatrooms.length + 1,
+                  name: search,
+                };
+                chatrooms.push(newRoom);
+                handlePress(newRoom.room_id);
+              },
+            },
           ]
         );
       });
@@ -170,7 +187,10 @@ export default function Chatrooms() {
         data={chatrooms}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.chatroom} onPress={() => handlePress(item.room_id)}>
+          <TouchableOpacity
+            style={styles.chatroom}
+            onPress={() => handlePress(item.room_id)}
+          >
             <Text style={styles.name}>{item.name}</Text>
           </TouchableOpacity>
         )}
@@ -183,46 +203,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 16,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   chatroom: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   topbar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: 60,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 15,
-    borderBlockColor: 'black',
+    borderBlockColor: "black",
     borderBottomWidth: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   topbarTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    position: 'absolute',
+    fontWeight: "bold",
+    position: "absolute",
     left: 0,
     right: 0,
-    textAlign: 'center',
+    textAlign: "center",
   },
   searchContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: "#ddd",
     height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderBottomWidth: 2,
     paddingBottom: 15,
   },
@@ -230,18 +250,18 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     fontSize: 18,
   },
   searchButton: {
     marginLeft: 10,
     padding: 10,
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     borderRadius: 5,
   },
   searchButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

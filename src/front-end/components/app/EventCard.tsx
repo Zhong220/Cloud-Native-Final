@@ -1,6 +1,6 @@
 // src/components/EventCard.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 
 interface EventCardProps {
   type: string; // Event, Group, System
@@ -10,7 +10,13 @@ interface EventCardProps {
   time: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ type, title, details, channelName, time }) => {
+const EventCard: React.FC<EventCardProps> = ({
+  type,
+  title,
+  details,
+  channelName,
+  time,
+}) => {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -20,7 +26,9 @@ const EventCard: React.FC<EventCardProps> = ({ type, title, details, channelName
       </View>
       <View style={styles.body}>
         {details.map((detail, index) => (
-          <Text key={index} style={styles.detail}>{detail}</Text>
+          <Text key={index} style={styles.detail}>
+            {detail}
+          </Text>
         ))}
         <Text style={styles.channel}>{channelName}</Text>
       </View>
@@ -30,21 +38,21 @@ const EventCard: React.FC<EventCardProps> = ({ type, title, details, channelName
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     padding: 10,
     marginVertical: 5,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  type: { fontWeight: 'bold', color: '#f39c12' },
+  type: { fontWeight: "bold", color: "#f39c12" },
   title: { flex: 1, marginLeft: 10, fontSize: 16 },
-  time: { color: '#7f8c8d' },
+  time: { color: "#7f8c8d" },
   body: { marginTop: 10 },
-  detail: { color: '#34495e' },
-  channel: { marginTop: 5, fontStyle: 'italic', color: '#2ecc71' },
+  detail: { color: "#34495e" },
+  channel: { marginTop: 5, fontStyle: "italic", color: "#2ecc71" },
 });
 
 export default EventCard;

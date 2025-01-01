@@ -41,7 +41,6 @@ export default function login() {
     checkToken();
   });
 
-
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     try {
@@ -51,7 +50,6 @@ export default function login() {
       });
       if (response.status === 200) {
         const jwtToken = response.data.jwttok;
-        
 
         // 存入 SecureStore        
         localStorage.setItem("jwtToken", jwtToken);
