@@ -1,29 +1,13 @@
-<<<<<<< Updated upstream
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput,  Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
-=======
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
->>>>>>> Stashed changes
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useRef, useState } from 'react';
 import io from "socket.io-client";
 // import EmojiBoard from 'react-native-emoji-board'; // Make sure to install this package
 import NewTransactionInput, { InputTransactionProps } from "./newTransactionInput";
 
-<<<<<<< Updated upstream
 const socket = io("http://localhost:8080"); // Update the URL to localhost:8080
-=======
->>>>>>> Stashed changes
 const userId = 1; // Example user ID
 
 interface ChatroomProps {
@@ -66,7 +50,6 @@ interface Transaction {
 const accounting:Transaction[] = [
   {
     id: 1,
-<<<<<<< Updated upstream
     // datetime: "2021-10-01 20:00:00",
     datetime: new Date("2021-10-01 20:00:00").toISOString(),
     title: "Dinner at Restaurant",
@@ -128,41 +111,12 @@ const accounting:Transaction[] = [
   },
 ];  
 
-=======
-    room_id: 1,
-    name: "Chatroom 1",
-    description: "Chatroom 1 description",
-    messages: [
-      { id: 1, user_id: 1, text: "Hello from user 1" },
-      { id: 2, user_id: 2, text: "Hello from user 2" },
-    ],
-  },
-  {
-    id: 2,
-    room_id: 2,
-    name: "Chatroom 2",
-    description: "Chatroom 2 description",
-    messages: [
-      { id: 3, user_id: 1, text: "Hi from user 1" },
-      { id: 4, user_id: 3, text: "Hi from user 3" },
-    ],
-  },
-  {
-    id: 3,
-    room_id: 3,
-    name: "Chatroom 3",
-    description: "Chatroom 3 description",
-    messages: [],
-  },
-];
->>>>>>> Stashed changes
 
 export default function ChatroomDetails() {
   const { room_id } = useLocalSearchParams();
   const router = useRouter();
   const darkmode = true;
   const [message, setMessage] = useState("");
-<<<<<<< Updated upstream
   const [chatroomMessages, setChatroomMessages] = useState(messages);
 
   const chatroom:ChatroomProps = {
@@ -205,16 +159,6 @@ export default function ChatroomDetails() {
       socket.off("historyMessage");
     };
   }, [chatroom.room_id]);
-=======
-  const [chatroomMessages, setChatroomMessages] = useState(
-    chatrooms.find((room) => room.room_id === parseInt(room_id as string))
-      ?.messages || []
-  );
-
-  const chatroom = chatrooms.find(
-    (room) => room.room_id === parseInt(room_id as string)
-  );
->>>>>>> Stashed changes
 
   if (!chatroom) {
     return <NotFoundChatroom />;
@@ -223,15 +167,9 @@ export default function ChatroomDetails() {
   const handleSendMessage = () => {
     if (message.trim()) {
       const newMessage = {
-<<<<<<< Updated upstream
         userName: "User" + userId,
         room: chatroom.room_id,
         message: message.trim(),
-=======
-        id: chatroomMessages.length + 1,
-        user_id: userId,
-        text: message.trim(),
->>>>>>> Stashed changes
       };
       socket.emit("chatMessage", newMessage);
       setMessage("");
@@ -248,7 +186,6 @@ export default function ChatroomDetails() {
   //   setShowEmojiBoard(false);
   // };
 
-<<<<<<< Updated upstream
   const [transactions, setTransactions] = useState(accounting);
 
   const addTransaction = (inputTransaction:InputTransactionProps) => {
@@ -275,8 +212,6 @@ export default function ChatroomDetails() {
     setShowAccounting(false);
   };
   
-=======
->>>>>>> Stashed changes
   return (
     <View style={styles.container}>
       {/* Topbar */}
@@ -333,18 +268,7 @@ export default function ChatroomDetails() {
           data={chatroomMessages.sort((a, b) => a.timestamp.localeCompare(b.timestamp))}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-<<<<<<< Updated upstream
             <View style={[styles.messageContainer, item.sender === userId ? styles.userMessage : styles.otherMessage]}>
-=======
-            <View
-              style={[
-                styles.messageContainer,
-                item.user_id === userId
-                  ? styles.userMessage
-                  : styles.otherMessage,
-              ]}
-            >
->>>>>>> Stashed changes
               <Text style={styles.messageText}>{item.text}</Text>
             </View>
           )}
@@ -570,13 +494,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
-<<<<<<< Updated upstream
-=======
-  description: {
-    fontSize: 16,
-    color: "#666",
-  },
->>>>>>> Stashed changes
   chatBackground: {
     color: "#f0f0f0",
     padding: 12,
@@ -663,7 +580,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-<<<<<<< Updated upstream
 
 
 const modalStyles = StyleSheet.create({
@@ -716,5 +632,3 @@ const modalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-=======
->>>>>>> Stashed changes

@@ -20,37 +20,21 @@ const chatrooms: ChatroomProps[] = [
     id: 1,
     room_id: 1,
     name: "Chatroom 1",
-<<<<<<< Updated upstream
-=======
-    description: "Chatroom 1 description",
->>>>>>> Stashed changes
   },
   {
     id: 2,
     room_id: 2,
     name: "Chatroom 2",
-<<<<<<< Updated upstream
-=======
-    description: "Chatroom 2 description",
->>>>>>> Stashed changes
   },
   {
     id: 3,
     room_id: 3,
     name: "Chatroom 3",
-<<<<<<< Updated upstream
-=======
-    description: "Chatroom 3 description",
->>>>>>> Stashed changes
   },
   {
     id: 4,
     room_id: 4,
     name: "Chatroom 4",
-<<<<<<< Updated upstream
-=======
-    description: "Chatroom 4 description",
->>>>>>> Stashed changes
   },
 ];
 
