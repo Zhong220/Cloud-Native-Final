@@ -1,13 +1,17 @@
 export type RoomMessage = {
-  sender: string;
+  senderId: string;
   message: string;
   timestamp: string;
 };
 
 export type UserRoomModel = {
-  room: string;
   userId: string;
+  roomId: string;
+};
+
+export type JoinRooomModel = UserRoomModel & {
   userName: string;
+  roomName: string;
 };
 
 export interface ServerToClientEvents {
@@ -16,9 +20,9 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  joinRoom: (data: UserRoomModel) => void;
+  joinRoom: (data: JoinRooomModel) => void;
   chatMessage: (data: UserRoomModel & { message: string }) => void;
-  getPartialMessage: (data: { room: string; lastLoad: number }) => void;
+  getPartialMessage: (data: { roomId: string; lastLoad: number }) => void;
 }
 
 export interface InterServerEvents {
@@ -38,9 +42,4 @@ export type StoreMessageDataModel = {
   cid: string;
   message: string;
   timestamp: string;
-};
-
-export type CreateRoomModel = {
-  name: string;
-  description: string;
 };
