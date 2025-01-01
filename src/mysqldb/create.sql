@@ -30,7 +30,6 @@ CREATE TABLE
         PRIMARY KEY (`cid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-drop table `accounting`;
 CREATE TABLE
     `accounting` (
         `acid` INT NOT NULL AUTO_INCREMENT,
