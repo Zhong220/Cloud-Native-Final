@@ -14,23 +14,6 @@ interface ChatroomProps {
   name: string;
 }
 
-const chatrooms:ChatroomProps[] = [
-  {
-    id: 1,
-    room_id: 1,
-    name: "Chatroom 1",
-  },
-  {
-    id: 2,
-    room_id: 2,
-    name: "Chatroom 2",
-  },
-  {
-    id: 3,
-    room_id: 3,
-    name: "Chatroom 3",
-  }
-];
 
 interface MessageProps {
   id: number;
@@ -134,7 +117,11 @@ export default function ChatroomDetails() {
   const [message, setMessage] = useState("");
   const [chatroomMessages, setChatroomMessages] = useState(messages);
 
-  const chatroom = chatrooms.find(room => room.room_id === parseInt(room_id as string));
+  const chatroom:ChatroomProps = {
+    id: 1,
+    room_id: room_id ? parseInt(room_id.toString()) : 1,
+    name: "Chatroom " + (room_id ? room_id.toString() : "1"),
+  };
 
   if (!chatroom) {
     return (
