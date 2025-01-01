@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput,  Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useRef, useState } from 'react';
+import io from "socket.io-client";
 // import EmojiBoard from 'react-native-emoji-board'; // Make sure to install this package
 import NewTransactionInput, { InputTransactionProps } from "./newTransactionInput";
 
+const socket = io("http://localhost:8080"); // Update the URL to localhost:8080
 const userId = 1; // Example user ID
 
 interface ChatroomProps {
@@ -123,6 +125,41 @@ export default function ChatroomDetails() {
     name: "Chatroom " + (room_id ? room_id.toString() : "1"),
   };
 
+  useEffect(() => {
+    socket.emit("joinRoom", { room: chatroom.room_id, userId });
+
+    socket.on("currentMessage", (data) => {
+      const newMessage: MessageProps = {
+        id: chatroomMessages.length + 1,
+        timestamp: data.timestamp,
+        sender: data.sender,
+        text: data.message,
+      };
+      setChatroomMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    socket.on("historyMessage", (messages) => {
+      interface SocketMessage {
+        timestamp: string;
+        sender: number;
+        message: string;
+      }
+
+      const formattedMessages: MessageProps[] = (messages as SocketMessage[]).map((msg: SocketMessage) => ({
+        id: chatroomMessages.length + 1,
+        timestamp: msg.timestamp,
+        sender: msg.sender,
+        text: msg.message,
+      }));
+      setChatroomMessages(formattedMessages);
+    });
+
+    return () => {
+      socket.off("currentMessage");
+      socket.off("historyMessage");
+    };
+  }, [chatroom.room_id]);
+
   if (!chatroom) {
     return (
       <NotFoundChatroom />
@@ -131,13 +168,12 @@ export default function ChatroomDetails() {
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      const newMessage: MessageProps = {
-        id: chatroomMessages.length + 1,
-        timestamp: new Date().toISOString(),
-        sender: userId,
-        text: message.trim()
-      }
-      setChatroomMessages([...chatroomMessages, newMessage]);
+      const newMessage = {
+        userName: "User" + userId,
+        room: chatroom.room_id,
+        message: message.trim(),
+      };
+      socket.emit("chatMessage", newMessage);
       setMessage("");
     }
   };
@@ -213,7 +249,7 @@ export default function ChatroomDetails() {
       <View style={[styles.chatBackground, {backgroundColor: darkmode ? "#4F4C4A" : "#F6F6F6",} ]}>
         <View style={{ borderRadius: 10, marginBottom: 10 }}/>
         <FlatList
-          data={chatroomMessages}
+          data={chatroomMessages.sort((a, b) => a.timestamp.localeCompare(b.timestamp))}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={[styles.messageContainer, item.sender === userId ? styles.userMessage : styles.otherMessage]}>
