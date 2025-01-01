@@ -3,6 +3,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Server as SocketIOServer } from "socket.io";
+import cors from "cors";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -23,11 +24,26 @@ const io = new SocketIOServer<
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->(server);
+>(server, {
+  cors: {
+      origin: PORT, // Allow your frontend origin
+      methods: ["GET", "POST"], // Specify allowed methods
+      credentials: true, // Allow credentials if needed
+  },
+});
+
 
 // Serve static files from the 'public' directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+app.use(
+  cors({
+    origin: "http://localhost:8081", // Replace with your frontend origin
+    methods: ["GET", "POST"], // Allowed HTTP methods
+    credentials: true, // Enable this if cookies or auth headers are needed
+  })
+);
 
 app.use(express.static(path.join(__dirname, "../public")));
 
