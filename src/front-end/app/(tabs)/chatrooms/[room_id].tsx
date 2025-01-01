@@ -12,8 +12,6 @@ interface ChatroomProps {
   id: number;
   room_id: number;
   name: string;
-  description: string;
-  messages: { id: number, user_id: number, text: string }[];
 }
 
 const chatrooms:ChatroomProps[] = [
@@ -21,31 +19,34 @@ const chatrooms:ChatroomProps[] = [
     id: 1,
     room_id: 1,
     name: "Chatroom 1",
-    description: "Chatroom 1 description",
-    messages: [
-      { id: 1, user_id: 1, text: "Hello from user 1" },
-      { id: 2, user_id: 2, text: "Hello from user 2" }
-    ]
   },
   {
     id: 2,
     room_id: 2,
     name: "Chatroom 2",
-    description: "Chatroom 2 description",
-    messages: [
-      { id: 3, user_id: 1, text: "Hi from user 1" },
-      { id: 4, user_id: 3, text: "Hi from user 3" }
-    ]
   },
   {
     id: 3,
     room_id: 3,
     name: "Chatroom 3",
-    description: "Chatroom 3 description",
-    messages: []
   }
 ];
 
+interface MessageProps {
+  id: number;
+  timestamp: string;
+  sender: number;
+  text: string;
+}
+
+const messages:MessageProps[] = [
+  { id: 1, timestamp: new Date("2021-10-01 20:00:00").toISOString(), 
+    sender: 1, text: "Hello from user 1" 
+  },
+  { id: 2, timestamp: new Date("2021-10-01 20:00:00").toISOString(),
+    sender: 2, text: "Hello from user 2" 
+  }
+]
 // INSERT INTO `accounting` (`title`, `super_cid`, `payer`, `attendees_ids`, `price`, `issplited`) VALUES
 // ('Dinner at Restaurant', 'crHjSb', 1, '2,3', 1200.50, FALSE), -- Alice 付錢，Bob 和 Charlie 分帳
 // ('Stationery Purchase', 'b63sTZ', 2, '1,3', 300.00, FALSE); -- Bob 付錢，Alice 和 Charlie 分帳
@@ -131,7 +132,7 @@ export default function ChatroomDetails() {
   const router = useRouter();
   const darkmode = true;
   const [message, setMessage] = useState("");
-  const [chatroomMessages, setChatroomMessages] = useState(chatrooms.find(room => room.room_id === parseInt(room_id as string))?.messages || []);
+  const [chatroomMessages, setChatroomMessages] = useState(messages);
 
   const chatroom = chatrooms.find(room => room.room_id === parseInt(room_id as string));
 
@@ -143,11 +144,12 @@ export default function ChatroomDetails() {
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      const newMessage = {
+      const newMessage: MessageProps = {
         id: chatroomMessages.length + 1,
-        user_id: userId,
+        timestamp: new Date().toISOString(),
+        sender: userId,
         text: message.trim()
-      };
+      }
       setChatroomMessages([...chatroomMessages, newMessage]);
       setMessage("");
     }
@@ -227,7 +229,7 @@ export default function ChatroomDetails() {
           data={chatroomMessages}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={[styles.messageContainer, item.user_id === userId ? styles.userMessage : styles.otherMessage]}>
+            <View style={[styles.messageContainer, item.sender === userId ? styles.userMessage : styles.otherMessage]}>
               <Text style={styles.messageText}>{item.text}</Text>
             </View>
           )}
@@ -426,10 +428,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 16,
-    color: '#666',
   },
   chatBackground: {
     color: '#f0f0f0', 
