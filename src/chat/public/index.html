@@ -59,40 +59,40 @@
       const messageInput = document.getElementById("message-input");
 
       // Join a room
-      const profile = prompt("Enter your ID and name, e.g. U123,Alice: ");
-      const room = prompt("Enter room name:");
-      const [userId, userName] = profile.split(",");
-      socket.emit("joinRoom", { room, userId, userName }); // 進入房間的方式
+      const user = prompt("Enter your ID and name, e.g. U123,Alice: ");
+      const room = prompt("Enter room Id and name, e.g. R123,test:");
+      const [userId, userName] = user.split(",");
+      const [roomId, roomName] = room.split(",");
 
-      // Listen for messages
-      socket.on("currentMessage", (data) => {
-        const messageElement = document.createElement("div");
-        messageElement.textContent = `${data.sender}: ${
-          data.message
-        } (${new Date(data.timestamp).toLocaleTimeString()})`;
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      });
-
-      // Listen for chat history
-      socket.on("historyMessage", (messages) => {
-        // 聊天紀錄
-        messages.forEach((msg) => {
-          const messageElement = document.createElement("div");
-          messageElement.textContent = `${msg.sender}: ${
-            msg.message
-          } (${new Date(msg.timestamp).toLocaleTimeString()})`;
-          messagesDiv.appendChild(messageElement);
-        });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      });
+      // join room
+      socket.emit("joinRoom", { roomId, roomName, userId, userName });
 
       // Send a message
       messageForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const message = messageInput.value;
-        socket.emit("chatMessage", { userName, room, message }); // 訊息傳到後端的方式
+        socket.emit("chatMessage", { userId, roomId, message }); // 訊息傳到後端的方式
         messageInput.value = "";
+      });
+
+      // Listen for messages
+      socket.on("currentMessage", (data) => {
+        const currTimestamp = new Date(data.timestamp).toLocaleTimeString();
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `${data.senderId}: ${data.message} (${currTimestamp})`;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Listen for chat partial messages
+      socket.on("partialMessage", (datas) => {
+        datas.forEach((data) => {
+          const timestamp = new Date(data.timestamp).toLocaleTimeString();
+          const messageElement = document.createElement("div");
+          messageElement.textContent = `${data.senderId}: ${data.message} (${timestamp})`;
+          messagesDiv.appendChild(messageElement);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
       });
     </script>
   </body>

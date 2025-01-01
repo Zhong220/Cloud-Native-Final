@@ -1,6 +1,5 @@
 import { RowDataPacket } from "mysql2/promise";
-import { StoreMessageDataModel, CreateRoomModel } from "./model";
-import { generateChatroomID } from "./service";
+import { StoreMessageDataModel } from "./model";
 import mysqlPool from "./utils/mysql";
 
 export async function storeMessageRepository(data: StoreMessageDataModel[]) {
@@ -64,15 +63,4 @@ export async function getMessageRepository(data: {
   }
 
   return result;
-}
-
-export async function createAChatroom(data: CreateRoomModel) {
-  try {
-    const connection = await mysqlPool.getConnection();
-    const query = `INSERT INTO \`chatroom\` (\`cid\`, \`name\`, \`description\`) VALUES (?, ?, ?);`;
-    const value = [generateChatroomID(), data.name, data.description];
-    const [rows, fields] = connection.query(query, value);
-  } catch (error) {
-    console.error("createAChatroom Error", error);
-  }
 }

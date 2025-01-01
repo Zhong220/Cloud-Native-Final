@@ -39,6 +39,7 @@ CREATE TABLE
         `attendees_ids` TEXT NOT NULL COMMENT '[uid1],[uid2],[uid3]...',
         `price` DECIMAL(10, 2) NOT NULL COMMENT 'NewTaiwanDollar',
         `issplited` BOOLEAN DEFAULT FALSE,
+        `datetime` timestamp NOT NULL,
         PRIMARY KEY (`acid`),
         FOREIGN KEY (`super_cid`) REFERENCES `chatroom` (`cid`) ON DELETE CASCADE,
         FOREIGN KEY (`payer`) REFERENCES `user` (`uid`) ON DELETE CASCADE
