@@ -1,17 +1,17 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-import { StyleSheet } from 'react-native';
+import React from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { Link, Tabs, Stack } from "expo-router";
+import { Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "@/components/useColorScheme";
+import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome5>['name'];
+  name: React.ComponentProps<typeof FontAwesome5>["name"];
   color: string;
 }) {
   return <FontAwesome5 size={28} style={{ marginBottom: -3 }} {...props} />;
@@ -19,14 +19,17 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const textStyles = colorScheme === 'dark' ? styles.darkText : styles.lightText
-  const iconColor = colorScheme === 'dark' ? 'white' : 'black'
+  const textStyles =
+    colorScheme === "dark" ? styles.darkText : styles.lightText;
+  const iconColor = colorScheme === "dark" ? "white" : "black";
   const tabbarStyles =
-    colorScheme === 'dark' ? styles.darkTabbar : styles.lightTabbar
-  
+    colorScheme === "dark" ? styles.darkTabbar : styles.lightTabbar;
+
+  // Disable all the tabs on the web
+
   return (
     <>
-      <Tabs
+      {/* <Tabs
         screenOptions={{
           // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           // Disable the static render of the header on web
@@ -44,7 +47,7 @@ export default function TabLayout() {
           },
           headerShown: false,
         }}>
-        {/* <Tabs.Screen
+        <Tabs.Screen
           name="home"
           options={{
             href: "/(tabs)/home",
@@ -56,7 +59,7 @@ export default function TabLayout() {
             //icon
             tabBarIcon: () => <TabBarIcon name="home" color={iconColor} />,
           }}
-        /> */}
+        />
         <Tabs.Screen
           name="chatrooms"
           options={{
@@ -82,24 +85,25 @@ export default function TabLayout() {
             tabBarIcon: () => <TabBarIcon name="money-bill-alt" color={iconColor} />,
           }}
         />
-      </Tabs>
+      </Tabs> */}
+      <Stack screenOptions={{ headerShown: false }} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
   lightText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
   darkText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
   lightTabbar: {
     height: 80,
-    backgroundColor: '#ffffff',
-    shadowColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: "#ffffff",
+    shadowColor: "rgba(0, 0, 0, 0.25)",
     shadowOffset: {
       width: 0,
       height: 0,
@@ -109,8 +113,8 @@ const styles = StyleSheet.create({
   },
   darkTabbar: {
     height: 80,
-    backgroundColor: '#232323',
-    shadowColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: "#232323",
+    shadowColor: "rgba(0, 0, 0, 0.25)",
     shadowOffset: {
       width: 0,
       height: 0,
@@ -118,4 +122,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 6,
     shadowRadius: 2,
   },
-})
+});

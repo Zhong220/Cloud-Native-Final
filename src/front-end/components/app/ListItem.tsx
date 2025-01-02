@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface ListItemProps {
   title: string;
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   text: {
     fontSize: 16,

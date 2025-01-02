@@ -1,4 +1,4 @@
-export type RoomMessage = {
+export type RoomMessageModel = {
   senderId: string;
   message: string;
   timestamp: string;
@@ -15,8 +15,8 @@ export type JoinRooomModel = UserRoomModel & {
 };
 
 export interface ServerToClientEvents {
-  currentMessage: (data: RoomMessage) => void;
-  partialMessage: (data: RoomMessage[]) => void;
+  currentMessage: (data: RoomMessageModel) => void;
+  partialMessage: (data: RoomMessageModel[]) => void;
 }
 
 export interface ClientToServerEvents {
@@ -33,7 +33,7 @@ export interface SocketData {
   userID?: string;
 }
 
-export type StoreMessageDto = RoomMessage & {
+export type StoreMessageDto = RoomMessageModel & {
   roomId: string;
 };
 

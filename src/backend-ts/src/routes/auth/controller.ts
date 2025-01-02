@@ -49,7 +49,7 @@ router.post("/vertifyToken", async (req, res) => {
     res.status(200).send(decoded);
   } catch (error) {
     console.error("/vertifyToken Error: ", error);
-    res.status(401);
+    res.status(401).send({ msg: "Invalid Token" });
   }
 });
 

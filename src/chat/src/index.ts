@@ -9,7 +9,7 @@ import {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-  RoomMessage,
+  RoomMessageModel,
 } from "./model";
 import {
   chatMessageService,
@@ -63,13 +63,13 @@ io.on("connection", (socket) => {
       timestamp: new Date().toISOString(),
     };
     socket.join(data.roomId);
-    io.emit("partialMessage", elements);
+    socket.emit("partialMessage", elements);
     io.to(data.roomId).emit("currentMessage", systemWelcomeMessage);
   });
 
   // Handle 'chatMessage' event
   socket.on("chatMessage", (data) => {
-    const messageDetail: RoomMessage = {
+    const messageDetail: RoomMessageModel = {
       senderId: data.userId,
       message: data.message,
       timestamp: new Date().toISOString(),
@@ -82,14 +82,14 @@ io.on("connection", (socket) => {
 
   // Handle 'getPartialMessage' event
   socket.on("getPartialMessage", async (data) => {
-    let result: RoomMessage[] = [];
+    let result: RoomMessageModel[] = [];
     try {
       result = await partialMessageService(data);
     } catch (err) {
       console.error("Error getting partial message:", err);
     }
 
-    io.emit("partialMessage", result);
+    socket.emit("partialMessage", result);
   });
 
   // Handle 'disconnect' event

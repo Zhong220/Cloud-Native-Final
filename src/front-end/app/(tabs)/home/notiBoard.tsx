@@ -1,13 +1,31 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { Stack } from 'expo-router';
-import EventCard from '@/components/app/EventCard';
+import React from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import { Stack } from "expo-router";
+import EventCard from "@/components/app/EventCard";
 
 export default function NotiBoardPage() {
   const events = [
-    { type: 'Event', title: 'EventName', details: ['Detail 1'], channelName: 'Channel Name', time: 'Now' },
-    { type: 'Group', title: 'Archive Soon', details: ['Detail 1'], channelName: 'Channel Name', time: '2hr ago' },
-    { type: 'System', title: 'Login Alert', details: ['Detail 1'], channelName: 'Channel Name', time: '3hr ago' },
+    {
+      type: "Event",
+      title: "EventName",
+      details: ["Detail 1"],
+      channelName: "Channel Name",
+      time: "Now",
+    },
+    {
+      type: "Group",
+      title: "Archive Soon",
+      details: ["Detail 1"],
+      channelName: "Channel Name",
+      time: "2hr ago",
+    },
+    {
+      type: "System",
+      title: "Login Alert",
+      details: ["Detail 1"],
+      channelName: "Channel Name",
+      time: "3hr ago",
+    },
   ];
 
   return (
@@ -33,6 +51,11 @@ export default function NotiBoardPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#f39c12', marginBottom: 10 },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#f39c12",
+    marginBottom: 10,
+  },
 });

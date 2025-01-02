@@ -24,14 +24,22 @@ export default function login() {
   useEffect(() => {
     const checkToken = async () => {
       const token = localStorage.getItem("jwtToken");
+      console.log("Token:", token);       
       if (token) {
-        console.log("Token exists");
-        frontendRouter.navigate("/(tabs)/home");
+        try {
+          const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, {JWTtoken: token});
+          const resposeTmp = response;
+          console.log(response);
+          console.log("Token exists", resposeTmp);
+          await frontendRouter.navigate("/(tabs)/chatrooms");
+        } catch (error) {
+          console.error("checkTokenError:", error);
+          localStorage.removeItem("jwtToken");
+        }
       }
     };
     checkToken();
   });
-
 
   const handleLogin = async (email: string, password: string) => {
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
@@ -42,14 +50,11 @@ export default function login() {
       });
       if (response.status === 200) {
         const jwtToken = response.data.jwttok;
-        
 
-        // 存入 SecureStore
-        
-        const encryptedToken = CryptoJS.AES.encrypt(jwtToken, 'your-secret-key').toString();
-        localStorage.setItem("jwtToken", encryptedToken);
-        console.log("Token saved to asyncstorage");
-        frontendRouter.navigate("/(tabs)/home");
+        // 存入 SecureStore        
+        localStorage.setItem("jwtToken", jwtToken);
+        console.log("Token saved to localstorage");
+        frontendRouter.navigate("/(tabs)/chatrooms");
       } else if (response.status === 401) {
         // Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
         // window.alert('Login Failed Invalid email or password. Please try again.')
