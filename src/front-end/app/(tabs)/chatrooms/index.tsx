@@ -80,6 +80,7 @@ export default function Chatrooms() {
         try {
           const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, { JWTtoken: token });
           setUserdata(response.data);
+          localStorage.setItem("userdata", JSON.stringify(response.data));
           console.log("Token exists", response.data);
         } catch (error) {
           console.error("checkTokenError:", error);
