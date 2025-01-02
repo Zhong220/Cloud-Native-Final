@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  Modal,
+  Button,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -50,6 +52,7 @@ export default function Chatrooms() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [userdata, setUserdata] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
   const [chatrooms, setChatrooms] = useState<ChatroomProps[]>([
     // {
     //   id: 1,
@@ -72,40 +75,48 @@ export default function Chatrooms() {
     //   name: "Chatroom 4",
     // },
   ]);
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = localStorage.getItem("jwtToken");
-      console.log("Token:", token);       
-      if (token) {
-        try {
-          const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, { JWTtoken: token });
-          setUserdata(response.data);
-          console.log("Token exists", response.data);
-        } catch (error) {
-          console.error("checkTokenError:", error);
-          localStorage.removeItem("jwtToken");
-          await router.push("/loginPage/login");
-        }
-      } else {
-        await router.push("/loginPage/login");
-      }
-    };
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     const token = localStorage.getItem("jwtToken");
+  //     console.log("Token:", token);
+  //     if (token) {
+  //       try {
+  //         const response = await axios.post(
+  //           `http://localhost:8000/auth/vertifyToken`,
+  //           { JWTtoken: token }
+  //         );
+  //         setUserdata(response.data);
+  //         console.log("Token exists", response.data);
+  //       } catch (error) {
+  //         console.error("checkTokenError:", error);
+  //         localStorage.removeItem("jwtToken");
+  //         await router.push("/loginPage/login");
+  //       }
+  //     } else {
+  //       await router.push("/loginPage/login");
+  //     }
+  //   };
 
-    checkToken();
-  }, [router]);
+  //   checkToken();
+  // }, [router]);
 
   useEffect(() => {
     if (userdata) {
       const fetchChatrooms = async () => {
         try {
-          const response = await axios.post('http://localhost:8000/chatroom/userGetChatroomRedis', {
-            user: userdata.userID  // 使用從 token 中獲取的使用者 ID
-          });
-          const newChatrooms = response.data.map((chatroom: any, index: number) => ({
-            id: index,
-            room_id: chatroom.chatroomID,
-            name: chatroom.name,
-          }));
+          const response = await axios.post(
+            "http://localhost:8000/chatroom/userGetChatroomRedis",
+            {
+              user: userdata.userID, // 使用從 token 中獲取的使用者 ID
+            }
+          );
+          const newChatrooms = response.data.map(
+            (chatroom: any, index: number) => ({
+              id: index,
+              room_id: chatroom.chatroomID,
+              name: chatroom.name,
+            })
+          );
           setChatrooms(newChatrooms);
           console.log("HAHA!", newChatrooms);
         } catch (error) {
@@ -116,7 +127,6 @@ export default function Chatrooms() {
       fetchChatrooms();
     }
   }, [userdata]);
-
 
   const handlePress = (room_id: number) => {
     console.log(`Joining chatroom ${room_id}`);
@@ -154,6 +164,42 @@ export default function Chatrooms() {
     }
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [chatroomName, setChatroomName] = useState("");
+  const [randomCode, setRandomCode] = useState("");
+
+  async function generateCode() {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+    const res = await axios.get("http://localhost:8000/chatroom/getChatrooms");
+    console.log(res.data);
+
+    let uniqueFound = false;
+    do {
+      code = "";
+      for (let i = 0; i < 5; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      uniqueFound = !res.data.includes(code);
+    } while (!uniqueFound);
+    setRandomCode(code);
+    setModalVisible(true);
+  }
+
+  const confirmChatroom = () => {
+    const parsedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+    axios.post("http://localhost:8000/chatroom/createChatroom", {
+      roomId: randomCode,
+      roomName: chatroomName,
+      userId: parsedUserData.uid,
+      userName: parsedUserData.username,
+    });
+    console.log(`Chatroom ${randomCode}:${chatroomName} created`);
+    setChatroomName("");
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       {/* Topbar */}
@@ -181,6 +227,32 @@ export default function Chatrooms() {
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
           <Text style={styles.searchButtonText}>Search</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.searchButton, { backgroundColor: "#28a745" }]}
+          onPress={async () => {
+            setShowModal(true);
+            await generateCode();
+          }}
+        >
+          <Text style={styles.searchButtonText}>Create chatroom</Text>
+        </TouchableOpacity>
+        {showModal && (
+          <Modal visible={modalVisible} transparent animationType="slide">
+            <View style={styles.modalBackground}>
+              <View style={styles.modalContent}>
+                <Text>Room Code: {randomCode}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Chatroom Name"
+                  value={chatroomName}
+                  onChangeText={setChatroomName}
+                />
+                <Button title="Confirm" onPress={confirmChatroom} />
+              </View>
+            </View>
+          </Modal>
+        )}
       </View>
 
       <FlatList
@@ -263,5 +335,23 @@ const styles = StyleSheet.create({
   searchButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 5,
+  },
+  input: {
+    borderWidth: 1,
+    marginVertical: 10,
+    padding: 10,
+    width: "100%",
   },
 });

@@ -1,4 +1,4 @@
-export interface ChatroomProps {
+export default interface ChatroomProps {
   id: number;
   room_id: number;
   name: string;

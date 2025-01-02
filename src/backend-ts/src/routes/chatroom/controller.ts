@@ -11,11 +11,11 @@ router.get("/", (req, res) => {
   res.status(200).send("chatroom router is availble");
 });
 
-router.post("/getChatrooms", async (req, res) => {
+router.get("/getChatrooms", async (req, res) => {
   try {
-    const mysql = mysqlPool.getConnection();
+    const mysql = await mysqlPool.getConnection();
     const q = `select * from chatroom`;
-    const [rows, fields] = await (await mysql).query(q);
+    const [rows, fields] = await mysql.query(q);
     res.status(200).send(rows);
   } catch (error) {
     console.error("Error [/getChatrooms] :", error);
@@ -31,10 +31,12 @@ router.post("/userGetChatroomRedis", async (req, res) => {
     const exists = await redisClient.exists(`user:${user}:rooms`);
     if (exists) {
       const result = await redisClient.hgetall(`user:${user}:rooms`);
-      const formattedResult = Object.entries(result).map(([chatroomID, name]) => ({
-        chatroomID,
-        name,
-      }));
+      const formattedResult = Object.entries(result).map(
+        ([chatroomID, name]) => ({
+          chatroomID,
+          name,
+        })
+      );
       console.log(formattedResult);
       res.status(200).send(formattedResult);
     } else {
@@ -55,22 +57,19 @@ router.post("/getChatroomUsersRedis", async (req, res) => {
     if (exists) {
       const result = await redisClient.hgetall(`room:${chatroomID}:members`);
       console.log(result);
-      const formattedResult = Object.entries(result).map(([userID, userName]) => ({
-        userID,
-        userName,
-      }));
+      const formattedResult = Object.entries(result).map(
+        ([userID, userName]) => ({
+          userID,
+          userName,
+        })
+      );
       console.log(formattedResult);
       res.status(200).send(formattedResult);
     } else {
       res.status(200).send([]);
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 });
-
-
-
 
 router.post("/getMessages", async (req, res) => {
   try {
@@ -108,6 +107,36 @@ router.post("/getMessagesRadis", async (req, res) => {
   }
 });
 
-
+router.post("/createChatroom", async (req, res) => {
+  try {
+    const data = req.body;
+    await redisClient.hset(
+      `room:${data.roomId}:members`,
+      data.userId,
+      data.userName
+    );
+    await redisClient.hset(
+      `user:${data.userId}:rooms`,
+      data.roomId,
+      data.roomName
+    );
+    await redisClient.rpush(
+      `room:${data.roomId}`,
+      JSON.stringify({
+        senderId: "system",
+        message: `Room ${data.roomId} created.`,
+        timestamp: new Date().toISOString(),
+      })
+    );
+    const mysql = mysqlPool.getConnection();
+    const q = `INSERT INTO chatroom (cid, name) VALUES (?, ?)`;
+    const value = [data.roomId, data.roomName];
+    await (await mysql).query(q, value);
+    res.status(200).send("Chatroom created");
+  } catch (error) {
+    console.error("Error [/createChatroom] :", error);
+    res.status(400);
+  }
+});
 
 export default router;

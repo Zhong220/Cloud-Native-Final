@@ -1,6 +1,6 @@
 import { Transaction } from "../model";
 
-export const sampleAccounting: Transaction[] = [
+const sampleAccounting: Transaction[] = [
   {
     id: 1,
     // datetime: "2021-10-01 20:00:00",
@@ -63,3 +63,5 @@ export const sampleAccounting: Transaction[] = [
     issplited: true,
   },
 ];
+
+export default sampleAccounting;
