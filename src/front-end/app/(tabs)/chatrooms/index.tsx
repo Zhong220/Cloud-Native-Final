@@ -78,10 +78,13 @@ export default function Chatrooms() {
   useEffect(() => {
     const checkToken = async () => {
       const token = localStorage.getItem("jwtToken");
-      console.log("Token:", token);       
+      console.log("Token:", token);
       if (token) {
         try {
-          const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, { JWTtoken: token });
+          const response = await axios.post(
+            `http://localhost:8000/auth/vertifyToken`,
+            { JWTtoken: token }
+          );
           setUserdata(response.data);
           localStorage.setItem("userdata", JSON.stringify(response.data));
           console.log("Token exists", response.data);
@@ -95,8 +98,8 @@ export default function Chatrooms() {
       }
     };
 
-  //   checkToken();
-  // }, [router]);
+    checkToken();
+  }, [router]);
 
   useEffect(() => {
     if (userdata) {

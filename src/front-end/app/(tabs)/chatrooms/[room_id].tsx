@@ -20,6 +20,7 @@ import ChatroomProps, { MessageProps } from "./model";
 
 import sampleMessages from "./constants/messages";
 import sampleAccounting from "./constants/accounting";
+import axios from "axios";
 
 const sockerServer = "http://localhost:8080";
 const socket = io(sockerServer);
@@ -125,28 +126,31 @@ export default function ChatroomDetails() {
   };
 
   const [chatroomUsers, setChatroomUsers] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-      const fetchData = async () => { // 拿到聊天室的使用者
-          if (room_id) {
-              try {
-                  console.log('Fetching data for room_id:', room_id);
-                  const response = await axios.post('http://localhost:8000/chatroom/getChatroomUsersRedis',
-                      { chatroomID: room_id });
-                  console.log('Response data:', response.data);
-                  setChatroomUsers(response.data);
-              } catch (err) {
-                  console.error('Error fetching data:', err);
-                  setError('Error fetching data!!!');
-              } finally {
-                  setLoading(false);
-              }
-          }
-      };
+  useEffect(() => {
+    const fetchData = async () => {
+      // 拿到聊天室的使用者
+      if (room_id) {
+        try {
+          console.log("Fetching data for room_id:", room_id);
+          const response = await axios.post(
+            "http://localhost:8000/chatroom/getChatroomUsersRedis",
+            { chatroomID: room_id }
+          );
+          console.log("Response data:", response.data);
+          setChatroomUsers(response.data);
+        } catch (err) {
+          console.error("Error fetching data:", err);
+          setError("Error fetching data!!!");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
 
-      fetchData();
+    fetchData();
   }, [room_id]);
 
   // handle socket events
