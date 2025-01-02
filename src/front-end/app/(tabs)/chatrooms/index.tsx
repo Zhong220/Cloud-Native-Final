@@ -75,27 +75,25 @@ export default function Chatrooms() {
     //   name: "Chatroom 4",
     // },
   ]);
-  // useEffect(() => {
-  //   const checkToken = async () => {
-  //     const token = localStorage.getItem("jwtToken");
-  //     console.log("Token:", token);
-  //     if (token) {
-  //       try {
-  //         const response = await axios.post(
-  //           `http://localhost:8000/auth/vertifyToken`,
-  //           { JWTtoken: token }
-  //         );
-  //         setUserdata(response.data);
-  //         console.log("Token exists", response.data);
-  //       } catch (error) {
-  //         console.error("checkTokenError:", error);
-  //         localStorage.removeItem("jwtToken");
-  //         await router.push("/loginPage/login");
-  //       }
-  //     } else {
-  //       await router.push("/loginPage/login");
-  //     }
-  //   };
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("jwtToken");
+      console.log("Token:", token);       
+      if (token) {
+        try {
+          const response = await axios.post(`http://localhost:8000/auth/vertifyToken`, { JWTtoken: token });
+          setUserdata(response.data);
+          localStorage.setItem("userdata", JSON.stringify(response.data));
+          console.log("Token exists", response.data);
+        } catch (error) {
+          console.error("checkTokenError:", error);
+          localStorage.removeItem("jwtToken");
+          await router.push("/loginPage/login");
+        }
+      } else {
+        await router.push("/loginPage/login");
+      }
+    };
 
   //   checkToken();
   // }, [router]);
