@@ -193,8 +193,8 @@ export default function Chatrooms() {
     axios.post("http://localhost:8000/chatroom/createChatroom", {
       roomId: randomCode,
       roomName: chatroomName,
-      userId: parsedUserData.uid,
-      userName: parsedUserData.username,
+      userId: userdata.userID,
+      userName: userdata.username,
     });
     console.log(`Chatroom ${randomCode}:${chatroomName} created`);
     setChatroomName("");
